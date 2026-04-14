@@ -3,15 +3,22 @@
 import { signIn } from "next-auth/react";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
+import TriSystemSymbol from "@/components/hub/TriSystemSymbol";
 
 export default function LoginPage() {
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center px-4"
-      style={{ backgroundColor: "#f5f0e8" }}
+      style={{
+        backgroundColor: "#f5f0e8",
+        backgroundImage:
+          "radial-gradient(ellipse at 20% 50%, rgba(46,139,78,0.06) 0%, transparent 50%), " +
+          "radial-gradient(ellipse at 80% 30%, rgba(48,112,192,0.06) 0%, transparent 50%), " +
+          "radial-gradient(ellipse at 50% 80%, rgba(208,64,64,0.05) 0%, transparent 50%)",
+      }}
     >
       {/* Title */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-8">
         <h1
           className="text-4xl mb-3 animate-px-glow inline-block px-6 py-2"
           style={{
@@ -23,13 +30,24 @@ export default function LoginPage() {
           ✦ 천명 ✦
         </h1>
         <p
-          className="text-lg"
+          className="text-lg mb-4"
           style={{
             fontFamily: "var(--font-pixel)",
             color: "#9a7040",
           }}
         >
           운명의 사주풀이
+        </p>
+        <TriSystemSymbol size="medium" />
+        <p
+          className="mt-3 text-xs"
+          style={{
+            fontFamily: "var(--font-pixel)",
+            color: "#8a8070",
+            letterSpacing: "0.1em",
+          }}
+        >
+          사주 × 자미두수 × 서양점성술
         </p>
       </div>
 

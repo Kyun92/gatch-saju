@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { generateAllCharts } from "@/lib/charts";
@@ -8,32 +8,38 @@ import { sanitizeReadingHtml } from "@/lib/ai/sanitize-html";
 import type { BirthInfo, AllCharts } from "@/lib/charts/types";
 import { v4 as uuidv4 } from "uuid";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user?.userId) {
       return NextResponse.json({ error: "인증이 필요합니다" }, { status: 401 });
     }
 
+    const { characterId } = (await request.json()) as { characterId: string };
+    if (!characterId) {
+      return NextResponse.json({ error: "캐릭터 ID가 필요합니다" }, { status: 400 });
+    }
+
     const supabase = createServerSupabaseClient();
     const userId = session.user.userId;
 
-    // Get user birth info
-    const { data: user, error: userError } = await supabase
-      .from("users")
-      .select("name, birth_date, birth_time, birth_city, birth_lat, birth_lng, gender, timezone, mbti")
-      .eq("id", userId)
+    // Get character birth info + ownership check
+    const { data: character, error: characterError } = await supabase
+      .from("characters")
+      .select("id, name, birth_date, birth_time, birth_city, birth_lat, birth_lng, gender, timezone, mbti")
+      .eq("id", characterId)
+      .eq("user_id", userId)
       .single();
 
-    if (userError || !user) {
-      return NextResponse.json({ error: "사용자 정보를 찾을 수 없습니다" }, { status: 404 });
+    if (characterError || !character) {
+      return NextResponse.json({ error: "권한 없음" }, { status: 403 });
     }
 
     // Create reading row with pending status
     const readingId = uuidv4();
     const { error: insertError } = await supabase.from("readings").insert({
       id: readingId,
-      user_id: userId,
+      character_id: characterId,
       type: "comprehensive",
       status: "pending",
     });
@@ -44,7 +50,7 @@ export async function POST() {
     }
 
     // Run generation in background
-    generateReadingAsync(readingId, user, userId).catch((e) => {
+    generateReadingAsync(readingId, character, characterId).catch((e) => {
       console.error("Background reading generation failed:", e);
     });
 
@@ -57,7 +63,7 @@ export async function POST() {
 
 async function generateReadingAsync(
   readingId: string,
-  user: {
+  character: {
     name: string | null;
     birth_date: string;
     birth_time: string;
@@ -68,7 +74,7 @@ async function generateReadingAsync(
     timezone: string | null;
     mbti: string | null;
   },
-  userId: string,
+  characterId: string,
 ) {
   const supabase = createServerSupabaseClient();
 
@@ -80,14 +86,14 @@ async function generateReadingAsync(
       .eq("id", readingId);
 
     const birthInfo: BirthInfo = {
-      name: user.name ?? "",
-      birthDate: user.birth_date,
-      birthTime: user.birth_time,
-      birthCity: user.birth_city,
-      birthLat: user.birth_lat,
-      birthLng: user.birth_lng,
-      gender: user.gender,
-      timezone: user.timezone ?? "Asia/Seoul",
+      name: character.name ?? "",
+      birthDate: character.birth_date,
+      birthTime: character.birth_time,
+      birthCity: character.birth_city,
+      birthLat: character.birth_lat,
+      birthLng: character.birth_lng,
+      gender: character.gender,
+      timezone: character.timezone ?? "Asia/Seoul",
     };
 
     const charts: AllCharts = generateAllCharts(birthInfo);
@@ -96,7 +102,7 @@ async function generateReadingAsync(
     const { html: rawHtml, tokensUsed } = await generateComprehensiveReading(
       birthInfo.name,
       charts,
-      user.mbti,
+      character.mbti,
     );
 
     // Step 2: Generate stat scores (Gemini Flash, separate call)
@@ -130,27 +136,30 @@ async function generateReadingAsync(
         charts_data: charts,
       })
       .eq("id", readingId);
+
+    // Unlock character after successful reading
+    await supabase.from("characters").update({ unlocked: true }).eq("id", characterId);
   } catch (e) {
     console.error(`Reading generation failed for ${readingId}:`, e);
 
     // Retry once
     try {
       const birthInfo: BirthInfo = {
-        name: user.name ?? "",
-        birthDate: user.birth_date,
-        birthTime: user.birth_time,
-        birthCity: user.birth_city,
-        birthLat: user.birth_lat,
-        birthLng: user.birth_lng,
-        gender: user.gender,
-        timezone: user.timezone ?? "Asia/Seoul",
+        name: character.name ?? "",
+        birthDate: character.birth_date,
+        birthTime: character.birth_time,
+        birthCity: character.birth_city,
+        birthLat: character.birth_lat,
+        birthLng: character.birth_lng,
+        gender: character.gender,
+        timezone: character.timezone ?? "Asia/Seoul",
       };
 
       const charts: AllCharts = generateAllCharts(birthInfo);
       const { html: rawHtml, tokensUsed } = await generateComprehensiveReading(
         birthInfo.name,
         charts,
-        user.mbti,
+        character.mbti,
       );
 
       const chartsSummary = JSON.stringify(
@@ -179,6 +188,9 @@ async function generateReadingAsync(
           charts_data: charts,
         })
         .eq("id", readingId);
+
+      // Unlock character after successful retry
+      await supabase.from("characters").update({ unlocked: true }).eq("id", characterId);
     } catch (retryError) {
       console.error(`Retry also failed for ${readingId}:`, retryError);
       // 내부 에러 상세는 서버 로그에만 남기고, 사용자에게는 일반 메시지만 노출

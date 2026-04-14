@@ -8,6 +8,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/reading": "⚔️ 종합 감정",
   "/compatibility": "💕 궁합 분석",
   "/mypage": "👤 마이페이지",
+  "/characters/new": "새 캐릭터 추가",
 };
 
 export default function SubPageHeader() {

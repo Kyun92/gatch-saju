@@ -1,21 +1,40 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
 
 export default function NewReadingPage() {
+  return (
+    <Suspense>
+      <NewReadingContent />
+    </Suspense>
+  );
+}
+
+function NewReadingContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const characterId = searchParams.get("characterId");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleGenerate() {
+    if (!characterId) {
+      setError("캐릭터 정보가 없습니다. 홈으로 돌아가 다시 시도해주세요.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const res = await fetch("/api/reading/generate", { method: "POST" });
+      const res = await fetch("/api/reading/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ characterId }),
+      });
       const data = await res.json();
 
       if (!res.ok) {

@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-const STATIC_PATHS = ["/api/auth", "/dev", "/_next", "/fonts", "/characters", "/favicon.ico"];
+const STATIC_PATHS = ["/api/auth", "/api/dev", "/dev", "/_next", "/fonts", "/favicon.ico"];
 
 export default auth(async (req) => {
   const { pathname } = req.nextUrl;
@@ -24,23 +24,22 @@ export default auth(async (req) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  // --- 로그인된 사용자: profileComplete 체크 (DB 직접 조회) ---
+  // --- 로그인된 사용자: characters 존재 여부 체크 (DB 직접 조회) ---
   const supabase = createServerSupabaseClient();
-  const { data: user } = await supabase
-    .from("users")
-    .select("profile_complete")
-    .eq("id", userId)
+  const { data: hasCharacter } = await supabase
+    .from("characters")
+    .select("id")
+    .eq("user_id", userId)
+    .limit(1)
     .single();
 
-  const profileComplete = user?.profile_complete ?? false;
-
-  // 프로필 미완성 → /onboarding만 허용
-  if (!profileComplete) {
+  // 캐릭터 없음 → /onboarding만 허용
+  if (!hasCharacter) {
     if (pathname === "/onboarding") return NextResponse.next();
     return NextResponse.redirect(new URL("/onboarding", req.url));
   }
 
-  // 프로필 완성 → /onboarding, /login 접근 시 허브(/)로
+  // 캐릭터 있음 → /onboarding, /login 접근 시 허브(/)로
   if (pathname === "/onboarding" || pathname === "/login") {
     return NextResponse.redirect(new URL("/", req.url));
   }

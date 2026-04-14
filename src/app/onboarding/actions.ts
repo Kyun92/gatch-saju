@@ -20,9 +20,10 @@ interface OnboardingData {
   birthCity: string;
   gender: "male" | "female";
   mbti: string | null;
+  isSelf?: boolean;
 }
 
-export async function completeOnboarding(data: OnboardingData) {
+export async function createCharacter(data: OnboardingData) {
   const session = await auth();
   if (!session?.user?.userId) {
     throw new Error("인증이 필요합니다.");
@@ -42,10 +43,11 @@ export async function completeOnboarding(data: OnboardingData) {
       ? data.mbti
       : null;
 
-  // Update user profile
-  const { error: updateError } = await supabase
-    .from("users")
-    .update({
+  // Insert character
+  const { data: character, error: charError } = await supabase
+    .from("characters")
+    .insert({
+      user_id: userId,
       name: data.name,
       birth_date: data.birthDate,
       birth_time: data.birthTime,
@@ -55,16 +57,17 @@ export async function completeOnboarding(data: OnboardingData) {
       gender: data.gender,
       timezone: cityInfo.timezone,
       mbti: mbtiValue,
-      profile_complete: true,
-      updated_at: new Date().toISOString(),
+      is_self: data.isSelf ?? true,
+      unlocked: false,
     })
-    .eq("id", userId);
+    .select("id")
+    .single();
 
-  if (updateError) {
-    console.error("[onboarding] update error:", updateError);
-    throw new Error("프로필 저장에 실패했습니다.");
+  if (charError) {
+    console.error("[onboarding] character insert error:", charError);
+    throw new Error("캐릭터 생성에 실패했습니다.");
   }
-  console.log("[onboarding] profile updated");
+  console.log("[onboarding] character created:", character.id);
 
   // Generate all charts
   const charts = generateAllCharts({
@@ -79,19 +82,20 @@ export async function completeOnboarding(data: OnboardingData) {
   });
 
   console.log("[onboarding] charts generated:", Object.keys(charts));
-  // Upsert charts
+
+  // Insert charts with character_id
   const chartEntries = [
-    { user_id: userId, type: "saju", data: charts.saju },
-    { user_id: userId, type: "ziwei", data: charts.ziwei },
-    { user_id: userId, type: "western", data: charts.western },
+    { character_id: character.id, type: "saju", data: charts.saju },
+    { character_id: character.id, type: "ziwei", data: charts.ziwei },
+    { character_id: character.id, type: "western", data: charts.western },
   ];
 
   for (const entry of chartEntries) {
-    const { error: upsertError } = await supabase
+    const { error: insertError } = await supabase
       .from("charts")
-      .upsert(entry, { onConflict: "user_id,type" });
-    if (upsertError) {
-      console.error("[onboarding] chart upsert error:", entry.type, upsertError);
+      .insert(entry);
+    if (insertError) {
+      console.error("[onboarding] chart insert error:", entry.type, insertError);
     }
   }
   console.log("[onboarding] charts saved, done");

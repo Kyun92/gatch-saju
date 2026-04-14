@@ -4,17 +4,34 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
+import SamplePreview from "@/components/reading/SamplePreview";
 
-export default async function ReadingPage() {
+interface ReadingPageProps {
+  searchParams: Promise<{ characterId?: string }>;
+}
+
+export default async function ReadingPage({ searchParams }: ReadingPageProps) {
   const session = await auth();
   if (!session?.user?.userId) redirect("/login");
 
+  const { characterId } = await searchParams;
+  if (!characterId) redirect("/");
+
   const supabase = createServerSupabaseClient();
+
+  // Verify character ownership
+  const { data: character } = await supabase
+    .from("characters")
+    .select("id, user_id")
+    .eq("id", characterId)
+    .single();
+
+  if (!character || character.user_id !== session.user.userId) redirect("/");
 
   const { data: readings } = await supabase
     .from("readings")
     .select("id, type, status, character_title, created_at")
-    .eq("user_id", session.user.userId)
+    .eq("character_id", characterId)
     .eq("type", "comprehensive")
     .order("created_at", { ascending: false });
 
@@ -44,12 +61,15 @@ export default async function ReadingPage() {
         >
           세 가지 운명학으로 종합 감정합니다
         </p>
-        <Link href="/reading/new">
+        <Link href={`/reading/new?characterId=${characterId}`}>
           <PixelButton size="lg">
             종합 사주 감정받기 — 990원
           </PixelButton>
         </Link>
       </PixelFrame>
+
+      {/* Blurred Sample Preview */}
+      <SamplePreview />
 
       {/* Past Readings */}
       {readings && readings.length > 0 && (

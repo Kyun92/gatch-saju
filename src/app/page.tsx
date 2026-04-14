@@ -2,11 +2,18 @@ import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import HubHeader from "@/components/hub/HubHeader";
-import TriSystemSymbol from "@/components/hub/TriSystemSymbol";
-import ServiceCard from "@/components/hub/ServiceCard";
-import DailyTeaser from "@/components/hub/DailyTeaser";
+import CharacterSlot from "@/components/hub/CharacterSlot";
+import NewCharacterSlot from "@/components/hub/NewCharacterSlot";
 import TrustBadge from "@/components/hub/TrustBadge";
-import CharacterHero from "@/components/character/CharacterHero";
+import type { ElementType } from "@/lib/character/get-preset";
+
+const HEAVENLY_STEM_ELEMENT: Record<string, ElementType> = {
+  "甲": "wood", "乙": "wood",
+  "丙": "fire", "丁": "fire",
+  "戊": "earth", "己": "earth",
+  "庚": "metal", "辛": "metal",
+  "壬": "water", "癸": "water",
+};
 
 export default async function HubPage() {
   const session = await auth();
@@ -15,173 +22,155 @@ export default async function HubPage() {
   const supabase = createServerSupabaseClient();
   const userId = session.user.userId;
 
-  // Fetch user profile
+  // 1. Fetch all characters for this user
+  const { data: characters } = await supabase
+    .from("characters")
+    .select("id, name, unlocked, gender, mbti, birth_date, is_self")
+    .eq("user_id", userId)
+    .order("is_self", { ascending: false })
+    .order("created_at", { ascending: true });
+
+  // If no characters, redirect to onboarding
+  if (!characters || characters.length === 0) redirect("/onboarding");
+
+  // 2. Fetch user name for header
   const { data: user } = await supabase
     .from("users")
-    .select("name, birth_date, gender, mbti, profile_complete")
+    .select("name")
     .eq("id", userId)
     .single();
 
-  if (!user?.profile_complete) redirect("/onboarding");
-
-  // Fetch chart data for element
-  const { data: sajuChart } = await supabase
+  // 3. Fetch saju chart data for each character
+  const characterIds = characters.map((c) => c.id);
+  const { data: charts } = await supabase
     .from("charts")
-    .select("data")
-    .eq("user_id", userId)
-    .eq("type", "saju")
-    .single();
+    .select("character_id, data")
+    .in("character_id", characterIds)
+    .eq("type", "saju");
 
-  // Fetch today's daily reading
-  const today = new Date().toISOString().split("T")[0];
-  const { data: todayReading } = await supabase
-    .from("readings")
-    .select("content, character_title")
-    .eq("user_id", userId)
-    .eq("type", "daily")
-    .eq("status", "complete")
-    .gte("created_at", `${today}T00:00:00`)
-    .lte("created_at", `${today}T23:59:59`)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .single();
-
-  // Fetch reading count (reserved for future rank display)
-  await supabase
-    .from("readings")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", userId)
-    .eq("type", "comprehensive")
-    .eq("status", "complete");
-
-  // Derive character info
-  const sajuData = sajuChart?.data as Record<string, unknown> | null;
-  const dayMaster = (sajuData?.dayMaster as string) ?? "";
-  const fiveElements = sajuData?.fiveElements as Record<string, number> | null;
-
-  // Determine dominant element
-  type ElementType = "wood" | "fire" | "earth" | "metal" | "water";
-  const elementMap: Record<string, ElementType> = {
-    "木": "wood", "火": "fire", "土": "earth", "金": "metal", "水": "water",
-  };
-  const elementLabelMap: Record<ElementType, string> = {
-    wood: "목(木)의 용사",
-    fire: "화(火)의 전사",
-    earth: "토(土)의 현자",
-    metal: "금(金)의 기사",
-    water: "수(水)의 술사",
-  };
-  let element: ElementType = "water";
-  if (fiveElements) {
-    const maxEntry = Object.entries(fiveElements).reduce((a, b) => a[1] >= b[1] ? a : b);
-    element = elementMap[maxEntry[0]] ?? "water";
+  const chartMap = new Map<string, Record<string, unknown>>();
+  if (charts) {
+    for (const chart of charts) {
+      chartMap.set(chart.character_id, chart.data as Record<string, unknown>);
+    }
   }
 
-  // Calculate age as level
-  const birthYear = user.birth_date ? new Date(user.birth_date).getFullYear() : 2000;
-  const level = new Date().getFullYear() - birthYear;
+  // 4. Fetch latest completed comprehensive readings for unlocked characters
+  const unlockedIds = characters.filter((c) => c.unlocked).map((c) => c.id);
+  const readingMap = new Map<
+    string,
+    { stat_scores: Record<string, number> | null; character_title: string | null }
+  >();
 
-  // Character class title derived from element + day master
-  const classTitle = dayMaster ? `${dayMaster} · ${elementLabelMap[element]}` : elementLabelMap[element];
+  if (unlockedIds.length > 0) {
+    const { data: readings } = await supabase
+      .from("readings")
+      .select("character_id, stat_scores, character_title")
+      .in("character_id", unlockedIds)
+      .eq("type", "comprehensive")
+      .eq("status", "complete")
+      .order("created_at", { ascending: false });
+
+    if (readings) {
+      for (const reading of readings) {
+        // Only keep the latest reading per character
+        if (!readingMap.has(reading.character_id)) {
+          readingMap.set(reading.character_id, {
+            stat_scores: reading.stat_scores as Record<string, number> | null,
+            character_title: reading.character_title,
+          });
+        }
+      }
+    }
+  }
+
+  // Build display data for each character
+  const characterSlots = characters.map((char) => {
+    const sajuData = chartMap.get(char.id);
+    const dayMaster = (sajuData?.dayMaster as string) ?? "";
+    const fiveElements = sajuData?.fiveElements as Record<string, number> | null;
+
+    // Determine element from day master stem
+    let element: ElementType = "water";
+    if (dayMaster) {
+      const stem = dayMaster.charAt(0);
+      element = HEAVENLY_STEM_ELEMENT[stem] ?? "water";
+    } else if (fiveElements) {
+      const maxEntry = Object.entries(fiveElements).reduce((a, b) =>
+        a[1] >= b[1] ? a : b
+      );
+      const elementMap: Record<string, ElementType> = {
+        "木": "wood", "火": "fire", "土": "earth", "金": "metal", "水": "water",
+      };
+      element = elementMap[maxEntry[0]] ?? "water";
+    }
+
+    // Calculate level (age)
+    const birthYear = char.birth_date
+      ? new Date(char.birth_date).getFullYear()
+      : 2000;
+    const level = new Date().getFullYear() - birthYear;
+
+    // Reading data
+    const readingData = readingMap.get(char.id);
+
+    return {
+      character: {
+        id: char.id,
+        name: char.name,
+        unlocked: char.unlocked,
+        gender: char.gender,
+        mbti: char.mbti,
+      },
+      element,
+      level,
+      dayMaster,
+      statScores: readingData?.stat_scores
+        ? {
+            health_score: readingData.stat_scores.health_score ?? 0,
+            wealth_score: readingData.stat_scores.wealth_score ?? 0,
+            love_score: readingData.stat_scores.love_score ?? 0,
+            career_score: readingData.stat_scores.career_score ?? 0,
+            vitality_score: readingData.stat_scores.vitality_score ?? 0,
+            luck_score: readingData.stat_scores.luck_score ?? 0,
+            title: (readingData.stat_scores as Record<string, unknown>).title as string | undefined,
+          }
+        : null,
+      characterTitle: readingData?.character_title ?? null,
+    };
+  });
 
   return (
     <div className="hub-bg min-h-screen flex flex-col">
       {/* Header */}
-      <HubHeader userName={user.name ?? "모험가"} />
+      <HubHeader userName={user?.name ?? "모험가"} />
 
       {/* Main content */}
       <div
-        className="flex-1 w-full mx-auto px-4 py-6 flex flex-col gap-0"
+        className="flex-1 w-full mx-auto px-4 py-5 flex flex-col gap-3"
         style={{ maxWidth: "480px" }}
       >
-        {/* ── 캐릭터 히어로 섹션 ── */}
-        <section
-          className="pixel-frame-accent flex flex-col items-center py-8 px-4 gap-1"
-          style={{ marginBottom: 0 }}
-        >
-          <CharacterHero
-            avatarUrl={`/characters/${element}-${user.gender ?? "male"}.png`}
-            dayMaster={dayMaster}
-            level={level}
-            classTitle={classTitle}
-            characterTitle={user.name ?? "모험가"}
-            element={element}
-            mbti={user.mbti ?? null}
+        {/* Section title */}
+        <div className="pixel-divider">캐릭터 선택</div>
+
+        {/* Character slots */}
+        {characterSlots.map((slot) => (
+          <CharacterSlot
+            key={slot.character.id}
+            character={slot.character}
+            element={slot.element}
+            level={slot.level}
+            dayMaster={slot.dayMaster}
+            statScores={slot.statScores}
+            characterTitle={slot.characterTitle}
           />
-        </section>
+        ))}
 
-        {/* ── 픽셀 구분선 ── */}
-        <div className="pixel-divider my-5">3체계 교차분석</div>
+        {/* New character slot */}
+        <NewCharacterSlot />
 
-        {/* ── 3체계 시각화 섹션 ── */}
-        <section className="pixel-frame flex flex-col items-center py-6 px-4 gap-3">
-          <TriSystemSymbol size="full" />
-          <p
-            className="text-center"
-            style={{
-              fontFamily: "var(--font-pixel)",
-              fontSize: "0.625rem",
-              color: "#8a8070",
-              letterSpacing: "0.06em",
-            }}
-          >
-            사주 × 자미두수 × 서양점성술
-          </p>
-          <p
-            className="text-center"
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.75rem",
-              color: "#5a4e3c",
-              lineHeight: 1.6,
-            }}
-          >
-            세 가지 운명학이 하나로 만나는 곳
-          </p>
-        </section>
-
-        {/* ── 픽셀 구분선 ── */}
-        <div className="pixel-divider my-5">오늘의 운세</div>
-
-        {/* ── 일일운세 티저 ── */}
-        <DailyTeaser todayReading={todayReading} />
-
-        {/* ── 픽셀 구분선 ── */}
-        <div className="pixel-divider my-5" aria-hidden="true" />
-
-        {/* ── 퀘스트 보드 ── */}
-        <section>
-          <h2 className="quest-board-title mb-4">퀘스트 보드</h2>
-          <div className="flex flex-col gap-3">
-            <ServiceCard
-              icon="📜"
-              title="일일 퀘스트"
-              description="매일 새로운 운세를 확인하세요"
-              price={null}
-              href="/daily"
-            />
-            <ServiceCard
-              icon="⚔️"
-              title="종합 사주 감정"
-              description="사주 × 자미두수 × 점성술 3체계 AI 교차분석"
-              price="990원"
-              href="/reading"
-              popular
-            />
-            <ServiceCard
-              icon="💕"
-              title="궁합 분석"
-              description="두 운명의 교차점을 찾아드립니다"
-              price="990원"
-              href="/compatibility"
-            />
-          </div>
-        </section>
-
-        {/* ── 신뢰 배너 ── */}
-        <div className="mt-6">
-          <TrustBadge />
-        </div>
+        {/* Trust badge */}
+        <TrustBadge />
       </div>
     </div>
   );

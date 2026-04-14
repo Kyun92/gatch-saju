@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
 import { getAllCities } from "@/lib/data/cities";
-import { createCharacter } from "./actions";
+import { createCharacter } from "@/app/onboarding/actions";
 
 const MBTI_TYPES = [
   "INTJ","INTP","ENTJ","ENTP",
@@ -41,15 +41,7 @@ const ELEMENT_LABEL: Record<ElementType, string> = {
   water: "수(水)",
 };
 
-const ELEMENT_COLOR: Record<ElementType, string> = {
-  wood: "#2e8b4e",
-  fire: "#d04040",
-  earth: "#c09050",
-  metal: "#b0b8c8",
-  water: "#3070c0",
-};
-
-export default function OnboardingPage() {
+export default function NewCharacterPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,11 +72,10 @@ export default function OnboardingPage() {
         birthCity,
         gender,
         mbti: mbti || null,
-        isSelf: true,
+        isSelf: false,
       });
       if (result?.success) {
-        // Hard navigate로 새 JWT 발급받기
-        window.location.href = "/";
+        router.push("/");
         return;
       }
     } catch (e) {
@@ -103,7 +94,7 @@ export default function OnboardingPage() {
         className="text-2xl mb-6"
         style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
       >
-        ⚔️ 캐릭터 생성
+        ⚔️ 캐릭터 추가
       </h1>
 
       {/* Progress Dots */}
@@ -315,7 +306,7 @@ export default function OnboardingPage() {
               className="text-sm text-center"
               style={{ fontFamily: "var(--font-pixel)", color: "#4a3e2c" }}
             >
-              당신의 캐릭터를 확인하세요
+              캐릭터를 확인하세요
             </p>
 
             {/* Character Preview */}
@@ -395,7 +386,7 @@ export default function OnboardingPage() {
                 className="flex-1"
                 disabled={loading}
               >
-                {loading ? "생성 중..." : "모험 시작! ⚔️"}
+                {loading ? "생성 중..." : "캐릭터 추가 ⚔️"}
               </PixelButton>
             </div>
           </div>

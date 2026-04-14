@@ -49,14 +49,24 @@ export default async function ReadingDetailPage({
   const { data: reading, error } = await supabase
     .from("readings")
     .select(
-      "id, status, content, stat_scores, character_title, charts_data, created_at",
+      "id, status, content, stat_scores, character_title, charts_data, created_at, character_id",
     )
     .eq("id", id)
-    .eq("user_id", session.user.userId)
     .single();
 
   if (error || !reading) {
     redirect("/reading");
+  }
+
+  // Verify ownership via character
+  const { data: character } = await supabase
+    .from("characters")
+    .select("id, user_id, name, birth_date, birth_time, gender, mbti")
+    .eq("id", reading.character_id)
+    .single();
+
+  if (!character || character.user_id !== session.user.userId) {
+    redirect("/");
   }
 
   // If still generating, redirect to generating page
@@ -84,21 +94,14 @@ export default async function ReadingDetailPage({
     );
   }
 
-  // Fetch user for birth info
-  const { data: user } = await supabase
-    .from("users")
-    .select("name, birth_date, birth_time, gender, mbti")
-    .eq("id", session.user.userId)
-    .single();
-
   const chartsData = reading.charts_data as {
     saju?: { dayMaster?: string };
   } | null;
   const dayMaster = chartsData?.saju?.dayMaster ?? "壬";
-  const gender = (user?.gender as "male" | "female") ?? "male";
+  const gender = (character.gender as "male" | "female") ?? "male";
   const preset = getCharacterPreset(dayMaster, gender);
-  const level = user?.birth_date
-    ? getCharacterLevel(user.birth_date)
+  const level = character.birth_date
+    ? getCharacterLevel(character.birth_date)
     : 1;
 
   const statScores = (reading.stat_scores ?? {
@@ -139,7 +142,7 @@ export default async function ReadingDetailPage({
         classTitle={preset?.className ?? "운명의 여행자"}
         characterTitle={reading.character_title ?? statScores.title}
         element={preset?.element ?? "water"}
-        mbti={user?.mbti}
+        mbti={character.mbti}
         keywords={keywords}
       />
 
@@ -147,12 +150,12 @@ export default async function ReadingDetailPage({
 
       {/* 프로필 카드 */}
       <ProfileCard
-        name={user?.name ?? "모험자"}
-        birthDate={user?.birth_date ?? "-"}
-        birthTime={user?.birth_time}
+        name={character.name ?? "모험자"}
+        birthDate={character.birth_date ?? "-"}
+        birthTime={character.birth_time}
         gender={gender}
         dayMaster={dayMasterDisplay}
-        mbti={user?.mbti}
+        mbti={character.mbti}
       />
 
       <PixelDivider label="능력치" className="my-6" />

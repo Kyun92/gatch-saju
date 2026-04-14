@@ -47,21 +47,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user }) {
       if (user) {
         // Initial sign-in: look up or create user in Supabase
         const supabase = createServerSupabaseClient();
 
         const { data: existingUser } = await supabase
           .from("users")
-          .select("id, profile_complete, mbti")
+          .select("id")
           .eq("email", user.email!)
           .single();
 
         if (existingUser) {
           token.userId = existingUser.id;
-          token.profileComplete = existingUser.profile_complete;
-          token.mbti = existingUser.mbti ?? null;
         } else {
           const { data: newUser } = await supabase
             .from("users")
@@ -69,29 +67,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               name: user.name ?? null,
               email: user.email,
               image: user.image ?? null,
-              profile_complete: false,
             })
             .select("id")
             .single();
 
           token.userId = newUser?.id ?? "";
-          token.profileComplete = false;
-          token.mbti = null;
-        }
-      }
-
-      // Refresh profile status on session update
-      if (trigger === "update") {
-        const supabase = createServerSupabaseClient();
-        const { data: refreshed } = await supabase
-          .from("users")
-          .select("profile_complete, mbti")
-          .eq("id", token.userId)
-          .single();
-
-        if (refreshed) {
-          token.profileComplete = refreshed.profile_complete;
-          token.mbti = refreshed.mbti ?? null;
         }
       }
 
@@ -99,8 +79,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     async session({ session, token }) {
       session.user.userId = token.userId ?? "";
-      session.user.profileComplete = token.profileComplete ?? false;
-      session.user.mbti = token.mbti ?? null;
       return session;
     },
   },

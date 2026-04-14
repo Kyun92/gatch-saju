@@ -3,31 +3,41 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import PixelFrame from "@/components/ui/PixelFrame";
 import DailyFortuneClient from "./DailyFortuneClient";
+import UpsellBanner from "@/components/daily/UpsellBanner";
 
-export default async function DailyPage() {
+interface DailyPageProps {
+  searchParams: Promise<{ characterId?: string }>;
+}
+
+export default async function DailyPage({ searchParams }: DailyPageProps) {
   const session = await auth();
   if (!session?.user?.userId) redirect("/login");
+
+  const { characterId } = await searchParams;
+  if (!characterId) redirect("/");
 
   const supabase = createServerSupabaseClient();
   const today = new Date().toISOString().split("T")[0];
 
-  // Check for today's reading
+  // Fetch character and verify ownership
+  const { data: character } = await supabase
+    .from("characters")
+    .select("id, name, mbti, user_id")
+    .eq("id", characterId)
+    .single();
+
+  if (!character || character.user_id !== session.user.userId) redirect("/");
+
+  // Check for today's reading by character_id
   const { data: todayReading } = await supabase
     .from("readings")
     .select("*")
-    .eq("user_id", session.user.userId)
+    .eq("character_id", characterId)
     .eq("type", "daily")
     .gte("created_at", `${today}T00:00:00`)
     .lte("created_at", `${today}T23:59:59`)
     .order("created_at", { ascending: false })
     .limit(1)
-    .single();
-
-  // Get user info for greeting
-  const { data: userProfile } = await supabase
-    .from("users")
-    .select("name, mbti")
-    .eq("id", session.user.userId)
     .single();
 
   return (
@@ -44,8 +54,8 @@ export default async function DailyPage() {
           📜 오늘의 퀘스트
         </h1>
         <p className="text-sm" style={{ color: "#8a8070" }}>
-          {userProfile?.name ?? "모험가"}님의 일일 운세
-          {userProfile?.mbti ? ` | ${userProfile.mbti}` : ""}
+          {character.name}님의 일일 운세
+          {character.mbti ? ` | ${character.mbti}` : ""}
         </p>
       </div>
 
@@ -109,8 +119,11 @@ export default async function DailyPage() {
           )}
         </PixelFrame>
       ) : (
-        <DailyFortuneClient />
+        <DailyFortuneClient characterId={characterId} />
       )}
+
+      {/* Upsell banner */}
+      <UpsellBanner />
     </div>
   );
 }

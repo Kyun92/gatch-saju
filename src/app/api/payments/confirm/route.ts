@@ -11,13 +11,14 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { paymentKey, orderId, amount } = body as {
+    const { paymentKey, orderId, amount, characterId } = body as {
       paymentKey: string;
       orderId: string;
       amount: number;
+      characterId: string;
     };
 
-    if (!paymentKey || !orderId || !amount) {
+    if (!paymentKey || !orderId || !amount || !characterId) {
       return NextResponse.json({ error: "결제 정보가 누락되었습니다" }, { status: 400 });
     }
 
@@ -29,6 +30,7 @@ export async function POST(request: NextRequest) {
     // Log payment
     await supabase.from("payment_log").insert({
       user_id: session.user.userId,
+      character_id: characterId,
       payment_key: payment.paymentKey,
       order_id: payment.orderId,
       order_name: payment.orderName,
@@ -44,8 +46,10 @@ export async function POST(request: NextRequest) {
       {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           cookie: request.headers.get("cookie") ?? "",
         },
+        body: JSON.stringify({ characterId }),
       },
     );
 

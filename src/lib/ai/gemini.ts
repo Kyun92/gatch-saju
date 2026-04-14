@@ -75,7 +75,7 @@ ${mbti ? `\n[MBTI] ${mbti}` : ""}
   const result = await model.generateContent({
     contents: [{ role: "user", parts: [{ text: userMessage }] }],
     systemInstruction: DAILY_SYSTEM,
-    generationConfig: { maxOutputTokens: 1024, temperature: 0.8 },
+    generationConfig: { maxOutputTokens: 4096, temperature: 0.8 },
   });
 
   const text = result.response.text();

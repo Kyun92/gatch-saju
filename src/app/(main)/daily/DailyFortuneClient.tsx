@@ -4,16 +4,28 @@ import { useState } from "react";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
 
-export default function DailyFortuneClient() {
+interface DailyFortuneClientProps {
+  characterId: string;
+}
+
+export default function DailyFortuneClient({ characterId }: DailyFortuneClientProps) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleGetFortune() {
     setLoading(true);
-    // TODO: Call API to generate daily fortune
-    // For now, just reload after a delay
-    setTimeout(() => {
+    setError(null);
+    try {
+      const res = await fetch(`/api/daily?characterId=${encodeURIComponent(characterId)}`);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error((data as { error?: string }).error ?? "운세 생성에 실패했습니다");
+      }
       window.location.reload();
-    }, 1000);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "오류가 발생했습니다");
+      setLoading(false);
+    }
   }
 
   return (
@@ -31,6 +43,14 @@ export default function DailyFortuneClient() {
       >
         오늘의 운세가 아직 열리지 않았습니다
       </p>
+      {error && (
+        <p
+          className="text-sm mb-4"
+          style={{ fontFamily: "var(--font-pixel)", color: "#d04040" }}
+        >
+          {error}
+        </p>
+      )}
       <PixelButton
         onClick={handleGetFortune}
         disabled={loading}

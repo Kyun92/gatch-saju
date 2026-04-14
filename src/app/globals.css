@@ -656,6 +656,48 @@ body {
 }
 
 /* ============================================================
+   ELEMENT BACKGROUND COLORS (PET App style)
+   ============================================================ */
+
+.element-bg-wood  { background-color: #e8f5e9; border-color: #2e8b4e; }
+.element-bg-fire  { background-color: #fce4e4; border-color: #d04040; }
+.element-bg-earth { background-color: #f5edd8; border-color: #a87838; }
+.element-bg-metal { background-color: #e8edf5; border-color: #6878a0; }
+.element-bg-water { background-color: #e0ecf8; border-color: #3070c0; }
+
+/* ============================================================
+   CHARACTER SLOT (Hub page — RPG character select)
+   ============================================================ */
+
+.character-slot {
+  border-radius: 0;
+  position: relative;
+}
+
+.stat-mini {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.new-character-slot:hover {
+  border-color: #9a7040 !important;
+  background-color: #f5f0e8 !important;
+}
+
+/* Service card color bar */
+.service-card-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+.service-card-bar-daily   { background-color: #2e8b4e; }
+.service-card-bar-reading { background-color: #9a7040; }
+.service-card-bar-compat  { background-color: #d06890; }
+
+/* ============================================================
    PRINT STYLES
    ============================================================ */
 

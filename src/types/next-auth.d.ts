@@ -9,22 +9,16 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       userId: string;
-      profileComplete: boolean;
-      mbti: string | null;
     };
   }
 
   interface User {
     userId?: string;
-    profileComplete?: boolean;
-    mbti?: string | null;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
     userId?: string;
-    profileComplete?: boolean;
-    mbti?: string | null;
   }
 }
