@@ -1,0 +1,9 @@
+node_modules/
+dist/
+data/*.db
+.env
+.env.local
+.env*.local
+*.log
+.next/
+.omc/

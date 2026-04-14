@@ -1,0 +1,689 @@
+@import "tailwindcss";
+
+/* ============================================================
+   PIXEL RPG THEME — 천명 운명의 RPG 사주풀이
+   Celeste / Stardew Valley aesthetic — LIGHT MODE
+   ============================================================ */
+
+/* ---------- Pixel font ---------- */
+@font-face {
+  font-family: 'NeoDungGeunMo';
+  src: url('/fonts/NeoDungGeunMo.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Reading body font (serif) ---------- */
+@font-face {
+  font-family: 'RIDIBatang';
+  src: url('/fonts/RIDIBatang.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- CSS custom properties ---------- */
+:root {
+  --font-pixel: 'NeoDungGeunMo', 'Courier New', monospace;
+  --font-body: var(--font-noto-sans-kr, 'Noto Sans KR'), sans-serif;
+  --font-reading: 'RIDIBatang', 'Noto Serif KR', Georgia, serif;
+}
+
+/* ---------- Tailwind v4 theme ---------- */
+@theme inline {
+  /* Background layers — warm parchment / cream tones */
+  --color-bg-deep:    #f5f0e8;
+  --color-bg-card:    #ffffff;
+  --color-bg-surface: #faf7f2;
+  --color-bg-hover:   #f0ebe0;
+
+  /* Gold accent — slightly deeper for light bg contrast */
+  --color-gold:       #9a7040;
+  --color-gold-light: #b8883c;
+  --color-gold-dim:   #7a5830;
+
+  /* Five-element colours — same hues, slightly deeper for readability */
+  --color-element-wood:  #2e8b4e;
+  --color-element-fire:  #d04040;
+  --color-element-earth: #a87838;
+  --color-element-metal: #6878a0;
+  --color-element-water: #3070c0;
+
+  /* Pixel stat colours */
+  --color-pixel-hp:     #d04040;
+  --color-pixel-mp:     #3070c0;
+  --color-pixel-love:   #d06890;
+  --color-pixel-career: #6858b8;
+  --color-pixel-health: #2e8b4e;
+  --color-pixel-luck:   #c8a020;
+
+  /* Text */
+  --color-text-main:  #2c2418;
+  --color-text-muted: #8a8070;
+
+  /* Border */
+  --color-border-pixel: #b8944c;
+  --color-border-inner: #d4b070;
+
+  /* Font families */
+  --font-pixel: var(--font-pixel);
+  --font-body:  var(--font-body);
+}
+
+/* ---------- Light colour scheme ---------- */
+:root {
+  color-scheme: light;
+}
+
+/* ---------- Base reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: #f5f0e8;
+  color: #2c2418;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: #f5f0e8;
+  color: #2c2418;
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+/* ============================================================
+   PIXEL BORDER UTILITIES
+   ============================================================ */
+
+/* Default pixel frame */
+.pixel-frame {
+  border: 2px solid #b8944c;
+  border-radius: 0;
+  box-shadow:
+    inset 0 0 0 1px #d4b070,
+    3px 3px 0px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Accent pixel frame */
+.pixel-frame-accent {
+  border: 2px solid #9a7040;
+  border-radius: 0;
+  box-shadow:
+    inset 0 0 0 1px #b8883c,
+    inset 0 0 8px rgba(154, 112, 64, 0.08),
+    3px 3px 0px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Simple pixel frame */
+.pixel-frame-simple {
+  border: 1px solid #d4c4a0;
+  border-radius: 0;
+  background-color: #faf7f2;
+}
+
+/* ============================================================
+   PIXEL BUTTON BASE
+   ============================================================ */
+
+.pixel-btn {
+  font-family: var(--font-pixel);
+  border-radius: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  transition: transform 80ms ease, box-shadow 80ms ease;
+  user-select: none;
+  letter-spacing: 0.03em;
+}
+
+.pixel-btn:active:not(:disabled) {
+  transform: translateY(2px);
+}
+
+.pixel-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Primary — warm gold gradient */
+.pixel-btn-primary {
+  background: linear-gradient(180deg, #d4b070 0%, #b8883c 50%, #9a7040 100%);
+  color: #ffffff;
+  border: 2px solid #9a7040;
+  border-bottom-width: 4px;
+  box-shadow: 0 2px 0 #6b4e28;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+.pixel-btn-primary:active:not(:disabled) {
+  border-bottom-width: 2px;
+  box-shadow: none;
+}
+
+/* Secondary */
+.pixel-btn-secondary {
+  background-color: #ffffff;
+  color: #9a7040;
+  border: 2px solid #b8944c;
+  border-bottom-width: 4px;
+  box-shadow: 0 2px 0 #d4c4a0;
+}
+
+.pixel-btn-secondary:active:not(:disabled) {
+  border-bottom-width: 2px;
+  box-shadow: none;
+}
+
+/* Danger */
+.pixel-btn-danger {
+  background-color: #fff0f0;
+  color: #d04040;
+  border: 2px solid #d04040;
+  border-bottom-width: 4px;
+  box-shadow: 0 2px 0 #a03030;
+}
+
+.pixel-btn-danger:active:not(:disabled) {
+  border-bottom-width: 2px;
+  box-shadow: none;
+}
+
+/* ============================================================
+   STAT BAR
+   ============================================================ */
+
+.stat-bar-track {
+  width: 100%;
+  height: 12px;
+  background-color: #ece5d8;
+  border: 1px solid #b8944c;
+  border-radius: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 0;
+  transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 6px,
+    rgba(255, 255, 255, 0.35) 6px,
+    rgba(255, 255, 255, 0.35) 8px
+  );
+  background-size: 8px 100%;
+}
+
+/* ============================================================
+   READING BODY FONT — RIDIBatang for fortune content
+   ============================================================ */
+
+.reading-content,
+.daily-fortune-content {
+  font-family: var(--font-reading);
+  font-size: 1rem;
+  line-height: 1.85;
+  word-break: keep-all;
+}
+
+.reading-content h1,
+.reading-content h2,
+.reading-content h3,
+.reading-content h4,
+.daily-fortune-content h1,
+.daily-fortune-content h2,
+.daily-fortune-content h3,
+.daily-fortune-content h4 {
+  font-family: var(--font-pixel);
+}
+
+/* ============================================================
+   FORTUNE READING COMPONENTS
+   ============================================================ */
+
+.fortune-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+}
+
+.fortune-table th,
+.fortune-table td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d4c4a0;
+  color: #2c2418;
+  vertical-align: top;
+}
+
+.fortune-table th {
+  background-color: #f5f0e8;
+  color: #9a7040;
+  font-weight: 600;
+  text-align: left;
+}
+
+.fortune-table tr:nth-child(even) td {
+  background-color: #faf7f2;
+}
+
+.fortune-table tr:nth-child(odd) td {
+  background-color: #ffffff;
+}
+
+/* Frank commentary box */
+.frank-box {
+  background-color: #fff5f5;
+  border: 2px solid #d04040;
+  border-radius: 0;
+  padding: 1rem 1.25rem;
+  color: #2c2418;
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.08);
+}
+
+.frank-box::before {
+  content: '⚠ 솔직 분석';
+  display: block;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  color: #d04040;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+/* Warm/positive box */
+.warmth-box {
+  background-color: #f0f8f0;
+  border: 2px solid #2e8b4e;
+  border-radius: 0;
+  padding: 1rem 1.25rem;
+  color: #2c2418;
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.08);
+}
+
+.warmth-box::before {
+  content: '✦ 긍정 에너지';
+  display: block;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  color: #2e8b4e;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+/* Highlight / info box */
+.highlight-box {
+  background-color: #faf5eb;
+  border: 2px solid #b8883c;
+  border-radius: 0;
+  padding: 1rem 1.25rem;
+  color: #2c2418;
+  box-shadow: inset 0 0 0 1px rgba(184, 136, 60, 0.15), 3px 3px 0px rgba(0, 0, 0, 0.08);
+}
+
+/* Wisdom quote */
+.wisdom-quote {
+  border-left: 3px solid #b8883c;
+  padding-left: 1rem;
+  margin: 1.25rem 0;
+  color: #5a4e3c;
+  font-style: italic;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.wisdom-quote cite {
+  display: block;
+  margin-top: 0.5rem;
+  font-style: normal;
+  font-size: 0.8125rem;
+  color: #8a8070;
+  font-family: var(--font-pixel);
+}
+
+/* Advice card */
+.advice-card {
+  background: linear-gradient(135deg, #faf7f2 0%, #f5f0e8 100%);
+  border: 2px solid #b8944c;
+  border-radius: 0;
+  padding: 1.25rem;
+  box-shadow:
+    inset 0 0 0 1px rgba(184, 148, 76, 0.2),
+    3px 3px 0px rgba(0, 0, 0, 0.08);
+}
+
+.advice-card .advice-title {
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  color: #9a7040;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+/* ============================================================
+   ELEMENT TAGS
+   ============================================================ */
+
+.tag-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  border: 1px solid currentColor;
+  border-radius: 0;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.tag-wood  { color: #2e8b4e; background-color: rgba(46, 139, 78, 0.10); }
+.tag-fire  { color: #d04040; background-color: rgba(208, 64, 64, 0.10); }
+.tag-earth { color: #a87838; background-color: rgba(168, 120, 56, 0.10); }
+.tag-metal { color: #6878a0; background-color: rgba(104, 120, 160, 0.10); }
+.tag-water { color: #3070c0; background-color: rgba(48, 112, 192, 0.10); }
+
+/* ============================================================
+   HERO CHARACTER FRAME
+   ============================================================ */
+
+.hero-frame {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+  border: 3px solid #9a7040;
+  box-shadow:
+    inset 0 0 0 2px #b8883c,
+    0 0 20px rgba(154, 112, 64, 0.2),
+    4px 4px 0px rgba(0, 0, 0, 0.1);
+}
+
+.hero-frame::before,
+.hero-frame::after {
+  content: '✦';
+  position: absolute;
+  font-size: 0.75rem;
+  color: #b8944c;
+  animation: twinkle 3s ease-in-out infinite;
+}
+.hero-frame::before { top: -12px; left: -12px; }
+.hero-frame::after { bottom: -12px; right: -12px; animation-delay: 1.5s; }
+
+/* ============================================================
+   STAT MINI CARD
+   ============================================================ */
+
+.stat-mini-card {
+  border: 1px solid #d4c4a0;
+  background-color: #faf7f2;
+  padding: 0.75rem;
+  text-align: center;
+  transition: box-shadow 200ms ease;
+}
+.stat-mini-card:hover {
+  box-shadow: 0 0 8px rgba(154, 112, 64, 0.15);
+}
+.stat-mini-card-glow {
+  border-color: #b8883c;
+  box-shadow: 0 0 12px rgba(154, 112, 64, 0.2);
+}
+
+/* ============================================================
+   ACCORDION
+   ============================================================ */
+
+.accordion-item {
+  border: 2px solid #d4c4a0;
+  background-color: #ffffff;
+  overflow: hidden;
+  transition: border-color 200ms ease;
+}
+.accordion-item:hover {
+  border-color: #b8944c;
+}
+.accordion-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  color: #2c2418;
+  background-color: #ffffff;
+  transition: background-color 150ms ease;
+}
+.accordion-header:hover {
+  background-color: #faf7f2;
+}
+.accordion-header[data-open="true"] {
+  background-color: #faf7f2;
+  border-bottom: 1px solid #d4c4a0;
+}
+.accordion-indicator {
+  margin-left: auto;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  color: #b8944c;
+  transition: transform 200ms ease;
+}
+.accordion-indicator[data-open="true"] {
+  transform: rotate(90deg);
+}
+.accordion-content-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms ease;
+}
+.accordion-content-wrapper[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.accordion-content {
+  overflow: hidden;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50%       { opacity: 1;   transform: scale(1.15); }
+}
+
+@keyframes pixel-glow {
+  0%, 100% { box-shadow: 0 0 4px rgba(154, 112, 64, 0.3); }
+  50%       { box-shadow: 0 0 12px rgba(154, 112, 64, 0.6); }
+}
+
+.animate-blink    { animation: blink    1s step-end infinite; }
+.animate-twinkle  { animation: twinkle  2s ease-in-out infinite; }
+.animate-px-glow  { animation: pixel-glow 2s ease-in-out infinite; }
+
+.pixel-cursor::after {
+  content: '█';
+  font-family: var(--font-pixel);
+  color: #9a7040;
+  animation: blink 1s step-end infinite;
+}
+
+/* ============================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .pixel-frame,
+  .pixel-frame-accent {
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.08);
+  }
+
+  .frank-box,
+  .warmth-box,
+  .highlight-box,
+  .advice-card {
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.08);
+    padding: 0.875rem 1rem;
+  }
+
+  .fortune-table th,
+  .fortune-table td {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* ============================================================
+   HUB COMPONENTS
+   ============================================================ */
+
+/* 3체계 심볼 */
+.tri-system-container { position: relative; margin: 0 auto; }
+.tri-system-circle {
+  border-radius: 50% !important;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  border-width: 2px;
+  border-style: solid;
+}
+.tri-system-center {
+  border-radius: 50% !important;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  animation: pixel-glow 2s ease-in-out infinite;
+}
+
+/* Hub page — parchment texture background */
+.hub-bg {
+  background-color: #f5f0e8;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 31px,
+      rgba(184,148,76,0.06) 31px,
+      rgba(184,148,76,0.06) 32px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 31px,
+      rgba(184,148,76,0.06) 31px,
+      rgba(184,148,76,0.06) 32px
+    );
+}
+
+/* RPG pixel divider */
+.pixel-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #b8944c;
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  user-select: none;
+}
+.pixel-divider::before,
+.pixel-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #b8944c 40%, #b8944c 60%, transparent);
+  opacity: 0.5;
+}
+
+/* Quest board title */
+.quest-board-title {
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  color: #9a7040;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.quest-board-title::before,
+.quest-board-title::after {
+  content: '═══';
+  color: #b8944c;
+  opacity: 0.6;
+  font-size: 0.625rem;
+}
+
+/* 서비스 카드 인기 뱃지 */
+.service-card-popular-badge {
+  position: absolute;
+  top: -8px;
+  right: 8px;
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  color: #2c2418;
+  background: #c8a020;
+  padding: 2px 8px;
+  border: 1px solid #9a7040;
+  z-index: 1;
+}
+
+/* 블러 프리뷰 */
+.blur-preview {
+  filter: blur(4px);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+
+@media print {
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .pixel-frame,
+  .pixel-frame-accent,
+  .pixel-frame-simple {
+    border: 1px solid #999 !important;
+    box-shadow: none !important;
+  }
+
+  .frank-box,
+  .warmth-box,
+  .highlight-box,
+  .advice-card {
+    border: 1px solid #999 !important;
+    background: #f9f9f9 !important;
+    box-shadow: none !important;
+    color: #111 !important;
+  }
+
+  .wisdom-quote {
+    border-left-color: #999 !important;
+    color: #333 !important;
+  }
+}

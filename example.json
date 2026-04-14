@@ -1,0 +1,361 @@
+[자미두수 차트(JSON)]
+
+{"type":"solo","label":"사용자","chart":{"meta":{"gender":"男","solarDate":"1992-9-23","timeIndex":0,"fiveElementsClass":"土五局","bodyPalaceBranch":"酉","soulPalaceBranch":"酉"},"core":{"soulRuler":"文曲","bodyRuler":"天梁"},"palaces":[{"earthlyBranch":"寅","heavenlyStem":"壬","series12":{"boshi":"小耗","changsheng":"病","jiangqian":"岁驿","suiqian":"大耗"},"isBodyPalace":false,"stars":{"major":[{"scope":"origin","brightness":"平","mutagen":"","name":"贪狼","type":"major"}],"minor":[{"scope":"origin","brightness":"","mutagen":null,"name":"天马","type":"tianma"},{"scope":"origin","brightness":"庙","mutagen":null,"name":"火星","type":"tough"}],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"解神","type":"helper"},{"scope":"origin","brightness":null,"mutagen":null,"name":"凤阁","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"封诰","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"截路","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天虚","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天伤","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"年解","type":"helper"}]},"name":"仆役","index":0},{"earthlyBranch":"卯","heavenlyStem":"癸","series12":{"boshi":"将军","changsheng":"死","jiangqian":"息神","suiqian":"龙德"},"isBodyPalace":false,"stars":{"major":[{"scope":"origin","brightness":"旺","mutagen":"","name":"天机","type":"major"},{"scope":"origin","brightness":"庙","mutagen":"","name":"巨门","type":"major"}],"minor":[{"scope":"origin","brightness":"","mutagen":"","name":"右弼","type":"soft"},{"scope":"origin","brightness":"","mutagen":null,"name":"天魁","type":"soft"}],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"空亡","type":"adjective"}]},"name":"迁移","index":1},{"earthlyBranch":"辰","heavenlyStem":"甲","series12":{"boshi":"奏书","changsheng":"墓","jiangqian":"华盖","suiqian":"白虎"},"isBodyPalace":false,"stars":{"major":[{"scope":"origin","brightness":"得","mutagen":"权","name":"紫微","type":"major"},{"scope":"origin","brightness":"得","mutagen":"","name":"天相","type":"major"}],"minor":[{"scope":"origin","brightness":"得","mutagen":"","name":"文曲","type":"soft"}],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"华盖","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"蜚廉","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天刑","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天使","type":"adjective"}]},"name":"疾厄","index":2},{"earthlyBranch":"巳","heavenlyStem":"乙","series12":{"boshi":"飞廉","changsheng":"绝","jiangqian":"劫煞","suiqian":"天德"},"isBodyPalace":false,"stars":{"major":[{"scope":"origin","brightness":"陷","mutagen":"禄","name":"天梁","type":"major"}],"minor":[{"scope":"origin","brightness":"","mutagen":null,"name":"天钺","type":"soft"}],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"天贵","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天才","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天寿","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天德","type":"adjective"}]},"name":"财帛","index":3},{"earthlyBranch":"午","heavenlyStem":"丙","series12":{"boshi":"喜神","changsheng":"胎","jiangqian":"灾煞","suiqian":"吊客"},"isBodyPalace":false,"stars":{"major":[{"scope":"origin","brightness":"旺","mutagen":"","name":"七杀","type":"major"}],"minor":[],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"台辅","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天福","type":"adjective"}]},"name":"子女","index":4},{"earthlyBranch":"未","heavenlyStem":"丁","series12":{"boshi":"病符","changsheng":"养","jiangqian":"天煞","suiqian":"病符"},"isBodyPalace":false,"stars":{"major":[],"minor":[],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"红鸾","type":"flower"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天月","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"寡宿","type":"adjective"}]},"name":"夫妻","index":5},{"earthlyBranch":"申","heavenlyStem":"戊","series12":{"boshi":"大耗","changsheng":"长生","jiangqian":"指背","suiqian":"岁建"},"isBodyPalace":false,"stars":{"major":[{"scope":"origin","brightness":"庙","mutagen":"","name":"廉贞","type":"major"}],"minor":[],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"天姚","type":"flower"}]},"name":"兄弟","index":6},{"earthlyBranch":"酉","heavenlyStem":"己","series12":{"boshi":"伏兵","changsheng":"沐浴","jiangqian":"咸池","suiqian":"晦气"},"isBodyPalace":true,"stars":{"major":[],"minor":[],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"咸池","type":"flower"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天厨","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天空","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"破碎","type":"adjective"}]},"name":"命宫","index":7},{"earthlyBranch":"戌","heavenlyStem":"庚","series12":{"boshi":"官府","changsheng":"冠带","jiangqian":"月煞","suiqian":"丧门"},"isBodyPalace":false,"stars":{"major":[{"scope":"origin","brightness":"旺","mutagen":"","name":"破军","type":"major"}],"minor":[{"scope":"origin","brightness":"陷","mutagen":"","name":"文昌","type":"soft"},{"scope":"origin","brightness":"庙","mutagen":null,"name":"铃星","type":"tough"},{"scope":"origin","brightness":"庙","mutagen":null,"name":"陀罗","type":"tough"}],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"天官","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"旬空","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天哭","type":"adjective"}]},"name":"父母","index":8},{"earthlyBranch":"亥","heavenlyStem":"辛","series12":{"boshi":"博士","changsheng":"临官","jiangqian":"亡神","suiqian":"贯索"},"isBodyPalace":false,"stars":{"major":[{"scope":"origin","brightness":"庙","mutagen":"","name":"天同","type":"major"}],"minor":[{"scope":"origin","brightness":"","mutagen":"科","name":"左辅","type":"soft"},{"scope":"origin","brightness":"","mutagen":null,"name":"禄存","type":"lucun"},{"scope":"origin","brightness":"","mutagen":null,"name":"地空","type":"tough"},{"scope":"origin","brightness":"","mutagen":null,"name":"地劫","type":"tough"}],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"恩光","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"天巫","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"孤辰","type":"adjective"}]},"name":"福德","index":9},{"earthlyBranch":"子","heavenlyStem":"壬","series12":{"boshi":"力士","changsheng":"帝旺","jiangqian":"将星","suiqian":"官符"},"isBodyPalace":false,"stars":{"major":[{"scope":"origin","brightness":"旺","mutagen":"忌","name":"武曲","type":"major"},{"scope":"origin","brightness":"庙","mutagen":"","name":"天府","type":"major"}],"minor":[{"scope":"origin","brightness":"陷","mutagen":null,"name":"擎羊","type":"tough"}],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"龙池","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"阴煞","type":"adjective"}]},"name":"田宅","index":10},{"earthlyBranch":"丑","heavenlyStem":"癸","series12":{"boshi":"青龙","changsheng":"衰","jiangqian":"攀鞍","suiqian":"小耗"},"isBodyPalace":false,"stars":{"major":[{"scope":"origin","brightness":"不","mutagen":"","name":"太阳","type":"major"},{"scope":"origin","brightness":"庙","mutagen":"","name":"太阴","type":"major"}],"minor":[],"adjective":[{"scope":"origin","brightness":null,"mutagen":null,"name":"天喜","type":"flower"},{"scope":"origin","brightness":null,"mutagen":null,"name":"三台","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"八座","type":"adjective"},{"scope":"origin","brightness":null,"mutagen":null,"name":"月德","type":"adjective"}]},"name":"官禄","index":11}]}}
+
+[서양 점성술 차트]
+
+{
+"formatVersion": 1,
+"type": "solo",
+"chart": {
+"birth": {
+"utc_time": "1992-09-22T16:23:00+00:00",
+"local_time": "1992-09-23T01:23:00+09:00"
+},
+"location": {
+"latitude": 37.5665,
+"longitude": 126.978
+},
+"angles": {
+"ascendant": {
+"longitude_degree": 118.96,
+"sign": "Cancer",
+"degree_in_sign": 28.96
+},
+"midheaven": {
+"longitude_degree": 15.75,
+"sign": "Aries",
+"degree_in_sign": 15.75
+}
+},
+"meta": {
+"house_system": "Placidus (strict semiarc)",
+"aspect_orbs": {
+"conjunction": 8,
+"opposition": 8,
+"square": 6,
+"trine": 6,
+"sextile": 4,
+"semisextile": 2,
+"quincunx": 2
+},
+"ephemeris": "de421",
+"near_cusp_tol_deg": 0.2
+},
+"houses": {
+"1": 118.96,
+"2": 139.94,
+"3": 164.85,
+"4": 195.75,
+"5": 231.82,
+"6": 267.69,
+"7": 298.96,
+"8": 319.94,
+"9": 344.85,
+"10": 15.75,
+"11": 51.82,
+"12": 87.69
+},
+"planets": {
+"Sun": {
+"sign": "Virgo",
+"degree": 29.9,
+"house": 3,
+"longitude": 179.9,
+"ecliptic_latitude": 0.0,
+"retrograde": false,
+"near_cusp": false,
+"dist_to_cusp_deg": 15.055
+},
+"Moon": {
+"sign": "Leo",
+"degree": 7.3,
+"house": 1,
+"longitude": 127.3,
+"ecliptic_latitude": -3.33,
+"retrograde": false,
+"near_cusp": false,
+"dist_to_cusp_deg": 8.341
+},
+"Mercury": {
+"sign": "Libra",
+"degree": 6.08,
+"house": 3,
+"longitude": 186.08,
+"ecliptic_latitude": 0.96,
+"retrograde": false,
+"near_cusp": false,
+"dist_to_cusp_deg": 9.675
+},
+"Venus": {
+"sign": "Libra",
+"degree": 26.98,
+"house": 4,
+"longitude": 206.98,
+"ecliptic_latitude": 0.31,
+"retrograde": false,
+"near_cusp": false,
+"dist_to_cusp_deg": 11.235
+},
+"Mars": {
+"sign": "Cancer",
+"degree": 5.77,
+"house": 12,
+"longitude": 95.77,
+"ecliptic_latitude": 0.15,
+"retrograde": false,
+"near_cusp": false,
+"dist_to_cusp_deg": 8.083
+},
+"Jupiter": {
+"sign": "Virgo",
+"degree": 26.17,
+"house": 3,
+"longitude": 176.17,
+"ecliptic_latitude": 1.06,
+"retrograde": false,
+"near_cusp": false,
+"dist_to_cusp_deg": 11.317
+},
+"Saturn": {
+"sign": "Aquarius",
+"degree": 12.27,
+"house": 7,
+"longitude": 312.27,
+"ecliptic_latitude": -1.05,
+"retrograde": true,
+"near_cusp": false,
+"dist_to_cusp_deg": 7.669
+},
+"Uranus": {
+"sign": "Capricorn",
+"degree": 14.04,
+"house": 6,
+"longitude": 284.04,
+"ecliptic_latitude": -0.43,
+"retrograde": true,
+"near_cusp": false,
+"dist_to_cusp_deg": 14.916
+},
+"Neptune": {
+"sign": "Capricorn",
+"degree": 16.19,
+"house": 6,
+"longitude": 286.19,
+"ecliptic_latitude": 0.72,
+"retrograde": true,
+"near_cusp": false,
+"dist_to_cusp_deg": 12.772
+},
+"Pluto": {
+"sign": "Scorpio",
+"degree": 20.94,
+"house": 4,
+"longitude": 230.94,
+"ecliptic_latitude": 14.32,
+"retrograde": false,
+"near_cusp": false,
+"dist_to_cusp_deg": 0.878
+}
+},
+"aspects": [
+{
+"from": "Sun",
+"to": "Mercury",
+"type": "conjunction",
+"orb": 6.17,
+"from_sign": "Virgo",
+"from_degree_in_sign": 29.9,
+"from_house": 3,
+"to_sign": "Libra",
+"to_degree_in_sign": 6.08,
+"to_house": 3
+},
+{
+"from": "Sun",
+"to": "Mars",
+"type": "square",
+"orb": 5.87,
+"from_sign": "Virgo",
+"from_degree_in_sign": 29.9,
+"from_house": 3,
+"to_sign": "Cancer",
+"to_degree_in_sign": 5.77,
+"to_house": 12
+},
+{
+"from": "Sun",
+"to": "Jupiter",
+"type": "conjunction",
+"orb": 3.74,
+"from_sign": "Virgo",
+"from_degree_in_sign": 29.9,
+"from_house": 3,
+"to_sign": "Virgo",
+"to_degree_in_sign": 26.17,
+"to_house": 3
+},
+{
+"from": "Moon",
+"to": "Mercury",
+"type": "sextile",
+"orb": 1.23,
+"from_sign": "Leo",
+"from_degree_in_sign": 7.3,
+"from_house": 1,
+"to_sign": "Libra",
+"to_degree_in_sign": 6.08,
+"to_house": 3
+},
+{
+"from": "Moon",
+"to": "Mars",
+"type": "semisextile",
+"orb": 1.53,
+"from_sign": "Leo",
+"from_degree_in_sign": 7.3,
+"from_house": 1,
+"to_sign": "Cancer",
+"to_degree_in_sign": 5.77,
+"to_house": 12
+},
+{
+"from": "Moon",
+"to": "Saturn",
+"type": "opposition",
+"orb": 4.97,
+"from_sign": "Leo",
+"from_degree_in_sign": 7.3,
+"from_house": 1,
+"to_sign": "Aquarius",
+"to_degree_in_sign": 12.27,
+"to_house": 7
+},
+{
+"from": "Mercury",
+"to": "Mars",
+"type": "square",
+"orb": 0.3,
+"from_sign": "Libra",
+"from_degree_in_sign": 6.08,
+"from_house": 3,
+"to_sign": "Cancer",
+"to_degree_in_sign": 5.77,
+"to_house": 12
+},
+{
+"from": "Venus",
+"to": "Jupiter",
+"type": "semisextile",
+"orb": 0.82,
+"from_sign": "Libra",
+"from_degree_in_sign": 26.98,
+"from_house": 4,
+"to_sign": "Virgo",
+"to_degree_in_sign": 26.17,
+"to_house": 3
+},
+{
+"from": "Saturn",
+"to": "Uranus",
+"type": "semisextile",
+"orb": 1.77,
+"from_sign": "Aquarius",
+"from_degree_in_sign": 12.27,
+"from_house": 7,
+"to_sign": "Capricorn",
+"to_degree_in_sign": 14.04,
+"to_house": 6
+},
+{
+"from": "Uranus",
+"to": "Neptune",
+"type": "conjunction",
+"orb": 2.14,
+"from_sign": "Capricorn",
+"from_degree_in_sign": 14.04,
+"from_house": 6,
+"to_sign": "Capricorn",
+"to_degree_in_sign": 16.19,
+"to_house": 6
+}
+],
+"summary_hints": [
+"Sun in Virgo 29.9° (House 3)",
+"Moon in Leo 7.3° (House 1)",
+"Mercury in Libra 6.08° (House 3)",
+"Venus in Libra 26.98° (House 4)",
+"Mars in Cancer 5.77° (House 12)",
+"Jupiter in Virgo 26.17° (House 3)",
+"Saturn in Aquarius 12.27° (House 7)",
+"Uranus in Capricorn 14.04° (House 6)",
+"Neptune in Capricorn 16.19° (House 6)",
+"Pluto in Scorpio 20.94° (House 4)"
+]
+},
+"digest": {
+"label": "사용자",
+"asc": "Cancer",
+"mc": "Aries",
+"planetHints": [
+"Sun in Virgo 29.9° (House 3)",
+"Moon in Leo 7.3° (House 1)",
+"Mercury in Libra 6.08° (House 3)",
+"Venus in Libra 26.98° (House 4)",
+"Mars in Cancer 5.77° (House 12)",
+"Jupiter in Virgo 26.17° (House 3)"
+]
+}
+}
+
+[사주 차트]
+
+이름: 사용자
+성별: 남
+입력일시: 1992-09-23 01:23
+
+연간지(정월/입춘/정확): 壬申 / 壬申 / 壬申
+띠(정월/입춘/정확): 猴
+별자리: 天秤
+
+사주(팔자): 壬申 | 己酉 | 壬寅 | 庚子
+십신(천간): 比肩 | 正官 | 日主 | 偏印
+지장간: 庚,壬,戊 | 辛 | 甲,丙,戊 | 癸
+오행: 水金 | 土金 | 水木 | 金水
+오행 분포: 金3 木1 水3 火0 土1
+납음: 剑锋金 | 大驿土 | 金箔金 | 壁上土
+십이운성: 长生 | 沐浴 | 病 | 帝旺
+旬/공망: 甲子 戌亥 | 甲辰 寅卯 | 甲午 辰巳 | 甲午 辰巳
+성수(星宿): 参水猿 (吉)
+명궁/신궁: 丁未 / 辛亥
+명궁/신궁 납음: 天河水 / 钗钏金
+태원/태식: 庚子 / 丁亥
+태원/태식 납음: 壁上土 / 屋上土
+
+길신: 四相,解神,五合,青龙,鸣吠对
+흉살: 劫煞,小耗,归忌
+일진 宜/忌: 开光,解除,拆卸,修造,动土,竖柱,安门,牧养,安葬,修坟,破土,移柩 / 出火,入宅,移徙,祈福,祭祀,安床,开市,嫁娶,探病
+시간대 宜/忌: 祭祀,祈福,酬神,出行,求财,见贵,订婚,嫁娶,修造,安葬 / 无
+충/彭祖百忌: (丙申)猴 / 壬不泱水更难提防 寅不祭祀神鬼不尝
+일진 煞(방향): 北
+방위(희/양귀/음귀/복/재): 离(正南) 震(正东) 巽(东南) 巽(东南) 离(正南)
+시 방위(희/양귀/음귀/복/재): 坤(西南) 艮(东北) 离(正南) 乾(西北) 震(正东)
+태세 방위(일/월/년): 兑(正西) / 巽(东南) / 坤(西南)
+
+구성(9성):
+년: 八白土 艮(东北) 洞明 玄空[左辅 吉] 奇门[天任 小吉 生门 阳] 太乙[太阴 吉神]
+월: 四绿木 巽(东南) 天权 玄空[文曲 吉] 奇门[天辅 大吉 杜门 阳] 太乙[招摇 安神]
+일: 一白水 坎(正北) 天枢 玄空[贪狼 吉] 奇门[天蓬 大凶 休门 阳] 太乙[太乙 吉神]
+시: 二黑土 坤(西南) 天璇 玄空[巨门 凶] 奇门[天芮 大凶 死门 阴] 太乙[摄提 凶神]
+대운 시작: 1997
+출생~대운시작: 1992~1996 (1~5세)
+1대운 庚戌 1997~2006 (6~15세)
+2대운 辛亥 2007~2016 (16~25세)
+3대운 壬子 2017~2026 (26~35세)
+4대운 癸丑 2027~2036 (36~45세)
+5대운 甲寅 2037~2046 (46~55세)
+6대운 乙卯 2047~2056 (56~65세)
+7대운 丙辰 2057~2066 (66~75세)
+8대운 丁巳 2067~2076 (76~85세)
+9대운 戊午 2077~2086 (86~95세)
+10대운 己未 2087~2096 (96~105세)
