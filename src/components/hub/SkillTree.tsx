@@ -44,7 +44,7 @@ const SKILL_NODES: SkillNode[] = [
     icon: "💕",
     description: "이상형·연애패턴·결혼시기",
     prerequisite: "comprehensive",
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     type: "career",
@@ -52,7 +52,7 @@ const SKILL_NODES: SkillNode[] = [
     icon: "💼",
     description: "적성업종·이직시기",
     prerequisite: "comprehensive",
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     type: "wealth",
@@ -60,7 +60,7 @@ const SKILL_NODES: SkillNode[] = [
     icon: "💰",
     description: "재물운·투자성향",
     prerequisite: "comprehensive",
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     type: "health",
@@ -68,7 +68,7 @@ const SKILL_NODES: SkillNode[] = [
     icon: "🏥",
     description: "체질·건강관리",
     prerequisite: "comprehensive",
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     type: "study",
@@ -76,7 +76,7 @@ const SKILL_NODES: SkillNode[] = [
     icon: "📚",
     description: "적성분야·시험운",
     prerequisite: "comprehensive",
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     type: "compatibility",
@@ -84,7 +84,7 @@ const SKILL_NODES: SkillNode[] = [
     icon: "💑",
     description: "두 운명의 교차점",
     prerequisite: "comprehensive",
-    comingSoon: true,
+    comingSoon: false,
   },
 ];
 
@@ -226,7 +226,9 @@ function SkillNodeCard({
 
   // Determine link target
   let href: string | null = null;
-  if (isPurchased && node.type === "comprehensive") {
+  if (node.type === "compatibility" && isAvailable) {
+    href = `/compatibility`;
+  } else if (isPurchased && node.type === "comprehensive") {
     href = `/reading?characterId=${characterId}`;
   } else if (isPurchased) {
     href = `/reading/${node.type}?characterId=${characterId}`;

@@ -11,14 +11,13 @@ interface YearlyReadingViewProps {
 }
 
 const YEARLY_SECTIONS = [
-  { id: "big-picture", icon: "🌅", title: "올해의 큰 그림" },
-  { id: "decadal", icon: "🔮", title: "대운 흐름 분석" },
-  { id: "yearly-fortune", icon: "📅", title: "올해 세운 상세" },
-  { id: "career", icon: "💼", title: "직업/재물 운세" },
-  { id: "relationships", icon: "💕", title: "인간관계/연애 운세" },
-  { id: "health", icon: "🌿", title: "건강/생활 운세" },
-  { id: "monthly", icon: "📆", title: "12개월 월운 달력" },
-  { id: "fortune-tips", icon: "🍀", title: "올해의 개운법" },
+  { id: "yearly-summary", icon: "🌅", title: "올해의 운세 요약" },
+  { id: "yearly-career", icon: "💼", title: "직업/사업운" },
+  { id: "yearly-wealth", icon: "💰", title: "재물/금전운" },
+  { id: "yearly-love", icon: "💕", title: "연애/인간관계" },
+  { id: "yearly-health", icon: "🌿", title: "건강/컨디션" },
+  { id: "yearly-monthly", icon: "📆", title: "12개월 월별 운세" },
+  { id: "yearly-tips", icon: "🍀", title: "올해의 개운법" },
 ];
 
 function extractSection(htmlContent: string, sectionId: string): string {
@@ -48,14 +47,8 @@ export default function YearlyReadingView({
           return (
             <PixelFrame key={section.id} className="p-4">
               <div className="flex items-center gap-2 mb-3">
-                <span style={{ fontSize: "1.1rem" }}>{section.icon}</span>
-                <h3
-                  style={{
-                    fontFamily: "var(--font-pixel)",
-                    fontSize: "0.875rem",
-                    color: "#2c2418",
-                  }}
-                >
+                <span className="text-lg">{section.icon}</span>
+                <h3 className="font-[family-name:var(--font-pixel)] text-sm text-[#2c2418]">
                   {section.title}
                 </h3>
               </div>
@@ -70,14 +63,7 @@ export default function YearlyReadingView({
   // Fallback: plain text display with whitespace-pre-wrap
   return (
     <PixelFrame className="p-5">
-      <div
-        className="text-sm leading-relaxed"
-        style={{
-          color: "#2c2418",
-          whiteSpace: "pre-wrap",
-          wordBreak: "keep-all",
-        }}
-      >
+      <div className="text-sm leading-relaxed text-[#2c2418] whitespace-pre-wrap break-keep">
         {content}
       </div>
     </PixelFrame>

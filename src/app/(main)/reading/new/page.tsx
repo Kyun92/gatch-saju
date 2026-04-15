@@ -17,6 +17,7 @@ const READING_CONFIG = {
   comprehensive: {
     title: "운명의 서를 펼치다",
     subtitle: "종합 사주 감정",
+    icon: "⚔️",
     features: [
       "사주명리학 기반 상세 분석",
       "자미두수 궁위 해석",
@@ -29,6 +30,7 @@ const READING_CONFIG = {
   yearly: {
     title: "올해의 운명을 읽다",
     subtitle: "년운 분석",
+    icon: "📅",
     features: [
       "대운 + 세운 교차 분석",
       "12개월 월운 달력",
@@ -38,6 +40,71 @@ const READING_CONFIG = {
     buttonLabel: "년운 분석받기",
     loadingLabel: "년운 분석 시작 중...",
   },
+  love: {
+    title: "사랑의 별자리를 읽다",
+    subtitle: "연애운 특화 분석",
+    icon: "💕",
+    features: [
+      "타고난 연애 기질 + 이상형 분석",
+      "연애 패턴 + 갈등/이별 패턴",
+      "대운 기반 연애/결혼 최적 시기",
+      "3체계 교차 연애 조언",
+    ],
+    buttonLabel: "연애운 분석받기",
+    loadingLabel: "연애운 분석 시작 중...",
+  },
+  career: {
+    title: "천직을 찾아서",
+    subtitle: "직업운 특화 분석",
+    icon: "💼",
+    features: [
+      "타고난 적성 + 능력 분석",
+      "구체적 직종 5개 이상 추천",
+      "대운 기반 이직/전환 최적 시기",
+      "사업 적합성 + 커리어 전략",
+    ],
+    buttonLabel: "직업운 분석받기",
+    loadingLabel: "직업운 분석 시작 중...",
+  },
+  wealth: {
+    title: "재물의 흐름을 읽다",
+    subtitle: "금전운 특화 분석",
+    icon: "💰",
+    features: [
+      "재물 복 구조 + 돈과의 관계",
+      "수입원/지출 패턴 분석",
+      "대운 기반 재물 기회 시기",
+      "투자 성향 + 재테크 조언",
+    ],
+    buttonLabel: "금전운 분석받기",
+    loadingLabel: "금전운 분석 시작 중...",
+  },
+  health: {
+    title: "몸과 마음의 지도",
+    subtitle: "건강운 특화 분석",
+    icon: "🏥",
+    features: [
+      "타고난 체질 + 오행 균형 분석",
+      "취약 부위 + 장기 건강 예측",
+      "계절별/나이대별 예방법",
+      "일상 건강 관리 개운법",
+    ],
+    buttonLabel: "건강운 분석받기",
+    loadingLabel: "건강운 분석 시작 중...",
+  },
+  study: {
+    title: "배움의 길을 밝히다",
+    subtitle: "학업운 특화 분석",
+    icon: "📚",
+    features: [
+      "타고난 학습 스타일 분석",
+      "적성 전공/자격증 추천",
+      "대운 기반 시험운 시기",
+      "최적 공부법 + 집중 시간대",
+    ],
+    buttonLabel: "학업운 분석받기",
+    loadingLabel: "학업운 분석 시작 중...",
+  },
 } as const;
 
 function NewReadingContent() {
@@ -46,7 +113,12 @@ function NewReadingContent() {
   const characterId = searchParams.get("characterId");
   const type = (searchParams.get("type") ?? "comprehensive") as
     | "comprehensive"
-    | "yearly";
+    | "yearly"
+    | "love"
+    | "career"
+    | "wealth"
+    | "health"
+    | "study";
   const yearParam = searchParams.get("year");
   const targetYear = yearParam ? parseInt(yearParam, 10) : new Date().getFullYear();
   const [loading, setLoading] = useState(false);
@@ -90,7 +162,7 @@ function NewReadingContent() {
   return (
     <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
       <h1 className="text-xl mb-6 font-[family-name:var(--font-pixel)] text-[#b8883c]">
-        {type === "yearly" ? `📅 ${config.title}` : `⚔️ ${config.title}`}
+        {`${config.icon} ${config.title}`}
       </h1>
 
       <PixelFrame variant="accent" className="p-6">

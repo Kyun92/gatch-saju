@@ -1,127 +1,91 @@
-"use client";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import CompatibilitySelector from "./CompatibilitySelector";
+import type { ElementType } from "@/lib/character/get-preset";
 
-import { useState } from "react";
-import PixelFrame from "@/components/ui/PixelFrame";
-import PixelButton from "@/components/ui/PixelButton";
-import { getAllCities } from "@/lib/data/cities";
+const HEAVENLY_STEM_ELEMENT: Record<string, ElementType> = {
+  "\u7532": "wood", "\u4E59": "wood",
+  "\u4E19": "fire", "\u4E01": "fire",
+  "\u620A": "earth", "\u5DF1": "earth",
+  "\u5E9A": "metal", "\u8F9B": "metal",
+  "\u58EC": "water", "\u7678": "water",
+};
 
-const cities = getAllCities();
+export interface CharacterOption {
+  id: string;
+  name: string;
+  gender: "male" | "female";
+  element: ElementType;
+  level: number;
+  unlocked: boolean;
+}
 
-const BIRTH_HOURS = [
-  "모름",
-  "00:00","01:00","02:00","03:00","04:00","05:00",
-  "06:00","07:00","08:00","09:00","10:00","11:00",
-  "12:00","13:00","14:00","15:00","16:00","17:00",
-  "18:00","19:00","20:00","21:00","22:00","23:00",
-];
+export default async function CompatibilityPage() {
+  const session = await auth();
+  if (!session?.user?.userId) redirect("/login");
 
-export default function CompatibilityPage() {
-  const [partnerName, setPartnerName] = useState("");
-  const [partnerBirthDate, setPartnerBirthDate] = useState("");
-  const [partnerBirthTime, setPartnerBirthTime] = useState("모름");
-  const [partnerCity, setPartnerCity] = useState("서울");
-  const [partnerGender, setPartnerGender] = useState<"male" | "female">("female");
+  const supabase = createServerSupabaseClient();
+  const userId = session.user.userId;
+
+  // Fetch all characters
+  const { data: characters } = await supabase
+    .from("characters")
+    .select("id, name, unlocked, gender, birth_date")
+    .eq("user_id", userId)
+    .order("is_self", { ascending: false })
+    .order("created_at", { ascending: true });
+
+  if (!characters || characters.length === 0) redirect("/onboarding");
+
+  // Need at least 2 unlocked characters
+  const characterIds = characters.map((c) => c.id);
+
+  // Fetch saju charts for element
+  const { data: charts } = await supabase
+    .from("charts")
+    .select("character_id, data")
+    .in("character_id", characterIds)
+    .eq("type", "saju");
+
+  const chartMap = new Map<string, Record<string, unknown>>();
+  if (charts) {
+    for (const chart of charts) {
+      chartMap.set(chart.character_id, chart.data as Record<string, unknown>);
+    }
+  }
+
+  const characterOptions: CharacterOption[] = characters.map((char) => {
+    const sajuData = chartMap.get(char.id);
+    const dayMaster = (sajuData?.dayMaster as string) ?? "";
+    let element: ElementType = "water";
+    if (dayMaster) {
+      const stem = dayMaster.charAt(0);
+      element = HEAVENLY_STEM_ELEMENT[stem] ?? "water";
+    }
+
+    const birthYear = char.birth_date
+      ? new Date(char.birth_date).getFullYear()
+      : 2000;
+    const level = new Date().getFullYear() - birthYear;
+
+    return {
+      id: char.id,
+      name: char.name,
+      gender: char.gender as "male" | "female",
+      element,
+      level,
+      unlocked: char.unlocked,
+    };
+  });
 
   return (
     <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
       <h1 className="text-xl mb-6 font-[family-name:var(--font-pixel)] text-[#b8883c]">
-        💕 궁합 분석
+        {"💑 궁합 분석"}
       </h1>
 
-      {/* VS Layout */}
-      <PixelFrame variant="accent" className="p-5 mb-6 text-center">
-        <div className="flex items-center justify-center gap-4 mb-4">
-          <div className="pixel-frame-simple w-16 h-16 flex items-center justify-center bg-[#faf7f2] text-2xl">
-            ⚔️
-          </div>
-          <span className="text-2xl font-[family-name:var(--font-pixel)] text-[#d04040]">
-            VS
-          </span>
-          <div className="pixel-frame-simple w-16 h-16 flex items-center justify-center bg-[#faf7f2] text-2xl">
-            💕
-          </div>
-        </div>
-        <p className="text-sm font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
-          상대방의 정보를 입력하세요
-        </p>
-      </PixelFrame>
-
-      {/* Partner Info Form */}
-      <PixelFrame className="p-5">
-        <div className="flex flex-col gap-4">
-          <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
-            상대방 이름
-          </label>
-          <input
-            type="text"
-            value={partnerName}
-            onChange={(e) => setPartnerName(e.target.value)}
-            placeholder="이름"
-            className="w-full px-4 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#faf7f2] text-[#2c2418] border-2 border-[#b8944c] rounded-none outline-none"
-          />
-
-          <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
-            생년월일
-          </label>
-          <input
-            type="date"
-            value={partnerBirthDate}
-            onChange={(e) => setPartnerBirthDate(e.target.value)}
-            className="w-full px-4 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#faf7f2] text-[#2c2418] border-2 border-[#b8944c] rounded-none outline-none"
-          />
-
-          <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
-            태어난 시간
-          </label>
-          <select
-            value={partnerBirthTime}
-            onChange={(e) => setPartnerBirthTime(e.target.value)}
-            className="w-full px-4 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#faf7f2] text-[#2c2418] border-2 border-[#b8944c] rounded-none outline-none"
-          >
-            {BIRTH_HOURS.map((h) => (
-              <option key={h} value={h}>{h}</option>
-            ))}
-          </select>
-
-          <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
-            출생지
-          </label>
-          <select
-            value={partnerCity}
-            onChange={(e) => setPartnerCity(e.target.value)}
-            className="w-full px-4 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#faf7f2] text-[#2c2418] border-2 border-[#b8944c] rounded-none outline-none"
-          >
-            {cities.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-
-          <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
-            성별
-          </label>
-          <div className="flex gap-4">
-            {(["male", "female"] as const).map((g) => (
-              <label key={g} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="partnerGender"
-                  value={g}
-                  checked={partnerGender === g}
-                  onChange={() => setPartnerGender(g)}
-                  className="accent-[#9a7040]"
-                />
-                <span className="text-sm font-[family-name:var(--font-pixel)] text-[#2c2418]">
-                  {g === "male" ? "남성" : "여성"}
-                </span>
-              </label>
-            ))}
-          </div>
-
-          <PixelButton size="lg" className="w-full mt-2">
-            ⚔️ 궁합 분석하기 — 990원
-          </PixelButton>
-        </div>
-      </PixelFrame>
+      <CompatibilitySelector characters={characterOptions} />
     </div>
   );
 }

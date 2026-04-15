@@ -4,6 +4,11 @@ import {
   DAILY_SYSTEM,
   COMPATIBILITY_SYSTEM,
   YEARLY_SYSTEM,
+  LOVE_SYSTEM,
+  CAREER_SYSTEM,
+  WEALTH_SYSTEM,
+  HEALTH_SYSTEM,
+  STUDY_SYSTEM,
 } from "./prompts";
 import type { AllCharts } from "../charts/types";
 
@@ -161,4 +166,57 @@ ${mbti2 ? `MBTI: ${mbti2}` : ""}`;
     html: result.response.text(),
     tokensUsed: result.response.usageMetadata?.totalTokenCount ?? 0,
   };
+}
+
+/** Category reading prompts map */
+const CATEGORY_PROMPTS = {
+  love: LOVE_SYSTEM,
+  career: CAREER_SYSTEM,
+  wealth: WEALTH_SYSTEM,
+  health: HEALTH_SYSTEM,
+  study: STUDY_SYSTEM,
+} as const;
+
+export type CategoryType = keyof typeof CATEGORY_PROMPTS;
+
+const CATEGORY_LABELS: Record<CategoryType, string> = {
+  love: "연애운",
+  career: "직업운",
+  wealth: "금전운",
+  health: "건강운",
+  study: "학업운",
+};
+
+/** Category-specific reading -- Gemini 3.1 Pro */
+export async function generateCategoryReading(
+  category: CategoryType,
+  name: string,
+  charts: AllCharts,
+  mbti?: string | null,
+): Promise<{ html: string; tokensUsed: number }> {
+  const model = genAI.getGenerativeModel({ model: "gemini-3.1-pro-preview" });
+  const systemPrompt = CATEGORY_PROMPTS[category];
+  const label = CATEGORY_LABELS[category];
+
+  const userMessage = `다음은 ${name}님의 세 가지 명리/점성 차트 데이터입니다. ${label} 분석을 부탁합니다.
+
+[사주팔자]
+${JSON.stringify(charts.saju.raw, null, 2)}
+
+[자미두수]
+${JSON.stringify(charts.ziwei.raw, null, 2)}
+
+[서양점성술]
+${JSON.stringify(charts.western.raw, null, 2)}
+${mbti ? `\n[MBTI] ${name}님의 MBTI는 ${mbti}입니다. 각 섹션에서 자연스럽게 교차 해석해주세요.` : ""}`;
+
+  const result = await model.generateContent({
+    contents: [{ role: "user", parts: [{ text: userMessage }] }],
+    systemInstruction: systemPrompt,
+    generationConfig: { maxOutputTokens: 6144, temperature: 0.8 },
+  });
+
+  const text = result.response.text();
+  const tokensUsed = result.response.usageMetadata?.totalTokenCount ?? 0;
+  return { html: text, tokensUsed };
 }

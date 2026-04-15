@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS charts (
 CREATE TABLE IF NOT EXISTS readings (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   character_id    UUID NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
+  character_id_2  UUID REFERENCES characters(id) ON DELETE SET NULL,
   type            TEXT NOT NULL DEFAULT 'comprehensive',
   year            INTEGER,
   status          TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'generating', 'complete', 'error')),

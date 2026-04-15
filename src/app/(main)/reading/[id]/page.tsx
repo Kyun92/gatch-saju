@@ -7,8 +7,11 @@ import CharacterHero from "@/components/character/CharacterHero";
 import ProfileCard from "@/components/reading/ProfileCard";
 import StatGrid from "@/components/reading/StatGrid";
 import ReadingAccordion from "@/components/reading/ReadingAccordion";
+import CompatibilityAccordion from "@/components/reading/CompatibilityAccordion";
 import ReadingCTA from "@/components/reading/ReadingCTA";
 import YearlyReadingView from "@/components/reading/YearlyReadingView";
+import CategoryReadingView from "@/components/reading/CategoryReadingView";
+import type { CategoryType } from "@/components/reading/CategoryReadingView";
 import PixelDivider from "@/components/ui/PixelDivider";
 import type { StatScores } from "@/lib/ai/stat-scorer";
 
@@ -50,7 +53,7 @@ export default async function ReadingDetailPage({
   const { data: reading, error } = await supabase
     .from("readings")
     .select(
-      "id, status, content, stat_scores, character_title, charts_data, created_at, character_id, type, year",
+      "id, status, content, stat_scores, character_title, charts_data, created_at, character_id, character_id_2, type, year",
     )
     .eq("id", id)
     .single();
@@ -116,6 +119,115 @@ export default async function ReadingDetailPage({
   const readingType = (reading.type as string) ?? "comprehensive";
   const readingYear = (reading.year as number) ?? new Date().getFullYear();
 
+  // Compatibility reading layout
+  if (readingType === "compatibility") {
+    // Fetch second character if available
+    let character2Name = "상대방";
+    let character2Element: string = "water";
+    let character2Gender: "male" | "female" = "male";
+    let character2Level = 1;
+
+    if (reading.character_id_2) {
+      const { data: char2 } = await supabase
+        .from("characters")
+        .select("id, name, birth_date, gender")
+        .eq("id", reading.character_id_2)
+        .single();
+
+      if (char2) {
+        character2Name = char2.name ?? "상대방";
+        character2Gender = (char2.gender as "male" | "female") ?? "male";
+        character2Level = char2.birth_date
+          ? getCharacterLevel(char2.birth_date)
+          : 1;
+
+        // Get second character's element from charts
+        const { data: chart2 } = await supabase
+          .from("charts")
+          .select("data")
+          .eq("character_id", char2.id)
+          .eq("type", "saju")
+          .single();
+
+        if (chart2) {
+          const chart2Data = chart2.data as { dayMaster?: string };
+          const dm2 = chart2Data?.dayMaster ?? "";
+          const stemMap: Record<string, string> = {
+            "甲": "wood", "乙": "wood", "丙": "fire", "丁": "fire",
+            "戊": "earth", "己": "earth", "庚": "metal", "辛": "metal",
+            "壬": "water", "癸": "water",
+          };
+          character2Element = stemMap[dm2.charAt(0)] ?? "water";
+        }
+      }
+    }
+
+    return (
+      <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-xl font-[family-name:var(--font-pixel)] text-[#b8883c]">
+            궁합 감정서
+          </h1>
+          <p className="text-sm mt-2 font-[family-name:var(--font-pixel)] text-[#8a8070]">
+            {character.name ?? "모험자"} & {character2Name}
+          </p>
+        </div>
+
+        {/* VS Layout */}
+        <div className="flex items-center justify-center gap-4 mb-6">
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-16 h-16 border-2 border-[#b8944c] flex items-center justify-center bg-[#faf7f2]">
+              <img
+                src={`/characters/${preset?.element ?? "water"}-${gender}.png`}
+                alt={character.name ?? ""}
+                className="w-14 h-14 object-contain"
+                style={{ imageRendering: "pixelated" }}
+              />
+            </div>
+            <span className="text-xs font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
+              {character.name ?? "모험자"}
+            </span>
+            <span className="text-[0.625rem] font-[family-name:var(--font-pixel)] text-[#8a8070]">
+              Lv.{level}
+            </span>
+          </div>
+
+          <span className="text-2xl font-[family-name:var(--font-pixel)] text-[#d04040]">
+            VS
+          </span>
+
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-16 h-16 border-2 border-[#b8944c] flex items-center justify-center bg-[#faf7f2]">
+              <img
+                src={`/characters/${character2Element}-${character2Gender}.png`}
+                alt={character2Name}
+                className="w-14 h-14 object-contain"
+                style={{ imageRendering: "pixelated" }}
+              />
+            </div>
+            <span className="text-xs font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
+              {character2Name}
+            </span>
+            <span className="text-[0.625rem] font-[family-name:var(--font-pixel)] text-[#8a8070]">
+              Lv.{character2Level}
+            </span>
+          </div>
+        </div>
+
+        <PixelDivider label="궁합 상세" className="my-6" />
+
+        {/* Compatibility accordion */}
+        <CompatibilityAccordion htmlContent={htmlContent} />
+
+        {/* CTA */}
+        <ReadingCTA />
+
+        <div className="h-16" />
+      </div>
+    );
+  }
+
   // Yearly reading layout
   if (readingType === "yearly") {
     return (
@@ -159,6 +271,70 @@ export default async function ReadingDetailPage({
         <YearlyReadingView
           content={htmlContent}
           year={readingYear}
+          characterName={character.name ?? "모험자"}
+        />
+
+        {/* 하단 CTA */}
+        <ReadingCTA />
+
+        {/* 하단 네비 공간 확보 */}
+        <div className="h-16" />
+      </div>
+    );
+  }
+
+  // Category reading layout (love/career/wealth/health/study)
+  const CATEGORY_TYPES = ["love", "career", "wealth", "health", "study"];
+  const CATEGORY_TITLES: Record<string, string> = {
+    love: "연애운 감정서",
+    career: "직업운 감정서",
+    wealth: "금전운 감정서",
+    health: "건강운 감정서",
+    study: "학업운 감정서",
+  };
+
+  if (CATEGORY_TYPES.includes(readingType)) {
+    return (
+      <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
+        {/* 헤더 */}
+        <div className="text-center mb-6">
+          <h1 className="text-xl font-[family-name:var(--font-pixel)] text-[#b8883c]">
+            {CATEGORY_TITLES[readingType] ?? "운세 감정서"}
+          </h1>
+          <p className="text-sm mt-2 font-[family-name:var(--font-pixel)] text-[#8a8070]">
+            {character.name ?? "모험자"}의 특화 분석
+          </p>
+        </div>
+
+        {/* 캐릭터 히어로 */}
+        <CharacterHero
+          avatarUrl={avatarUrl}
+          dayMaster={dayMasterDisplay}
+          level={level}
+          classTitle={preset?.className ?? "운명의 여행자"}
+          characterTitle={reading.character_title ?? statScores.title}
+          element={preset?.element ?? "water"}
+          mbti={character.mbti}
+        />
+
+        <div className="mt-6" />
+
+        {/* 프로필 카드 */}
+        <ProfileCard
+          name={character.name ?? "모험자"}
+          birthDate={character.birth_date ?? "-"}
+          birthTime={character.birth_time}
+          gender={gender}
+          dayMaster={dayMasterDisplay}
+          mbti={character.mbti}
+        />
+
+        <PixelDivider label={CATEGORY_TITLES[readingType] ?? "상세 감정"} className="my-6" />
+
+        {/* 카테고리 전용 뷰 */}
+        <CategoryReadingView
+          content={htmlContent}
+          category={readingType as CategoryType}
           characterName={character.name ?? "모험자"}
         />
 

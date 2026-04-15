@@ -19,7 +19,7 @@ export interface CharacterData {
 export async function executeReadingGeneration(
   readingId: string,
   characterId: string,
-  type: "comprehensive" | "yearly",
+  type: "comprehensive" | "yearly" | "compatibility" | "love" | "career" | "wealth" | "health" | "study",
   generatorFn: (
     birthInfo: BirthInfo,
     charts: AllCharts,
@@ -55,7 +55,7 @@ export async function executeReadingGeneration(
       charts,
     );
 
-    // 4-5. stat scores + sanitize (comprehensive만)
+    // 4-5. stat scores + sanitize (comprehensive only)
     let statScores = null;
     let characterTitle = null;
     let sanitizedHtml = rawHtml;

@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { generateComprehensiveReading } from "@/lib/ai/gemini";
+import { generateComprehensiveReading, generateCompatibilityReading, generateCategoryReading } from "@/lib/ai/gemini";
 import { generateYearlyReading } from "@/lib/ai/gemini";
+import type { CategoryType } from "@/lib/ai/gemini";
 import { getYearlyGanZhi } from "@/lib/charts/saju";
+import { generateAllCharts } from "@/lib/charts";
 import {
   executeReadingGeneration,
   type CharacterData,
@@ -20,11 +22,12 @@ export async function POST(request: NextRequest) {
 
     const body = (await request.json()) as {
       characterId: string;
-      type?: "comprehensive" | "yearly";
+      characterId2?: string;
+      type?: "comprehensive" | "yearly" | "compatibility" | "love" | "career" | "wealth" | "health" | "study";
       targetYear?: number;
     };
 
-    const { characterId, type = "comprehensive", targetYear } = body;
+    const { characterId, characterId2, type = "comprehensive", targetYear } = body;
 
     if (!characterId) {
       return NextResponse.json(
@@ -36,6 +39,13 @@ export async function POST(request: NextRequest) {
     if (type === "yearly" && !targetYear) {
       return NextResponse.json(
         { error: "년운 분석에는 대상 연도가 필요합니다" },
+        { status: 400 },
+      );
+    }
+
+    if (type === "compatibility" && !characterId2) {
+      return NextResponse.json(
+        { error: "궁합 분석에는 두 번째 캐릭터가 필요합니다" },
         { status: 400 },
       );
     }
@@ -65,11 +75,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // For compatibility: fetch + validate second character
+    let character2: typeof character | null = null;
+    if (type === "compatibility" && characterId2) {
+      const { data: char2, error: char2Error } = await supabase
+        .from("characters")
+        .select(
+          "id, name, birth_date, birth_time, birth_city, birth_lat, birth_lng, gender, timezone, mbti, unlocked",
+        )
+        .eq("id", characterId2)
+        .eq("user_id", userId)
+        .single();
+
+      if (char2Error || !char2) {
+        return NextResponse.json({ error: "두 번째 캐릭터 권한 없음" }, { status: 403 });
+      }
+
+      if (!char2.unlocked) {
+        return NextResponse.json(
+          { error: "두 번째 캐릭터도 종합감정을 먼저 받아야 합니다" },
+          { status: 403 },
+        );
+      }
+
+      character2 = char2;
+    }
+
     // Create reading row with pending status
     const readingId = uuidv4();
     const { error: insertError } = await supabase.from("readings").insert({
       id: readingId,
       character_id: characterId,
+      ...(type === "compatibility" && characterId2 ? { character_id_2: characterId2 } : {}),
       type,
       status: "pending",
       ...(type === "yearly" && targetYear ? { year: targetYear } : {}),
@@ -101,7 +138,32 @@ export async function POST(request: NextRequest) {
       charts: AllCharts,
     ) => Promise<{ content: string; tokensUsed: number }>;
 
-    if (type === "yearly") {
+    if (type === "compatibility" && character2) {
+      generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
+        // Build second character's charts
+        const birthInfo2: BirthInfo = {
+          name: character2!.name ?? "",
+          birthDate: character2!.birth_date,
+          birthTime: character2!.birth_time,
+          birthCity: character2!.birth_city,
+          birthLat: character2!.birth_lat,
+          birthLng: character2!.birth_lng,
+          gender: character2!.gender as "male" | "female",
+          timezone: character2!.timezone ?? "Asia/Seoul",
+        };
+        const charts2 = generateAllCharts(birthInfo2);
+
+        const { html, tokensUsed } = await generateCompatibilityReading(
+          birthInfo.name,
+          charts,
+          birthInfo2.name,
+          charts2,
+          character.mbti,
+          character2!.mbti,
+        );
+        return { content: html, tokensUsed };
+      };
+    } else if (type === "yearly") {
       generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
         const yearlyGanZhi = getYearlyGanZhi(
           birthInfo.birthDate,
@@ -114,6 +176,17 @@ export async function POST(request: NextRequest) {
           charts,
           targetYear!,
           yearlyGanZhi,
+          character.mbti,
+        );
+        return { content: html, tokensUsed };
+      };
+    } else if (["love", "career", "wealth", "health", "study"].includes(type)) {
+      const categoryType = type as CategoryType;
+      generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
+        const { html, tokensUsed } = await generateCategoryReading(
+          categoryType,
+          birthInfo.name,
+          charts,
           character.mbti,
         );
         return { content: html, tokensUsed };

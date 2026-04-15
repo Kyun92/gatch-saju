@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
       orderId,
       amount,
       characterId,
+      characterId2,
       type = "comprehensive",
       targetYear,
     } = body as {
@@ -23,7 +24,8 @@ export async function POST(request: NextRequest) {
       orderId: string;
       amount: number;
       characterId: string;
-      type?: "comprehensive" | "yearly";
+      characterId2?: string;
+      type?: "comprehensive" | "yearly" | "compatibility";
       targetYear?: number;
     };
 
@@ -83,7 +85,7 @@ export async function POST(request: NextRequest) {
           "Content-Type": "application/json",
           cookie: request.headers.get("cookie") ?? "",
         },
-        body: JSON.stringify({ characterId, type, targetYear }),
+        body: JSON.stringify({ characterId, characterId2, type, targetYear }),
       },
     );
 
