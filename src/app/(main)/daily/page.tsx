@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import PixelFrame from "@/components/ui/PixelFrame";
 import DailyFortuneClient from "./DailyFortuneClient";
 import UpsellBanner from "@/components/daily/UpsellBanner";
+import DailyCalendar from "@/components/daily/DailyCalendar";
 
 interface DailyPageProps {
   searchParams: Promise<{ characterId?: string }>;
@@ -39,6 +40,41 @@ export default async function DailyPage({ searchParams }: DailyPageProps) {
     .order("created_at", { ascending: false })
     .limit(1)
     .single();
+
+  // Fetch this month's daily readings for the calendar
+  const monthStart = `${today.slice(0, 7)}-01`;
+  const nextMonth = new Date(
+    new Date(monthStart).getFullYear(),
+    new Date(monthStart).getMonth() + 1,
+    1,
+  )
+    .toISOString()
+    .split("T")[0];
+
+  const { data: monthlyReadings } = await supabase
+    .from("readings")
+    .select("id, content, character_title, stat_scores, created_at")
+    .eq("character_id", characterId)
+    .eq("type", "daily")
+    .eq("status", "complete")
+    .gte("created_at", `${monthStart}T00:00:00`)
+    .lt("created_at", `${nextMonth}T00:00:00`)
+    .order("created_at", { ascending: true });
+
+  const fortuneDates: Record<
+    string,
+    { id: string; title: string | null; content: string; score: number }
+  > = {};
+  for (const r of monthlyReadings ?? []) {
+    const date = new Date(r.created_at).toISOString().split("T")[0];
+    const scores = r.stat_scores as Record<string, unknown> | null;
+    fortuneDates[date] = {
+      id: r.id,
+      title: r.character_title,
+      content: r.content ?? "",
+      score: typeof scores?.daily_score === "number" ? scores.daily_score : 50,
+    };
+  }
 
   return (
     <div
@@ -121,6 +157,13 @@ export default async function DailyPage({ searchParams }: DailyPageProps) {
       ) : (
         <DailyFortuneClient characterId={characterId} />
       )}
+
+      {/* Monthly calendar */}
+      <DailyCalendar
+        characterId={characterId}
+        fortuneDates={fortuneDates}
+        initialMonth={today.slice(0, 7)}
+      />
 
       {/* Upsell banner */}
       <UpsellBanner />

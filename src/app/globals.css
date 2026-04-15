@@ -698,6 +698,104 @@ body {
 .service-card-bar-compat  { background-color: #d06890; }
 
 /* ============================================================
+   DAILY CALENDAR
+   ============================================================ */
+
+@layer components {
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.calendar-header-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  color: #8a8070;
+  padding: 4px 0;
+  letter-spacing: 0.04em;
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: var(--font-pixel);
+  font-size: 0.6875rem;
+  color: #8a8070;
+  background-color: #faf7f2;
+  cursor: default;
+  transition: background-color 100ms ease;
+  border: 1px solid transparent;
+}
+
+.calendar-cell-fortune {
+  background-color: #c8a020;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.calendar-cell-fortune:hover {
+  background-color: #b89018;
+}
+
+.calendar-cell-today {
+  border: 3px solid #9a7040;
+}
+
+.calendar-cell-future {
+  opacity: 0.3;
+}
+
+.calendar-cell-selected {
+  background-color: #9a7040 !important;
+  color: #ffffff;
+}
+
+.calendar-selected-indicator {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #9a7040;
+  z-index: 1;
+}
+
+.calendar-nav-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  color: #9a7040;
+  background: none;
+  border: 1px solid #d4c4a0;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background-color 100ms ease;
+}
+
+.calendar-nav-btn:hover {
+  background-color: #f5f0e8;
+}
+
+.calendar-month-label {
+  font-family: var(--font-pixel);
+  font-size: 0.875rem;
+  color: #9a7040;
+  letter-spacing: 0.04em;
+}
+
+} /* end @layer components — DAILY CALENDAR */
+
+/* ============================================================
    PRINT STYLES
    ============================================================ */
 

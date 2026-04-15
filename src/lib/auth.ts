@@ -47,31 +47,63 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        // Initial sign-in: look up or create user in Supabase
+    async jwt({ token, user, account }) {
+      if (user && account) {
+        // Initial sign-in: look up by OAuth provider+id first, then email fallback
         const supabase = createServerSupabaseClient();
 
-        const { data: existingUser } = await supabase
-          .from("users")
-          .select("id")
-          .eq("email", user.email!)
+        // 1. accounts 테이블에서 provider + provider_account_id로 기존 사용자 찾기
+        const { data: existingAccount } = await supabase
+          .from("accounts")
+          .select("user_id")
+          .eq("provider", account.provider)
+          .eq("provider_account_id", account.providerAccountId)
           .single();
 
-        if (existingUser) {
-          token.userId = existingUser.id;
+        if (existingAccount) {
+          token.userId = existingAccount.user_id;
         } else {
-          const { data: newUser } = await supabase
-            .from("users")
-            .insert({
-              name: user.name ?? null,
-              email: user.email,
-              image: user.image ?? null,
-            })
-            .select("id")
-            .single();
+          // 2. email로 기존 사용자 찾기 (fallback)
+          let userId: string | null = null;
 
-          token.userId = newUser?.id ?? "";
+          if (user.email) {
+            const { data: existingUser } = await supabase
+              .from("users")
+              .select("id")
+              .eq("email", user.email)
+              .single();
+            userId = existingUser?.id ?? null;
+          }
+
+          // 3. 없으면 새 사용자 생성
+          if (!userId) {
+            const { data: newUser } = await supabase
+              .from("users")
+              .insert({
+                name: user.name ?? null,
+                email: user.email ?? null,
+                image: user.image ?? null,
+              })
+              .select("id")
+              .single();
+            userId = newUser?.id ?? "";
+          }
+
+          // 4. accounts 테이블에 OAuth 연결 저장
+          await supabase.from("accounts").insert({
+            user_id: userId,
+            type: account.type ?? "oauth",
+            provider: account.provider,
+            provider_account_id: account.providerAccountId,
+            access_token: account.access_token ?? null,
+            refresh_token: account.refresh_token ?? null,
+            expires_at: account.expires_at ?? null,
+            token_type: account.token_type ?? null,
+            scope: account.scope ?? null,
+            id_token: account.id_token ?? null,
+          });
+
+          token.userId = userId ?? "";
         }
       }
 

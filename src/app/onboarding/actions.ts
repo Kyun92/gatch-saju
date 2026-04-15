@@ -64,7 +64,11 @@ export async function createCharacter(data: OnboardingData) {
     .single();
 
   if (charError) {
-    console.error("[onboarding] character insert error:", charError);
+    console.error("[onboarding] character insert error:", JSON.stringify(charError, null, 2));
+    // FK 위반인 경우 users에 해당 user가 없음 — 세션 만료
+    if (charError.code === "23503" || charError.message?.includes("foreign key")) {
+      throw new Error("세션이 만료되었습니다. 로그아웃 후 다시 로그인해주세요.");
+    }
     throw new Error("캐릭터 생성에 실패했습니다.");
   }
   console.log("[onboarding] character created:", character.id);

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface HubHeaderProps {
   userName: string;
 }
@@ -23,15 +25,20 @@ export default function HubHeader({ userName }: HubHeaderProps) {
         ✦ 천명 ✦
       </span>
 
-      <span
+      <Link
+        href="/mypage"
         style={{
           fontFamily: "var(--font-pixel)",
           fontSize: "0.6875rem",
           color: "#8a8070",
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          gap: "4px",
         }}
       >
-        {userName}
-      </span>
+        👤 {userName}
+      </Link>
     </header>
   );
 }

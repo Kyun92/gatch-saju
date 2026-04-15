@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
+import PixelSelect from "@/components/ui/PixelSelect";
 import { getAllCities } from "@/lib/data/cities";
 import { createCharacter } from "./actions";
 
@@ -14,15 +15,29 @@ const MBTI_TYPES = [
   "ISTP","ISFP","ESTP","ESFP",
 ];
 
-const BIRTH_HOURS = [
-  "모름",
-  "00:00","01:00","02:00","03:00","04:00","05:00",
-  "06:00","07:00","08:00","09:00","10:00","11:00",
-  "12:00","13:00","14:00","15:00","16:00","17:00",
-  "18:00","19:00","20:00","21:00","22:00","23:00",
+const BIRTH_HOUR_OPTIONS = [
+  { value: "모름", label: "모름" },
+  ...Array.from({ length: 24 }, (_, i) => ({
+    value: String(i).padStart(2, "0"),
+    label: `${i}시`,
+  })),
+];
+
+const BIRTH_MINUTE_OPTIONS = [
+  { value: "00", label: "00분" },
+  { value: "15", label: "15분" },
+  { value: "30", label: "30분" },
+  { value: "45", label: "45분" },
 ];
 
 const cities = getAllCities();
+
+const CITY_OPTIONS = cities.map((c) => ({ value: c, label: c }));
+
+const MBTI_OPTIONS = [
+  { value: "", label: "모르겠어요" },
+  ...MBTI_TYPES.map((m) => ({ value: m, label: m })),
+];
 
 type ElementType = "wood" | "fire" | "earth" | "metal" | "water";
 
@@ -57,14 +72,20 @@ export default function OnboardingPage() {
 
   // Form state
   const [name, setName] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [birthTime, setBirthTime] = useState("모름");
+  const [birthYear, setBirthYear] = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
+  const [birthDay, setBirthDay] = useState("");
+  const [birthHour, setBirthHour] = useState("모름");
+  const [birthMinute, setBirthMinute] = useState("00");
   const [birthCity, setBirthCity] = useState("서울");
   const [gender, setGender] = useState<"male" | "female">("male");
   const [mbti, setMbti] = useState<string>("");
 
+  const birthDate = birthYear && birthMonth && birthDay
+    ? `${birthYear}-${birthMonth.padStart(2, "0")}-${birthDay.padStart(2, "0")}`
+    : "";
   const canProceedStep1 = name.trim().length > 0;
-  const canProceedStep2 = birthDate.length > 0;
+  const canProceedStep2 = birthYear !== "" && birthMonth !== "" && birthDay !== "";
 
   const month = birthDate ? parseInt(birthDate.split("-")[1], 10) : 1;
   const element = getElementFromMonth(month);
@@ -76,7 +97,7 @@ export default function OnboardingPage() {
       const result = await createCharacter({
         name: name.trim(),
         birthDate,
-        birthTime: birthTime === "모름" ? "12:00" : birthTime,
+        birthTime: birthHour === "모름" ? "12:00" : `${birthHour}:${birthMinute}`,
         birthCity,
         gender,
         mbti: mbti || null,
@@ -166,20 +187,41 @@ export default function OnboardingPage() {
             >
               생년월일
             </label>
-            <input
-              type="date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              className="w-full px-4 py-3 text-sm"
-              style={{
-                fontFamily: "var(--font-pixel)",
-                backgroundColor: "#faf7f2",
-                color: "#2c2418",
-                border: "2px solid #b8944c",
-                borderRadius: 0,
-                outline: "none",
-              }}
-            />
+            <div style={{ display: "flex", gap: "6px" }}>
+              <div style={{ flex: 2 }}>
+                <PixelSelect
+                  value={birthYear}
+                  onChange={setBirthYear}
+                  placeholder="년도"
+                  options={Array.from({ length: 100 }, (_, i) => {
+                    const y = String(new Date().getFullYear() - i);
+                    return { value: y, label: `${y}년` };
+                  })}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <PixelSelect
+                  value={birthMonth}
+                  onChange={setBirthMonth}
+                  placeholder="월"
+                  options={Array.from({ length: 12 }, (_, i) => ({
+                    value: String(i + 1),
+                    label: `${i + 1}월`,
+                  }))}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <PixelSelect
+                  value={birthDay}
+                  onChange={setBirthDay}
+                  placeholder="일"
+                  options={Array.from({ length: 31 }, (_, i) => ({
+                    value: String(i + 1),
+                    label: `${i + 1}일`,
+                  }))}
+                />
+              </div>
+            </div>
 
             <label
               className="text-sm"
@@ -187,25 +229,24 @@ export default function OnboardingPage() {
             >
               태어난 시간
             </label>
-            <select
-              value={birthTime}
-              onChange={(e) => setBirthTime(e.target.value)}
-              className="w-full px-4 py-3 text-sm"
-              style={{
-                fontFamily: "var(--font-pixel)",
-                backgroundColor: "#faf7f2",
-                color: "#2c2418",
-                border: "2px solid #b8944c",
-                borderRadius: 0,
-                outline: "none",
-              }}
-            >
-              {BIRTH_HOURS.map((h) => (
-                <option key={h} value={h}>
-                  {h}
-                </option>
-              ))}
-            </select>
+            <div className="flex gap-2">
+              <PixelSelect
+                value={birthHour}
+                onChange={(v) => {
+                  setBirthHour(v);
+                  if (v === "모름") setBirthMinute("00");
+                }}
+                options={BIRTH_HOUR_OPTIONS}
+                className="flex-1"
+              />
+              <PixelSelect
+                value={birthMinute}
+                onChange={setBirthMinute}
+                options={BIRTH_MINUTE_OPTIONS}
+                disabled={birthHour === "모름"}
+                className="flex-1"
+              />
+            </div>
 
             <label
               className="text-sm"
@@ -213,25 +254,11 @@ export default function OnboardingPage() {
             >
               출생지
             </label>
-            <select
+            <PixelSelect
               value={birthCity}
-              onChange={(e) => setBirthCity(e.target.value)}
-              className="w-full px-4 py-3 text-sm"
-              style={{
-                fontFamily: "var(--font-pixel)",
-                backgroundColor: "#faf7f2",
-                color: "#2c2418",
-                border: "2px solid #b8944c",
-                borderRadius: 0,
-                outline: "none",
-              }}
-            >
-              {cities.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
+              onChange={setBirthCity}
+              options={CITY_OPTIONS}
+            />
 
             <label
               className="text-sm"
@@ -266,26 +293,12 @@ export default function OnboardingPage() {
             >
               MBTI (선택사항)
             </label>
-            <select
+            <PixelSelect
               value={mbti}
-              onChange={(e) => setMbti(e.target.value)}
-              className="w-full px-4 py-3 text-sm"
-              style={{
-                fontFamily: "var(--font-pixel)",
-                backgroundColor: "#faf7f2",
-                color: "#2c2418",
-                border: "2px solid #b8944c",
-                borderRadius: 0,
-                outline: "none",
-              }}
-            >
-              <option value="">모르겠어요</option>
-              {MBTI_TYPES.map((m) => (
-                <option key={m} value={m}>
-                  {m}
-                </option>
-              ))}
-            </select>
+              onChange={setMbti}
+              options={MBTI_OPTIONS}
+              placeholder="모르겠어요"
+            />
 
             <div className="flex gap-3 mt-2">
               <PixelButton

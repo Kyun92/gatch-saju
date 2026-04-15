@@ -75,6 +75,12 @@ export async function GET(request: NextRequest) {
       character.mbti,
     );
 
+    // Parse score from [SCORE:XX] at the end
+    const scoreMatch = text.match(/\[SCORE:(\d+)\]/);
+    const dailyScore = scoreMatch ? Math.min(100, Math.max(0, parseInt(scoreMatch[1], 10))) : 50;
+    // Remove [SCORE:XX] from content
+    const cleanContent = text.replace(/\n?\[SCORE:\d+\]/, "").trim();
+
     // Save reading
     const { data: reading, error: insertError } = await supabase
       .from("readings")
@@ -82,10 +88,11 @@ export async function GET(request: NextRequest) {
         character_id: characterId,
         type: "daily",
         status: "complete",
-        content: text,
+        content: cleanContent,
+        stat_scores: { daily_score: dailyScore },
         tokens_used: tokensUsed,
       })
-      .select("id, content, created_at")
+      .select("id, content, stat_scores, created_at")
       .single();
 
     if (insertError) {

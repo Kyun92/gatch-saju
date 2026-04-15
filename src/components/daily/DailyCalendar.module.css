@@ -1,0 +1,86 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.headerCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 0.875rem;
+  color: #9a7040;
+  padding: 8px 0;
+  letter-spacing: 0.06em;
+}
+
+.cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: var(--font-pixel);
+  font-size: 1.25rem;
+  color: #b8a890;
+  background-color: #f0ebe0;
+  cursor: default;
+  transition: background-color 150ms ease, transform 100ms ease;
+}
+
+.fortune {
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.fortune:hover {
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+.today {
+  outline: 3px solid #2c2418;
+  outline-offset: -3px;
+  z-index: 2;
+}
+
+.future {
+  opacity: 0.25;
+  background-color: transparent;
+}
+
+.selected {
+  outline: 3px solid #ffffff !important;
+  outline-offset: -3px;
+  transform: scale(1.08);
+  z-index: 3;
+}
+
+.empty {
+  background-color: transparent;
+}
+
+.navBtn {
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  color: #9a7040;
+  background: none;
+  border: 2px solid #b8944c;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background-color 100ms ease;
+}
+
+.navBtn:hover {
+  background-color: #f5f0e8;
+}
+
+.monthLabel {
+  font-family: var(--font-pixel);
+  font-size: 1.125rem;
+  color: #9a7040;
+  letter-spacing: 0.06em;
+}

@@ -24,8 +24,27 @@ export default auth(async (req) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  // --- 로그인된 사용자: characters 존재 여부 체크 (DB 직접 조회) ---
+  // /login은 항상 허용 (무한 리다이렉트 방지)
+  if (pathname === "/login") return NextResponse.next();
+
+  // --- 로그인된 사용자: DB에 user가 존재하는지 확인 ---
   const supabase = createServerSupabaseClient();
+  const { data: userExists } = await supabase
+    .from("users")
+    .select("id")
+    .eq("id", userId)
+    .single();
+
+  // JWT의 userId가 DB에 없음 → 세션 무효, 로그인으로
+  if (!userExists) {
+    const loginUrl = new URL("/login", req.url);
+    const response = NextResponse.redirect(loginUrl);
+    response.cookies.delete("next-auth.session-token");
+    response.cookies.delete("__Secure-next-auth.session-token");
+    return response;
+  }
+
+  // characters 존재 여부 체크
   const { data: hasCharacter } = await supabase
     .from("characters")
     .select("id")
