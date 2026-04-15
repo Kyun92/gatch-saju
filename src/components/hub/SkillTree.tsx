@@ -118,6 +118,8 @@ interface SkillTreeProps {
   characterName: string;
   unlocked: boolean;
   purchasedReadings: string[];
+  /** type → reading ID 맵 (해금된 상품 클릭 시 결과 페이지로 이동) */
+  readingIdMap?: Record<string, string>;
 }
 
 export default function SkillTree({
@@ -125,6 +127,7 @@ export default function SkillTree({
   characterName,
   unlocked,
   purchasedReadings,
+  readingIdMap = {},
 }: SkillTreeProps) {
   const comprehensiveNode = SKILL_NODES[0];
   const subNodes = SKILL_NODES.slice(1);
@@ -154,6 +157,7 @@ export default function SkillTree({
         state={getNodeState(comprehensiveNode, purchasedReadings, unlocked)}
         characterId={characterId}
         isRoot
+        readingIdMap={readingIdMap}
       />
 
       {/* Connector line from root to grid */}
@@ -174,6 +178,7 @@ export default function SkillTree({
             node={node}
             state={getNodeState(node, purchasedReadings, unlocked)}
             characterId={characterId}
+            readingIdMap={readingIdMap}
           />
         ))}
       </div>
@@ -186,11 +191,13 @@ function SkillNodeCard({
   state,
   characterId,
   isRoot = false,
+  readingIdMap = {},
 }: {
   node: SkillNode;
   state: NodeState;
   characterId: string;
   isRoot?: boolean;
+  readingIdMap?: Record<string, string>;
 }) {
   const isPurchased = state === "purchased";
   const isAvailable = state === "available";
@@ -226,12 +233,12 @@ function SkillNodeCard({
 
   // Determine link target
   let href: string | null = null;
-  if (node.type === "compatibility" && isAvailable) {
+  if (node.type === "compatibility" && (isAvailable || isPurchased)) {
     href = `/compatibility`;
-  } else if (isPurchased && node.type === "comprehensive") {
-    href = `/reading?characterId=${characterId}`;
+  } else if (isPurchased && readingIdMap[node.type]) {
+    href = `/reading/${readingIdMap[node.type]}`;
   } else if (isPurchased) {
-    href = `/reading/${node.type}?characterId=${characterId}`;
+    href = `/reading?characterId=${characterId}`;
   } else if (isAvailable && node.type === "comprehensive") {
     href = `/reading/new?characterId=${characterId}`;
   } else if (isAvailable) {

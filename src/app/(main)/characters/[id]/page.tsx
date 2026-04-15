@@ -57,14 +57,20 @@ export default async function CharacterDetailPage({ params }: CharacterDetailPag
   const level = new Date().getFullYear() - birthYear;
   const classTitle = dayMaster ? `${dayMaster} · ${ELEMENT_LABEL[element]}` : ELEMENT_LABEL[element];
 
-  // 구매한 reading 타입 목록
+  // 구매한 reading 타입 목록 + 최신 reading ID
   const { data: readings } = await supabase
     .from("readings")
-    .select("type")
+    .select("id, type")
     .eq("character_id", characterId)
-    .eq("status", "complete");
+    .eq("status", "complete")
+    .order("created_at", { ascending: false });
 
   const purchasedReadings = [...new Set((readings ?? []).map((r) => r.type))];
+  // type → 최신 reading ID 맵
+  const readingIdMap: Record<string, string> = {};
+  for (const r of readings ?? []) {
+    if (!readingIdMap[r.type]) readingIdMap[r.type] = r.id;
+  }
 
   // 최신 종합감정 칭호
   const { data: latestReading } = await supabase
@@ -104,6 +110,7 @@ export default async function CharacterDetailPage({ params }: CharacterDetailPag
         characterName={character.name}
         unlocked={character.unlocked}
         purchasedReadings={purchasedReadings}
+        readingIdMap={readingIdMap}
       />
     </div>
   );
