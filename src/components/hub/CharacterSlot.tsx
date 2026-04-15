@@ -77,48 +77,33 @@ function StatMiniBar({
   return (
     <div className="stat-mini" aria-label={`${label}: ${locked ? "잠김" : value}`}>
       <span
-        className="stat-mini-icon"
+        className="stat-mini-icon font-[family-name:var(--font-pixel)] text-[0.5rem] w-[18px] shrink-0 text-right"
         style={{
-          fontFamily: "var(--font-pixel)",
-          fontSize: "0.5rem",
           color: locked ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.8)",
-          width: "18px",
-          flexShrink: 0,
-          textAlign: "right",
         }}
       >
         {icon}
       </span>
       <div
-        className="stat-mini-bar"
+        className="stat-mini-bar h-1.5 flex-1 relative overflow-hidden"
         style={{
-          height: "6px",
-          flex: 1,
           backgroundColor: locked
             ? "rgba(0,0,0,0.15)"
             : "rgba(255,255,255,0.2)",
-          position: "relative",
-          overflow: "hidden",
         }}
       >
         <div
-          className="stat-mini-fill"
+          className="stat-mini-fill h-full transition-[width] duration-[600ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
           style={{
-            height: "100%",
             width: locked ? "0%" : `${value}%`,
             backgroundColor: locked ? "transparent" : color,
-            transition: "width 600ms cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         />
       </div>
       <span
+        className="font-[family-name:var(--font-pixel)] text-[0.5rem] w-5 text-right shrink-0"
         style={{
-          fontFamily: "var(--font-pixel)",
-          fontSize: "0.5rem",
           color: locked ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.9)",
-          width: "20px",
-          textAlign: "right",
-          flexShrink: 0,
         }}
       >
         {locked ? "??" : value}
@@ -145,31 +130,23 @@ export default function CharacterSlot({
 
   return (
     <div
-      className="character-slot"
+      className="character-slot p-5 relative overflow-hidden"
       style={{
         backgroundColor: bgColor,
-        padding: "20px",
         border: isUnlocked
           ? `2px solid rgba(255,255,255,0.2)`
           : "2px solid #b8a890",
         boxShadow: isUnlocked
           ? `4px 4px 0px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.1)`
           : "3px 3px 0px rgba(0,0,0,0.08)",
-        position: "relative",
-        overflow: "hidden",
       }}
     >
       {/* Element badge - top right */}
       {isUnlocked && (
         <span
+          className="absolute top-2 right-2 font-[family-name:var(--font-pixel)] text-[0.5625rem] tracking-[0.06em]"
           style={{
-            position: "absolute",
-            top: "8px",
-            right: "8px",
-            fontFamily: "var(--font-pixel)",
-            fontSize: "0.5625rem",
             color: "rgba(255,255,255,0.6)",
-            letterSpacing: "0.06em",
           }}
         >
           {ELEMENT_LABEL[element]}
@@ -177,36 +154,25 @@ export default function CharacterSlot({
       )}
 
       {/* Top section: Avatar + Info */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          gap: "16px",
-        }}
-      >
+      <div className="flex items-start gap-4">
         {/* Avatar */}
         <div
+          className="w-[120px] h-[120px] shrink-0 relative overflow-hidden"
           style={{
-            width: "120px",
-            height: "120px",
-            flexShrink: 0,
-            position: "relative",
             border: isUnlocked
               ? "3px solid rgba(255,255,255,0.3)"
               : "3px solid #b8a890",
             backgroundColor: isUnlocked
               ? "rgba(0,0,0,0.1)"
               : "rgba(0,0,0,0.05)",
-            overflow: "hidden",
           }}
         >
           <Image
             src={avatarUrl}
             alt={`${character.name} 캐릭터`}
             fill
+            className="object-cover [image-rendering:pixelated]"
             style={{
-              objectFit: "cover",
-              imageRendering: "pixelated",
               opacity: isUnlocked ? 1 : 0.3,
               filter: isUnlocked ? "none" : "grayscale(100%)",
             }}
@@ -215,13 +181,12 @@ export default function CharacterSlot({
         </div>
 
         {/* Info column */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="flex-1 min-w-0">
           {/* Name + Level */}
-          <div style={{ marginBottom: "4px" }}>
+          <div className="mb-1">
             <span
+              className="font-[family-name:var(--font-pixel)] text-[0.625rem]"
               style={{
-                fontFamily: "var(--font-pixel)",
-                fontSize: "0.625rem",
                 color: isUnlocked
                   ? "rgba(255,255,255,0.7)"
                   : "#8a8070",
@@ -231,12 +196,9 @@ export default function CharacterSlot({
             </span>
           </div>
           <div
+            className="font-[family-name:var(--font-pixel)] text-[1.125rem] leading-[1.2] mb-1"
             style={{
-              fontFamily: "var(--font-pixel)",
-              fontSize: "1.125rem",
               color: isUnlocked ? "#ffffff" : "#5a4e3c",
-              lineHeight: 1.2,
-              marginBottom: "4px",
             }}
           >
             {character.name}
@@ -245,28 +207,22 @@ export default function CharacterSlot({
           {/* Day master + Title */}
           {dayMaster && (
             <div
+              className="font-[family-name:var(--font-pixel)] text-[0.625rem] mb-0.5"
               style={{
-                fontFamily: "var(--font-pixel)",
-                fontSize: "0.625rem",
                 color: isUnlocked
                   ? "rgba(255,255,255,0.7)"
                   : "#8a8070",
-                marginBottom: "2px",
               }}
             >
               {dayMaster} · {ELEMENT_LABEL[element]}
             </div>
           )}
           <div
+            className="font-[family-name:var(--font-body)] text-[0.6875rem] italic leading-[1.4] mb-2"
             style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.6875rem",
               color: isUnlocked
                 ? "rgba(255,255,255,0.85)"
                 : "#8a8070",
-              fontStyle: "italic",
-              lineHeight: 1.4,
-              marginBottom: "8px",
             }}
           >
             &ldquo;{displayTitle}&rdquo;
@@ -275,11 +231,8 @@ export default function CharacterSlot({
           {/* MBTI badge */}
           {character.mbti && (
             <span
+              className="inline-block font-[family-name:var(--font-pixel)] text-[0.5625rem] px-2 py-0.5"
               style={{
-                display: "inline-block",
-                fontFamily: "var(--font-pixel)",
-                fontSize: "0.5625rem",
-                padding: "2px 8px",
                 backgroundColor: isUnlocked
                   ? "rgba(255,255,255,0.2)"
                   : "rgba(0,0,0,0.06)",
@@ -296,14 +249,7 @@ export default function CharacterSlot({
       </div>
 
       {/* Stat bars -- 2 columns, 3 rows */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "6px 12px",
-          marginTop: "14px",
-        }}
-      >
+      <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 mt-3.5">
         {STAT_CONFIG.map((stat) => (
           <StatMiniBar
             key={stat.key}
@@ -317,83 +263,48 @@ export default function CharacterSlot({
       </div>
 
       {/* Bottom buttons */}
-      <div
-        style={{
-          display: "flex",
-          gap: "8px",
-          marginTop: "14px",
-        }}
-      >
+      <div className="flex gap-2 mt-3.5">
         {isUnlocked ? (
-          <>
-            <Link
-              href={`/daily?characterId=${character.id}`}
-              style={{
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "4px",
-                fontFamily: "var(--font-pixel)",
-                fontSize: "0.6875rem",
-                color: "#ffffff",
-                backgroundColor: "rgba(255,255,255,0.15)",
-                border: "2px solid rgba(255,255,255,0.3)",
-                borderBottomWidth: "4px",
-                padding: "8px 4px",
-                textDecoration: "none",
-                transition: "background-color 100ms ease",
-                cursor: "pointer",
-              }}
-            >
-              {"📜 오늘의 운세"}
-            </Link>
-            <Link
-              href={`/reading?characterId=${character.id}`}
-              style={{
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "4px",
-                fontFamily: "var(--font-pixel)",
-                fontSize: "0.6875rem",
-                color: ELEMENT_BG[element],
-                backgroundColor: "#ffffff",
-                border: `2px solid rgba(255,255,255,0.8)`,
-                borderBottomWidth: "4px",
-                padding: "8px 4px",
-                textDecoration: "none",
-                transition: "background-color 100ms ease",
-                cursor: "pointer",
-                fontWeight: 700,
-              }}
-            >
-              {"⚔️ 상세 분석"}
-            </Link>
-          </>
+          <div className="flex flex-col gap-1.5 w-full">
+            <div className="flex gap-2">
+              <Link
+                href={`/daily?characterId=${character.id}`}
+                className="flex-1 flex items-center justify-center gap-1 font-[family-name:var(--font-pixel)] text-[0.6875rem] text-white no-underline cursor-pointer transition-colors duration-100"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.15)",
+                  border: "2px solid rgba(255,255,255,0.3)",
+                  borderBottomWidth: "4px",
+                  padding: "8px 4px",
+                }}
+              >
+                {"📜 오늘의 운세"}
+              </Link>
+              <Link
+                href={`/characters/${character.id}`}
+                className="flex-1 flex items-center justify-center gap-1 font-[family-name:var(--font-pixel)] text-[0.6875rem] bg-white font-bold no-underline cursor-pointer transition-colors duration-100"
+                style={{
+                  color: ELEMENT_BG[element],
+                  border: "2px solid rgba(255,255,255,0.8)",
+                  borderBottomWidth: "4px",
+                  padding: "8px 4px",
+                }}
+              >
+                {"🌟 심화 특성"}
+              </Link>
+            </div>
+          </div>
         ) : (
           <Link
             href={`/reading/new?characterId=${character.id}`}
+            className="flex-1 flex items-center justify-center gap-1.5 font-[family-name:var(--font-pixel)] text-[0.75rem] text-white no-underline cursor-pointer tracking-[0.04em]"
             style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              fontFamily: "var(--font-pixel)",
-              fontSize: "0.75rem",
-              color: "#ffffff",
               background:
                 "linear-gradient(180deg, #d4b070 0%, #b8883c 50%, #9a7040 100%)",
               border: "2px solid #9a7040",
               borderBottomWidth: "4px",
               boxShadow: "0 2px 0 #6b4e28",
               padding: "10px 8px",
-              textDecoration: "none",
               textShadow: "0 1px 1px rgba(0,0,0,0.2)",
-              cursor: "pointer",
-              letterSpacing: "0.04em",
             }}
           >
             {"⚔️ 운명의 서를 열다 — 990원"}

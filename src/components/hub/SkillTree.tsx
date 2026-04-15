@@ -132,41 +132,18 @@ export default function SkillTree({
   return (
     <div className="skill-tree-container">
       {/* Section header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          marginBottom: "12px",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "var(--font-pixel)",
-            fontSize: "0.75rem",
-            color: "#9a7040",
-            letterSpacing: "0.06em",
-          }}
-        >
+      <div className="flex items-center gap-2 mb-3">
+        <span className="font-[family-name:var(--font-pixel)] text-[0.75rem] text-[#9a7040] tracking-[0.06em]">
           {"⚔️ 심화 특성"}
         </span>
         <span
+          className="flex-1 h-px opacity-40"
           style={{
-            flex: 1,
-            height: "1px",
             background:
               "linear-gradient(90deg, #b8944c 0%, transparent 100%)",
-            opacity: 0.4,
           }}
         />
-        <span
-          style={{
-            fontFamily: "var(--font-pixel)",
-            fontSize: "0.5625rem",
-            color: "#b8944c",
-            opacity: 0.7,
-          }}
-        >
+        <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8944c] opacity-70">
           {characterName}
         </span>
       </div>
@@ -180,31 +157,17 @@ export default function SkillTree({
       />
 
       {/* Connector line from root to grid */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          height: "16px",
-        }}
-      >
+      <div className="flex justify-center h-4">
         <div
+          className="w-0.5 h-full opacity-50"
           style={{
-            width: "2px",
-            height: "100%",
             backgroundColor: unlocked ? "#b8944c" : "#d4cfc8",
-            opacity: 0.5,
           }}
         />
       </div>
 
       {/* Sub-nodes — 2-column grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "8px",
-        }}
-      >
+      <div className="grid grid-cols-2 gap-2">
         {subNodes.map((node) => (
           <SkillNodeCard
             key={node.type}
@@ -234,7 +197,7 @@ function SkillNodeCard({
   const isLocked = state === "locked";
   const isComingSoon = state === "coming-soon";
 
-  // Determine styles per state
+  // Dynamic styles per state — keep inline
   const bgColor = isPurchased
     ? "rgba(200, 160, 32, 0.12)"
     : isAvailable
@@ -246,8 +209,6 @@ function SkillNodeCard({
     : isAvailable
       ? "#b8944c"
       : "#d4cfc8";
-
-  const borderWidth = isPurchased ? "2px" : "2px";
 
   const textColor = isPurchased
     ? "#9a7040"
@@ -277,10 +238,10 @@ function SkillNodeCard({
 
   const cardContent = (
     <div
-      className="skill-node"
+      className="skill-node relative overflow-hidden transition-[border-color,box-shadow] duration-150 ease-in-out"
       style={{
         backgroundColor: bgColor,
-        border: `${borderWidth} solid ${borderColor}`,
+        border: `2px solid ${borderColor}`,
         borderBottomWidth: isPurchased ? "4px" : isAvailable ? "4px" : "2px",
         boxShadow:
           isPurchased
@@ -289,11 +250,8 @@ function SkillNodeCard({
               ? "3px 3px 0px rgba(0, 0, 0, 0.06)"
               : "none",
         padding: isRoot ? "14px 16px" : "10px 12px",
-        position: "relative",
-        overflow: "hidden",
         opacity: isLocked || isComingSoon ? 0.6 : 1,
         cursor: href ? "pointer" : "default",
-        transition: "border-color 150ms ease, box-shadow 150ms ease",
       }}
       role="listitem"
       aria-label={`${node.label}: ${
@@ -308,55 +266,28 @@ function SkillNodeCard({
     >
       {/* Status badge — top right */}
       {isComingSoon && (
-        <span
-          style={{
-            position: "absolute",
-            top: "6px",
-            right: "6px",
-            fontFamily: "var(--font-pixel)",
-            fontSize: "0.5rem",
-            color: "#8a8070",
-            backgroundColor: "#ece5d8",
-            padding: "1px 6px",
-            border: "1px solid #d4cfc8",
-          }}
-        >
+        <span className="absolute top-1.5 right-1.5 font-[family-name:var(--font-pixel)] text-[0.5rem] text-[#8a8070] bg-[#ece5d8] px-1.5 py-px border border-[#d4cfc8]">
           준비 중
         </span>
       )}
 
       {isPurchased && (
-        <span
-          style={{
-            position: "absolute",
-            top: "6px",
-            right: "6px",
-            fontFamily: "var(--font-pixel)",
-            fontSize: "0.5rem",
-            color: "#ffffff",
-            backgroundColor: "#c8a020",
-            padding: "1px 6px",
-            border: "1px solid #9a7040",
-          }}
-        >
+        <span className="absolute top-1.5 right-1.5 font-[family-name:var(--font-pixel)] text-[0.5rem] text-white bg-[#c8a020] px-1.5 py-px border border-[#9a7040]">
           CLEAR
         </span>
       )}
 
       {/* Main content row */}
       <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: isRoot ? "12px" : "8px",
-        }}
+        className="flex items-center"
+        style={{ gap: isRoot ? "12px" : "8px" }}
       >
         {/* Icon */}
         <span
+          className="shrink-0"
           style={{
             fontSize: isRoot ? "1.5rem" : "1.125rem",
             opacity: iconOpacity,
-            flexShrink: 0,
             filter: isLocked || isComingSoon ? "grayscale(80%)" : "none",
           }}
         >
@@ -364,25 +295,19 @@ function SkillNodeCard({
         </span>
 
         {/* Label + description */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="flex-1 min-w-0">
           <div
+            className="font-[family-name:var(--font-pixel)] leading-[1.2] mb-0.5"
             style={{
-              fontFamily: "var(--font-pixel)",
               fontSize: isRoot ? "0.875rem" : "0.75rem",
               color: textColor,
-              lineHeight: 1.2,
-              marginBottom: "2px",
             }}
           >
             {node.label}
           </div>
           <div
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.625rem",
-              color: descColor,
-              lineHeight: 1.3,
-            }}
+            className="font-[family-name:var(--font-body)] text-[0.625rem] leading-[1.3]"
+            style={{ color: descColor }}
           >
             {node.description}
           </div>
@@ -391,15 +316,10 @@ function SkillNodeCard({
         {/* Price badge for available nodes */}
         {isAvailable && (
           <span
+            className="font-[family-name:var(--font-pixel)] text-[0.625rem] text-white px-2 py-[3px] shrink-0 border border-[#9a7040]"
             style={{
-              fontFamily: "var(--font-pixel)",
-              fontSize: "0.625rem",
-              color: "#ffffff",
               background:
                 "linear-gradient(180deg, #d4b070 0%, #b8883c 50%, #9a7040 100%)",
-              padding: "3px 8px",
-              border: "1px solid #9a7040",
-              flexShrink: 0,
               textShadow: "0 1px 1px rgba(0,0,0,0.15)",
             }}
           >
@@ -409,14 +329,7 @@ function SkillNodeCard({
 
         {/* Arrow for purchased */}
         {isPurchased && (
-          <span
-            style={{
-              fontFamily: "var(--font-pixel)",
-              fontSize: "0.75rem",
-              color: "#b8944c",
-              flexShrink: 0,
-            }}
-          >
+          <span className="font-[family-name:var(--font-pixel)] text-[0.75rem] text-[#b8944c] shrink-0">
             {">"}
           </span>
         )}
@@ -428,7 +341,7 @@ function SkillNodeCard({
     return (
       <Link
         href={href}
-        style={{ textDecoration: "none", display: "block" }}
+        className="no-underline block"
       >
         {cardContent}
       </Link>

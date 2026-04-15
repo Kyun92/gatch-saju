@@ -3,10 +3,7 @@ import Link from "next/link";
 export default function SamplePreview() {
   return (
     <div className="pixel-frame-accent p-5 mt-6">
-      <p
-        className="text-center mb-3"
-        style={{ fontFamily: "var(--font-pixel)", fontSize: "0.75rem", color: "#9a7040" }}
-      >
+      <p className="text-center mb-3 font-[family-name:var(--font-pixel)] text-xs text-[#9a7040]">
         종합 감정 미리보기
       </p>
 
@@ -20,14 +17,7 @@ export default function SamplePreview() {
             { label: "건강운", value: 90, color: "#3070c0" },
           ].map((stat) => (
             <div key={stat.label} className="flex items-center gap-2">
-              <span
-                style={{
-                  fontFamily: "var(--font-pixel)",
-                  fontSize: "0.625rem",
-                  color: "#8a8070",
-                  width: "3.5rem",
-                }}
-              >
+              <span className="font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#8a8070] w-14">
                 {stat.label}
               </span>
               <div className="stat-bar-track flex-1">
@@ -37,13 +27,8 @@ export default function SamplePreview() {
                 />
               </div>
               <span
-                style={{
-                  fontFamily: "var(--font-pixel)",
-                  fontSize: "0.625rem",
-                  color: stat.color,
-                  width: "1.5rem",
-                  textAlign: "right",
-                }}
+                className="font-[family-name:var(--font-pixel)] text-[0.625rem] w-6 text-right"
+                style={{ color: stat.color }}
               >
                 {stat.value}
               </span>
@@ -54,10 +39,7 @@ export default function SamplePreview() {
 
       {/* CTA */}
       <Link href="/reading/new" className="block">
-        <button
-          className="pixel-btn pixel-btn-primary w-full py-3 text-sm"
-          style={{ fontFamily: "var(--font-pixel)" }}
-        >
+        <button className="pixel-btn pixel-btn-primary w-full py-3 text-sm font-[family-name:var(--font-pixel)]">
           내 스탯 확인하기 — 990원
         </button>
       </Link>

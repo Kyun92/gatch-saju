@@ -15,15 +15,6 @@ const BIRTH_HOURS = [
   "18:00","19:00","20:00","21:00","22:00","23:00",
 ];
 
-const selectStyle = {
-  fontFamily: "var(--font-pixel)",
-  backgroundColor: "#faf7f2",
-  color: "#2c2418",
-  border: "2px solid #b8944c",
-  borderRadius: 0,
-  outline: "none",
-} as const;
-
 export default function CompatibilityPage() {
   const [partnerName, setPartnerName] = useState("");
   const [partnerBirthDate, setPartnerBirthDate] = useState("");
@@ -32,40 +23,25 @@ export default function CompatibilityPage() {
   const [partnerGender, setPartnerGender] = useState<"male" | "female">("female");
 
   return (
-    <div
-      className="w-full mx-auto px-4 py-6"
-      style={{ maxWidth: "768px", minHeight: "100vh" }}
-    >
-      <h1
-        className="text-xl mb-6"
-        style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
-      >
+    <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
+      <h1 className="text-xl mb-6 font-[family-name:var(--font-pixel)] text-[#b8883c]">
         💕 궁합 분석
       </h1>
 
       {/* VS Layout */}
       <PixelFrame variant="accent" className="p-5 mb-6 text-center">
         <div className="flex items-center justify-center gap-4 mb-4">
-          <div
-            className="pixel-frame-simple w-16 h-16 flex items-center justify-center"
-            style={{ backgroundColor: "#faf7f2", fontSize: "1.5rem" }}
-          >
+          <div className="pixel-frame-simple w-16 h-16 flex items-center justify-center bg-[#faf7f2] text-2xl">
             ⚔️
           </div>
-          <span
-            className="text-2xl"
-            style={{ fontFamily: "var(--font-pixel)", color: "#d04040" }}
-          >
+          <span className="text-2xl font-[family-name:var(--font-pixel)] text-[#d04040]">
             VS
           </span>
-          <div
-            className="pixel-frame-simple w-16 h-16 flex items-center justify-center"
-            style={{ backgroundColor: "#faf7f2", fontSize: "1.5rem" }}
-          >
+          <div className="pixel-frame-simple w-16 h-16 flex items-center justify-center bg-[#faf7f2] text-2xl">
             💕
           </div>
         </div>
-        <p className="text-sm" style={{ fontFamily: "var(--font-pixel)", color: "#4a3e2c" }}>
+        <p className="text-sm font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
           상대방의 정보를 입력하세요
         </p>
       </PixelFrame>
@@ -73,10 +49,7 @@ export default function CompatibilityPage() {
       {/* Partner Info Form */}
       <PixelFrame className="p-5">
         <div className="flex flex-col gap-4">
-          <label
-            className="text-sm"
-            style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-          >
+          <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
             상대방 이름
           </label>
           <input
@@ -84,62 +57,46 @@ export default function CompatibilityPage() {
             value={partnerName}
             onChange={(e) => setPartnerName(e.target.value)}
             placeholder="이름"
-            className="w-full px-4 py-3 text-sm"
-            style={selectStyle}
+            className="w-full px-4 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#faf7f2] text-[#2c2418] border-2 border-[#b8944c] rounded-none outline-none"
           />
 
-          <label
-            className="text-sm"
-            style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-          >
+          <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
             생년월일
           </label>
           <input
             type="date"
             value={partnerBirthDate}
             onChange={(e) => setPartnerBirthDate(e.target.value)}
-            className="w-full px-4 py-3 text-sm"
-            style={selectStyle}
+            className="w-full px-4 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#faf7f2] text-[#2c2418] border-2 border-[#b8944c] rounded-none outline-none"
           />
 
-          <label
-            className="text-sm"
-            style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-          >
+          <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
             태어난 시간
           </label>
           <select
             value={partnerBirthTime}
             onChange={(e) => setPartnerBirthTime(e.target.value)}
-            className="w-full px-4 py-3 text-sm"
-            style={selectStyle}
+            className="w-full px-4 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#faf7f2] text-[#2c2418] border-2 border-[#b8944c] rounded-none outline-none"
           >
             {BIRTH_HOURS.map((h) => (
               <option key={h} value={h}>{h}</option>
             ))}
           </select>
 
-          <label
-            className="text-sm"
-            style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-          >
+          <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
             출생지
           </label>
           <select
             value={partnerCity}
             onChange={(e) => setPartnerCity(e.target.value)}
-            className="w-full px-4 py-3 text-sm"
-            style={selectStyle}
+            className="w-full px-4 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#faf7f2] text-[#2c2418] border-2 border-[#b8944c] rounded-none outline-none"
           >
             {cities.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
 
-          <label
-            className="text-sm"
-            style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-          >
+          <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
             성별
           </label>
           <div className="flex gap-4">
@@ -151,12 +108,9 @@ export default function CompatibilityPage() {
                   value={g}
                   checked={partnerGender === g}
                   onChange={() => setPartnerGender(g)}
-                  style={{ accentColor: "#9a7040" }}
+                  className="accent-[#9a7040]"
                 />
-                <span
-                  className="text-sm"
-                  style={{ fontFamily: "var(--font-pixel)", color: "#2c2418" }}
-                >
+                <span className="text-sm font-[family-name:var(--font-pixel)] text-[#2c2418]">
                   {g === "male" ? "남성" : "여성"}
                 </span>
               </label>

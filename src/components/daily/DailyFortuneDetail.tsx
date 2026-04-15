@@ -23,45 +23,26 @@ export default function DailyFortuneDetail({
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-2 right-3 pixel-btn-secondary"
-        style={{
-          fontFamily: "var(--font-pixel)",
-          fontSize: "0.75rem",
-          padding: "2px 8px",
-          border: "1px solid #d4c4a0",
-          background: "#faf7f2",
-          color: "#9a7040",
-          cursor: "pointer",
-          lineHeight: 1.4,
-        }}
+        className="absolute top-2 right-3 pixel-btn-secondary font-[family-name:var(--font-pixel)] text-xs px-2 py-0.5 border border-[#d4c4a0] bg-[#faf7f2] text-[#9a7040] cursor-pointer leading-snug"
         aria-label="닫기"
       >
         X
       </button>
 
       {/* Date label */}
-      <p
-        className="text-xs mb-1"
-        style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
-      >
+      <p className="text-xs mb-1 font-[family-name:var(--font-pixel)] text-[#b8883c]">
         {year}. {dateLabel}
       </p>
 
       {/* Title */}
       {title && (
-        <h3
-          className="text-base mb-3"
-          style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-        >
+        <h3 className="text-base mb-3 font-[family-name:var(--font-pixel)] text-[#9a7040]">
           {title}
         </h3>
       )}
 
       {/* Content */}
-      <div
-        className="daily-fortune-content whitespace-pre-wrap"
-        style={{ color: "#2c2418" }}
-      >
+      <div className="daily-fortune-content whitespace-pre-wrap text-[#2c2418]">
         {content}
       </div>
     </PixelFrame>

@@ -12,23 +12,15 @@ export default function TrustBadge() {
         {SYSTEMS.map((sys) => (
           <div key={sys.label} className="flex flex-col items-center gap-1">
             <span
-              style={{
-                fontFamily: "var(--font-pixel)",
-                fontSize: "1rem",
-                color: sys.color,
-                lineHeight: 1,
-              }}
+              className="font-[family-name:var(--font-pixel)] text-base leading-none"
+              style={{ color: sys.color }}
               aria-label={sys.sublabel}
             >
               {sys.label}
             </span>
             <span
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "0.5625rem",
-                color: sys.color,
-                opacity: 0.8,
-              }}
+              className="font-[family-name:var(--font-body)] text-[0.5625rem] opacity-80"
+              style={{ color: sys.color }}
             >
               {sys.sublabel}
             </span>
@@ -38,23 +30,13 @@ export default function TrustBadge() {
 
       {/* 구분선 */}
       <div
-        style={{
-          width: 120,
-          height: 1,
-          backgroundColor: "#d4c4a0",
-        }}
+        className="w-[120px] h-px bg-[#d4c4a0]"
         aria-hidden="true"
       />
 
       {/* 설명 텍스트 */}
       <p
-        style={{
-          fontFamily: "var(--font-pixel)",
-          fontSize: "0.625rem",
-          color: "#8a8070",
-          letterSpacing: "0.04em",
-          textAlign: "center",
-        }}
+        className="font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#8a8070] tracking-[0.04em] text-center"
       >
         정통 운명학 기반 AI 교차분석
       </p>

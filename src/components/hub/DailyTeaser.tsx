@@ -23,17 +23,7 @@ export default function DailyTeaser({ todayReading }: DailyTeaserProps) {
     <div className="relative">
       {/* 무료 뱃지 */}
       <span
-        className="absolute z-10"
-        style={{
-          top: -8,
-          left: 8,
-          fontFamily: "var(--font-pixel)",
-          fontSize: "0.5625rem",
-          color: "#2e8b4e",
-          border: "1px solid #2e8b4e",
-          backgroundColor: "#f5f0e8",
-          padding: "2px 8px",
-        }}
+        className="absolute z-10 -top-2 left-2 font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#2e8b4e] border border-[#2e8b4e] bg-[#f5f0e8] px-2 py-px"
       >
         무료
       </span>
@@ -41,34 +31,18 @@ export default function DailyTeaser({ todayReading }: DailyTeaserProps) {
       {todayReading ? (
         <PixelFrame variant="default" className="p-4 pt-5">
           <p
-            className="mb-1"
-            style={{
-              fontFamily: "var(--font-pixel)",
-              fontSize: "0.75rem",
-              color: "#b8883c",
-            }}
+            className="mb-1 font-[family-name:var(--font-pixel)] text-xs text-[#b8883c]"
           >
             {todayReading.character_title}
           </p>
           <p
-            className="mb-3 leading-relaxed"
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.8125rem",
-              color: "#4a3e2c",
-              lineHeight: 1.7,
-            }}
+            className="mb-3 font-[family-name:var(--font-body)] text-[0.8125rem] text-[#4a3e2c] leading-[1.7]"
           >
             {getFirstTwoLines(todayReading.content)}
           </p>
           <Link
             href="/daily"
-            style={{
-              fontFamily: "var(--font-pixel)",
-              fontSize: "0.6875rem",
-              color: "#9a7040",
-              textDecoration: "none",
-            }}
+            className="font-[family-name:var(--font-pixel)] text-[0.6875rem] text-[#9a7040] no-underline"
           >
             자세히 보기 →
           </Link>
@@ -76,11 +50,7 @@ export default function DailyTeaser({ todayReading }: DailyTeaserProps) {
       ) : (
         <PixelFrame variant="default" className="p-4 pt-5 flex flex-col items-center gap-3 text-center">
           <p
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.875rem",
-              color: "#4a3e2c",
-            }}
+            className="font-[family-name:var(--font-body)] text-sm text-[#4a3e2c]"
           >
             📜 오늘의 퀘스트가 기다리고 있습니다
           </p>

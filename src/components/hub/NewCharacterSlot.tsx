@@ -4,53 +4,24 @@ export default function NewCharacterSlot() {
   return (
     <Link
       href="/characters/new"
-      style={{ textDecoration: "none", display: "block" }}
+      className="no-underline block"
     >
       <div
-        style={{
-          border: "2px dashed #b8944c",
-          backgroundColor: "#faf7f2",
-          padding: "28px 20px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "8px",
-          cursor: "pointer",
-          transition: "border-color 150ms ease, background-color 150ms ease",
-          minHeight: "120px",
-        }}
-        className="new-character-slot"
+        className="new-character-slot border-2 border-dashed border-[#b8944c] bg-[#faf7f2] px-5 py-7 flex flex-col items-center justify-center gap-2 cursor-pointer transition-[border-color,background-color] duration-150 ease-in-out min-h-[120px]"
       >
         <span
-          style={{
-            fontFamily: "var(--font-pixel)",
-            fontSize: "2rem",
-            color: "#b8944c",
-            lineHeight: 1,
-          }}
+          className="font-[family-name:var(--font-pixel)] text-[2rem] text-[#b8944c] leading-none"
           aria-hidden="true"
         >
           +
         </span>
         <span
-          style={{
-            fontFamily: "var(--font-pixel)",
-            fontSize: "0.75rem",
-            color: "#9a7040",
-            letterSpacing: "0.04em",
-          }}
+          className="font-[family-name:var(--font-pixel)] text-xs text-[#9a7040] tracking-[0.04em]"
         >
           새 캐릭터 추가
         </span>
         <span
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: "0.6875rem",
-            color: "#8a8070",
-            textAlign: "center",
-            lineHeight: 1.5,
-          }}
+          className="font-[family-name:var(--font-body)] text-[0.6875rem] text-[#8a8070] text-center leading-normal"
         >
           친구, 가족의 사주도 확인해보세요
         </span>

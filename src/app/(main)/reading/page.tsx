@@ -36,29 +36,17 @@ export default async function ReadingPage({ searchParams }: ReadingPageProps) {
     .order("created_at", { ascending: false });
 
   return (
-    <div
-      className="w-full mx-auto px-4 py-6"
-      style={{ maxWidth: "768px", minHeight: "100vh" }}
-    >
-      <h1
-        className="text-xl mb-6"
-        style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
-      >
+    <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
+      <h1 className="text-xl mb-6 font-[family-name:var(--font-pixel)] text-[#b8883c]">
         ⚔️ 종합 사주 감정
       </h1>
 
       {/* CTA */}
       <PixelFrame variant="accent" className="p-5 mb-6 text-center">
-        <p
-          className="text-sm mb-2"
-          style={{ fontFamily: "var(--font-pixel)", color: "#4a3e2c" }}
-        >
+        <p className="text-sm mb-2 font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
           사주명리 + 자미두수 + 서양점성술
         </p>
-        <p
-          className="text-sm mb-4"
-          style={{ fontFamily: "var(--font-pixel)", color: "#4a3e2c" }}
-        >
+        <p className="text-sm mb-4 font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
           세 가지 운명학으로 종합 감정합니다
         </p>
         <Link href={`/reading/new?characterId=${characterId}`}>
@@ -74,10 +62,7 @@ export default async function ReadingPage({ searchParams }: ReadingPageProps) {
       {/* Past Readings */}
       {readings && readings.length > 0 && (
         <div>
-          <h2
-            className="text-sm mb-3"
-            style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-          >
+          <h2 className="text-sm mb-3 font-[family-name:var(--font-pixel)] text-[#9a7040]">
             지난 감정 기록
           </h2>
           <div className="flex flex-col gap-3">
@@ -93,31 +78,21 @@ export default async function ReadingPage({ searchParams }: ReadingPageProps) {
                 <PixelFrame key={reading.id} className={`p-4${href ? " cursor-pointer hover:opacity-80 transition-opacity" : ""}`}>
                   <div className="flex justify-between items-center">
                     <div>
-                      <p
-                        className="text-sm"
-                        style={{
-                          fontFamily: "var(--font-pixel)",
-                          color: "#b8883c",
-                        }}
-                      >
+                      <p className="text-sm font-[family-name:var(--font-pixel)] text-[#b8883c]">
                         {reading.character_title ?? "종합 감정"}
                       </p>
-                      <p className="text-xs mt-1" style={{ color: "#8a8070" }}>
+                      <p className="text-xs mt-1 text-[#8a8070]">
                         {new Date(reading.created_at).toLocaleDateString("ko-KR")}
                       </p>
                     </div>
                     <span
-                      className="text-xs px-2 py-1"
-                      style={{
-                        fontFamily: "var(--font-pixel)",
-                        color:
-                          reading.status === "complete"
-                            ? "#2e8b4e"
-                            : reading.status === "error"
-                              ? "#d04040"
-                              : "#c8a020",
-                        border: "1px solid currentColor",
-                      }}
+                      className={`text-xs px-2 py-1 font-[family-name:var(--font-pixel)] border border-current ${
+                        reading.status === "complete"
+                          ? "text-[#2e8b4e]"
+                          : reading.status === "error"
+                            ? "text-[#d04040]"
+                            : "text-[#c8a020]"
+                      }`}
                     >
                       {reading.status === "complete"
                         ? "완료"

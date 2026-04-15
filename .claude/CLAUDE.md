@@ -141,6 +141,15 @@ src/
 - **골드 액센트**: `#9a7040` (라이트 모드용 깊은 골드)
 - **오행 색상**: wood=#2e8b4e, fire=#d04040, earth=#a87838, metal=#6878a0, water=#3070c0
 
+### CSS 컨벤션 (필수)
+- **인라인 스타일(`style={{ }}`) 사용 금지**. 절대 사용하지 마라.
+- **우선순위**: Tailwind 유틸리티 클래스 > CSS Module (.module.css) > globals.css 커스텀 클래스
+- **Tailwind arbitrary values** 적극 사용: `text-[#9a7040]`, `bg-[#f5f0e8]`, `border-[#b8944c]`, `font-[family-name:var(--font-pixel)]`
+- **반복되는 패턴**은 globals.css의 `@layer components { }` 안에 클래스로 정의
+- **Tailwind v4에서 커스텀 클래스가 안 먹히면** CSS Module(`.module.css`)로 전환 — DailyCalendar.module.css가 선례
+- **동적 값**(오행 색상 등 props에 따라 변하는 것)만 예외적으로 inline style 허용, 그것도 최소한으로
+- 기존 인라인 스타일 코드는 리팩토링 대상 (점진적으로 Tailwind/CSS Module로 전환)
+
 ### 차트 데이터 (LLM 입력의 핵심)
 모든 운세(종합풀이, 일일운세, 궁합)는 **차트 엔진이 생성한 JSON 데이터**를 기반으로 LLM이 해석한다.
 차트 엔진 3개가 생년월일시+출생지로 계산한 결과가 곧 운세의 원본 데이터이며, LLM은 이 데이터를 읽고 해석하는 역할이다.

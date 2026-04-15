@@ -78,17 +78,11 @@ export default async function ReadingDetailPage({
   // If failed, show error
   if (reading.status === "error") {
     return (
-      <div
-        className="w-full mx-auto px-4 py-6 text-center"
-        style={{ maxWidth: "768px", minHeight: "100vh" }}
-      >
-        <h1
-          className="text-xl mb-4"
-          style={{ fontFamily: "var(--font-pixel)", color: "#d04040" }}
-        >
+      <div className="w-full mx-auto px-4 py-6 text-center max-w-[768px] min-h-screen">
+        <h1 className="text-xl mb-4 font-[family-name:var(--font-pixel)] text-[#d04040]">
           감정 실패
         </h1>
-        <p className="text-sm" style={{ color: "#4a3e2c" }}>
+        <p className="text-sm text-[#4a3e2c]">
           운세 감정 중 오류가 발생했습니다. 다시 시도해주세요.
         </p>
       </div>
@@ -125,22 +119,13 @@ export default async function ReadingDetailPage({
   // Yearly reading layout
   if (readingType === "yearly") {
     return (
-      <div
-        className="w-full mx-auto px-4 py-6"
-        style={{ maxWidth: "768px", minHeight: "100vh" }}
-      >
+      <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
         {/* 헤더 */}
         <div className="text-center mb-6">
-          <h1
-            className="text-xl"
-            style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
-          >
+          <h1 className="text-xl font-[family-name:var(--font-pixel)] text-[#b8883c]">
             {readingYear}년 운세 감정서
           </h1>
-          <p
-            className="text-sm mt-2"
-            style={{ fontFamily: "var(--font-pixel)", color: "#8a8070" }}
-          >
+          <p className="text-sm mt-2 font-[family-name:var(--font-pixel)] text-[#8a8070]">
             {character.name ?? "모험자"}의 년운 분석
           </p>
         </div>
@@ -188,16 +173,10 @@ export default async function ReadingDetailPage({
 
   // Comprehensive reading layout (default)
   return (
-    <div
-      className="w-full mx-auto px-4 py-6"
-      style={{ maxWidth: "768px", minHeight: "100vh" }}
-    >
+    <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
       {/* 헤더 */}
       <div className="text-center mb-6">
-        <h1
-          className="text-xl"
-          style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
-        >
+        <h1 className="text-xl font-[family-name:var(--font-pixel)] text-[#b8883c]">
           종합 운세 감정서
         </h1>
       </div>

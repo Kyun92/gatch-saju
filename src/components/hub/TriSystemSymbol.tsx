@@ -39,33 +39,28 @@ export default function TriSystemSymbol({ size = "full" }: TriSystemSymbolProps)
 
   return (
     <div
-      style={{ width: w, height: h, position: "relative", margin: "0 auto" }}
+      className="relative mx-auto"
+      style={{ width: w, height: h }}
       aria-label="사주, 자미두수, 서양점성술 3체계 교차분석"
     >
       {circles.map((c, i) => (
         <div
           key={i}
+          className="absolute rounded-full border-2 flex flex-col items-center justify-center gap-0.5"
           style={{
-            position: "absolute",
             width: d,
             height: d,
-            borderRadius: "50%",
-            border: `2px solid ${c.border}`,
+            borderColor: c.border,
             backgroundColor: c.bg,
             left: c.x - r,
             top: c.y - r,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 2,
           }}
         >
-          <span style={{ fontFamily: "var(--font-pixel)", fontSize: cfg.label, color: c.border, lineHeight: 1 }}>
+          <span className="font-[family-name:var(--font-pixel)] leading-none" style={{ fontSize: cfg.label, color: c.border }}>
             {c.text}
           </span>
           {cfg.sub !== "0" && (
-            <span style={{ fontFamily: "var(--font-body)", fontSize: cfg.sub, color: c.border, opacity: 0.8 }}>
+            <span className="font-[family-name:var(--font-body)] opacity-80" style={{ fontSize: cfg.sub, color: c.border }}>
               {c.sub}
             </span>
           )}
@@ -74,24 +69,15 @@ export default function TriSystemSymbol({ size = "full" }: TriSystemSymbolProps)
 
       {/* AI 중심 원 */}
       <div
-        className="animate-px-glow"
+        className="animate-px-glow absolute rounded-full bg-[#f5f0e8] border-2 border-[#9a7040] flex items-center justify-center z-[2] shadow-[0_0_8px_rgba(154,112,64,0.4)]"
         style={{
-          position: "absolute",
           width: cfg.center,
           height: cfg.center,
-          borderRadius: "50%",
           left: aiX - cfg.center / 2,
           top: aiY - cfg.center / 2,
-          backgroundColor: "#f5f0e8",
-          border: "2px solid #9a7040",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 2,
-          boxShadow: "0 0 8px rgba(154,112,64,0.4)",
         }}
       >
-        <span style={{ fontFamily: "var(--font-pixel)", fontSize: cfg.ai, color: "#9a7040" }}>
+        <span className="font-[family-name:var(--font-pixel)] text-[#9a7040]" style={{ fontSize: cfg.ai }}>
           AI
         </span>
       </div>

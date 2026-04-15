@@ -106,15 +106,9 @@ export default function NewCharacterPage() {
   }
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center px-4 py-8"
-      style={{ backgroundColor: "#f5f0e8" }}
-    >
+    <div className="min-h-screen flex flex-col items-center px-4 py-8 bg-[#f5f0e8]">
       {/* Header */}
-      <h1
-        className="text-2xl mb-6"
-        style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
-      >
+      <h1 className="text-2xl mb-6 font-[family-name:var(--font-pixel)] text-[#b8883c]">
         ⚔️ 캐릭터 추가
       </h1>
 
@@ -123,11 +117,7 @@ export default function NewCharacterPage() {
         {[1, 2, 3].map((s) => (
           <div
             key={s}
-            className="w-3 h-3"
-            style={{
-              backgroundColor: s <= step ? "#c8a020" : "#d4c4a0",
-              border: "1px solid #b8944c",
-            }}
+            className={`w-3 h-3 border border-[#b8944c] ${s <= step ? "bg-[#c8a020]" : "bg-[#d4c4a0]"}`}
           />
         ))}
       </div>
@@ -136,10 +126,7 @@ export default function NewCharacterPage() {
         {/* Step 1: Name */}
         {step === 1 && (
           <div className="flex flex-col gap-4">
-            <label
-              className="text-sm"
-              style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-            >
+            <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
               이름을 입력하세요
             </label>
             <input
@@ -148,15 +135,7 @@ export default function NewCharacterPage() {
               onChange={(e) => setName(e.target.value)}
               placeholder="홍길동"
               maxLength={20}
-              className="w-full px-4 py-3 text-sm"
-              style={{
-                fontFamily: "var(--font-pixel)",
-                backgroundColor: "#faf7f2",
-                color: "#2c2418",
-                border: "2px solid #b8944c",
-                borderRadius: 0,
-                outline: "none",
-              }}
+              className="w-full px-4 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#faf7f2] text-[#2c2418] border-2 border-[#b8944c] rounded-none outline-none"
             />
             <PixelButton
               disabled={!canProceedStep1}
@@ -172,14 +151,11 @@ export default function NewCharacterPage() {
         {/* Step 2: Birth Info */}
         {step === 2 && (
           <div className="flex flex-col gap-4">
-            <label
-              className="text-sm"
-              style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-            >
+            <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
               생년월일
             </label>
-            <div style={{ display: "flex", gap: "6px" }}>
-              <div style={{ flex: 2 }}>
+            <div className="flex gap-1.5">
+              <div className="flex-[2]">
                 <PixelSelect
                   value={birthYear}
                   onChange={setBirthYear}
@@ -190,7 +166,7 @@ export default function NewCharacterPage() {
                   })}
                 />
               </div>
-              <div style={{ flex: 1 }}>
+              <div className="flex-1">
                 <PixelSelect
                   value={birthMonth}
                   onChange={setBirthMonth}
@@ -201,7 +177,7 @@ export default function NewCharacterPage() {
                   }))}
                 />
               </div>
-              <div style={{ flex: 1 }}>
+              <div className="flex-1">
                 <PixelSelect
                   value={birthDay}
                   onChange={setBirthDay}
@@ -214,10 +190,7 @@ export default function NewCharacterPage() {
               </div>
             </div>
 
-            <label
-              className="text-sm"
-              style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-            >
+            <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
               태어난 시간
             </label>
             <div className="flex gap-2">
@@ -239,10 +212,7 @@ export default function NewCharacterPage() {
               />
             </div>
 
-            <label
-              className="text-sm"
-              style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-            >
+            <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
               출생지
             </label>
             <PixelSelect
@@ -251,10 +221,7 @@ export default function NewCharacterPage() {
               options={CITY_OPTIONS}
             />
 
-            <label
-              className="text-sm"
-              style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-            >
+            <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
               성별
             </label>
             <div className="flex gap-4">
@@ -266,22 +233,16 @@ export default function NewCharacterPage() {
                     value={g}
                     checked={gender === g}
                     onChange={() => setGender(g)}
-                    style={{ accentColor: "#9a7040" }}
+                    className="accent-[#9a7040]"
                   />
-                  <span
-                    className="text-sm"
-                    style={{ fontFamily: "var(--font-pixel)", color: "#2c2418" }}
-                  >
+                  <span className="text-sm font-[family-name:var(--font-pixel)] text-[#2c2418]">
                     {g === "male" ? "남성" : "여성"}
                   </span>
                 </label>
               ))}
             </div>
 
-            <label
-              className="text-sm"
-              style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-            >
+            <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
               MBTI (선택사항)
             </label>
             <PixelSelect
@@ -315,70 +276,37 @@ export default function NewCharacterPage() {
         {/* Step 3: Preview */}
         {step === 3 && (
           <div className="flex flex-col gap-5 items-center">
-            <p
-              className="text-sm text-center"
-              style={{ fontFamily: "var(--font-pixel)", color: "#4a3e2c" }}
-            >
+            <p className="text-sm text-center font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
               캐릭터를 확인하세요
             </p>
 
             {/* Character Preview */}
-            <div
-              className="pixel-frame-accent p-4 w-full flex flex-col items-center gap-3"
-            >
-              <div
-                className="w-20 h-20 pixel-frame-simple flex items-center justify-center"
-                style={{
-                  backgroundColor: "#faf7f2",
-                  fontSize: "2.5rem",
-                }}
-              >
+            <div className="pixel-frame-accent p-4 w-full flex flex-col items-center gap-3">
+              <div className="w-20 h-20 pixel-frame-simple flex items-center justify-center bg-[#faf7f2] text-[2.5rem]">
                 ⚔️
               </div>
-              <div
-                className="text-xl"
-                style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
-              >
+              <div className="text-xl font-[family-name:var(--font-pixel)] text-[#b8883c]">
                 {name}
               </div>
               <div className="flex items-center gap-2">
                 <span
-                  className={`tag-base tag-${element}`}
-                  style={{
-                    padding: "4px 10px",
-                    fontSize: "0.8125rem",
-                    fontFamily: "var(--font-pixel)",
-                  }}
+                  className={`tag-base tag-${element} py-1 px-2.5 text-[0.8125rem] font-[family-name:var(--font-pixel)]`}
                 >
                   {ELEMENT_LABEL[element]}
                 </span>
                 {mbti && (
-                  <span
-                    className="text-xs px-2 py-1"
-                    style={{
-                      fontFamily: "var(--font-pixel)",
-                      color: "#9a7040",
-                      border: "1px solid #b8944c",
-                      backgroundColor: "rgba(184,148,76,0.1)",
-                    }}
-                  >
+                  <span className="text-xs px-2 py-1 font-[family-name:var(--font-pixel)] text-[#9a7040] border border-[#b8944c] bg-[rgba(184,148,76,0.1)]">
                     {mbti}
                   </span>
                 )}
               </div>
-              <p
-                className="text-xs text-center"
-                style={{ color: "#8a8070" }}
-              >
+              <p className="text-xs text-center text-[#8a8070]">
                 {birthDate} | {birthCity} | {gender === "male" ? "남" : "여"}
               </p>
             </div>
 
             {error && (
-              <p
-                className="text-sm text-center"
-                style={{ fontFamily: "var(--font-pixel)", color: "#d04040" }}
-              >
+              <p className="text-sm text-center font-[family-name:var(--font-pixel)] text-[#d04040]">
                 {error}
               </p>
             )}

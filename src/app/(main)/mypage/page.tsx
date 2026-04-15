@@ -84,79 +84,36 @@ export default async function MyPage() {
     : "-";
 
   return (
-    <div
-      className="w-full mx-auto px-4 py-6"
-      style={{ maxWidth: "480px", minHeight: "100vh" }}
-    >
+    <div className="w-full mx-auto px-4 py-6 max-w-[480px] min-h-screen">
       {/* 계정 정보 */}
       <PixelFrame variant="accent" className="p-5 mb-5">
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        <div className="flex items-center gap-4">
           {/* 프로필 이미지 */}
-          <div
-            style={{
-              width: "64px",
-              height: "64px",
-              flexShrink: 0,
-              backgroundColor: "#f0ebe0",
-              border: "2px solid #b8944c",
-              overflow: "hidden",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="w-16 h-16 shrink-0 bg-[#f0ebe0] border-2 border-[#b8944c] overflow-hidden flex items-center justify-center">
             {user?.image ? (
               <Image
                 src={user.image}
                 alt="프로필"
                 width={64}
                 height={64}
-                style={{ objectFit: "cover" }}
+                className="object-cover"
               />
             ) : (
-              <span
-                style={{
-                  fontFamily: "var(--font-pixel)",
-                  fontSize: "1.5rem",
-                  color: "#b8944c",
-                }}
-              >
+              <span className="font-[family-name:var(--font-pixel)] text-2xl text-[#b8944c]">
                 {(user?.name ?? "?")[0]}
               </span>
             )}
           </div>
 
           {/* 이름 + 이메일 */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontFamily: "var(--font-pixel)",
-                fontSize: "1.125rem",
-                color: "#b8883c",
-                marginBottom: "4px",
-              }}
-            >
+          <div className="flex-1 min-w-0">
+            <div className="font-[family-name:var(--font-pixel)] text-lg text-[#b8883c] mb-1">
               {user?.name ?? "모험가"}
             </div>
-            <div
-              style={{
-                fontSize: "0.75rem",
-                color: "#8a8070",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
+            <div className="text-xs text-[#8a8070] overflow-hidden text-ellipsis whitespace-nowrap">
               {user?.email ?? ""}
             </div>
-            <div
-              style={{
-                fontFamily: "var(--font-pixel)",
-                fontSize: "0.5625rem",
-                color: "#b8a890",
-                marginTop: "4px",
-              }}
-            >
+            <div className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890] mt-1">
               가입일: {joinDate}
             </div>
           </div>
@@ -164,19 +121,12 @@ export default async function MyPage() {
       </PixelFrame>
 
       {/* 내 캐릭터 목록 */}
-      <div style={{ marginBottom: "20px" }}>
-        <h2
-          style={{
-            fontFamily: "var(--font-pixel)",
-            fontSize: "0.875rem",
-            color: "#9a7040",
-            marginBottom: "12px",
-          }}
-        >
+      <div className="mb-5">
+        <h2 className="font-[family-name:var(--font-pixel)] text-sm text-[#9a7040] mb-3">
           내 캐릭터 ({characters?.length ?? 0})
         </h2>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div className="flex flex-col gap-2">
           {(characters ?? []).map((char) => {
             const chartInfo = chartMap.get(char.id);
             const element = chartInfo?.element ?? "water";
@@ -191,96 +141,58 @@ export default async function MyPage() {
               <Link
                 key={char.id}
                 href={char.unlocked ? `/daily?characterId=${char.id}` : `/reading/new?characterId=${char.id}`}
-                style={{ textDecoration: "none" }}
+                className="no-underline"
               >
                 <PixelFrame
                   variant={char.unlocked ? "default" : "simple"}
                   className="p-3"
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <div className="flex items-center gap-3">
                     {/* 미니 아바타 */}
                     <div
-                      style={{
-                        width: "48px",
-                        height: "48px",
-                        flexShrink: 0,
-                        border: char.unlocked ? "2px solid #b8944c" : "2px solid #d4cfc8",
-                        overflow: "hidden",
-                        position: "relative",
-                      }}
+                      className={`w-12 h-12 shrink-0 overflow-hidden relative ${char.unlocked ? "border-2 border-[#b8944c]" : "border-2 border-[#d4cfc8]"}`}
                     >
                       <Image
                         src={`/characters/${element}-${char.gender}.png`}
                         alt={char.name}
                         fill
-                        style={{
-                          objectFit: "cover",
-                          imageRendering: "pixelated",
-                          opacity: char.unlocked ? 1 : 0.3,
-                          filter: char.unlocked ? "none" : "grayscale(100%)",
-                        }}
+                        className={`object-cover [image-rendering:pixelated] ${char.unlocked ? "opacity-100" : "opacity-30 grayscale"}`}
                         sizes="48px"
                       />
                     </div>
 
                     {/* 캐릭터 정보 */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
                         <span
-                          style={{
-                            fontFamily: "var(--font-pixel)",
-                            fontSize: "0.875rem",
-                            color: char.unlocked ? "#2c2418" : "#8a8070",
-                          }}
+                          className={`font-[family-name:var(--font-pixel)] text-sm ${char.unlocked ? "text-[#2c2418]" : "text-[#8a8070]"}`}
                         >
                           {char.name}
                         </span>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-pixel)",
-                            fontSize: "0.5625rem",
-                            color: "#b8a890",
-                          }}
-                        >
+                        <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890]">
                           Lv.{level}
                         </span>
                         {char.is_self && (
-                          <span
-                            style={{
-                              fontFamily: "var(--font-pixel)",
-                              fontSize: "0.4375rem",
-                              color: "#9a7040",
-                              border: "1px solid #b8944c",
-                              padding: "1px 4px",
-                            }}
-                          >
+                          <span className="font-[family-name:var(--font-pixel)] text-[0.4375rem] text-[#9a7040] border border-[#b8944c] px-1 py-px">
                             본인
                           </span>
                         )}
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <div className="flex items-center gap-1.5">
                         <ElementTag element={element} size="sm" />
                         {dayMaster && (
-                          <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.5625rem", color: "#8a8070" }}>
+                          <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#8a8070]">
                             {dayMaster}
                           </span>
                         )}
                         {char.mbti && (
-                          <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.5625rem", color: "#6858b8" }}>
+                          <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#6858b8]">
                             {char.mbti}
                           </span>
                         )}
                       </div>
                       {title && (
-                        <div
-                          style={{
-                            fontFamily: "var(--font-body)",
-                            fontSize: "0.6875rem",
-                            color: "#8a8070",
-                            fontStyle: "italic",
-                            marginTop: "2px",
-                          }}
-                        >
+                        <div className="font-[family-name:var(--font-body)] text-[0.6875rem] text-[#8a8070] italic mt-0.5">
                           &ldquo;{title}&rdquo;
                         </div>
                       )}
@@ -288,14 +200,11 @@ export default async function MyPage() {
 
                     {/* 상태 뱃지 */}
                     <span
-                      style={{
-                        fontFamily: "var(--font-pixel)",
-                        fontSize: "0.5rem",
-                        color: char.unlocked ? "#2e8b4e" : "#c8a020",
-                        border: `1px solid ${char.unlocked ? "#2e8b4e" : "#c8a020"}`,
-                        padding: "2px 6px",
-                        flexShrink: 0,
-                      }}
+                      className={`font-[family-name:var(--font-pixel)] text-[0.5rem] shrink-0 px-1.5 py-0.5 ${
+                        char.unlocked
+                          ? "text-[#2e8b4e] border border-[#2e8b4e]"
+                          : "text-[#c8a020] border border-[#c8a020]"
+                      }`}
                     >
                       {char.unlocked ? "해금" : "잠김"}
                     </span>
@@ -306,20 +215,10 @@ export default async function MyPage() {
           })}
 
           {/* 새 캐릭터 추가 */}
-          <Link href="/characters/new" style={{ textDecoration: "none" }}>
-            <div
-              style={{
-                border: "2px dashed #b8944c",
-                padding: "16px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                cursor: "pointer",
-              }}
-            >
-              <span style={{ fontFamily: "var(--font-pixel)", fontSize: "1rem", color: "#b8944c" }}>+</span>
-              <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.75rem", color: "#9a7040" }}>
+          <Link href="/characters/new" className="no-underline">
+            <div className="border-2 border-dashed border-[#b8944c] p-4 flex items-center justify-center gap-2 cursor-pointer">
+              <span className="font-[family-name:var(--font-pixel)] text-base text-[#b8944c]">+</span>
+              <span className="font-[family-name:var(--font-pixel)] text-xs text-[#9a7040]">
                 새 캐릭터 추가
               </span>
             </div>
@@ -328,7 +227,7 @@ export default async function MyPage() {
       </div>
 
       {/* 로그아웃 */}
-      <div style={{ marginTop: "24px", marginBottom: "40px" }}>
+      <div className="mt-6 mb-10">
         <LogoutButton />
       </div>
     </div>

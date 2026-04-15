@@ -88,32 +88,20 @@ function NewReadingContent() {
   }
 
   return (
-    <div
-      className="w-full mx-auto px-4 py-6"
-      style={{ maxWidth: "768px", minHeight: "100vh" }}
-    >
-      <h1
-        className="text-xl mb-6"
-        style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
-      >
+    <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
+      <h1 className="text-xl mb-6 font-[family-name:var(--font-pixel)] text-[#b8883c]">
         {type === "yearly" ? `📅 ${config.title}` : `⚔️ ${config.title}`}
       </h1>
 
       <PixelFrame variant="accent" className="p-6">
         <div className="text-center">
           <div className="mb-6">
-            <p
-              className="text-sm mb-2"
-              style={{ fontFamily: "var(--font-pixel)", color: "#4a3e2c" }}
-            >
+            <p className="text-sm mb-2 font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
               {type === "yearly"
                 ? `${targetYear}년 ${config.subtitle}`
                 : config.subtitle}
             </p>
-            <p
-              className="text-3xl"
-              style={{ fontFamily: "var(--font-pixel)", color: "#c8a020" }}
-            >
+            <p className="text-3xl font-[family-name:var(--font-pixel)] text-[#c8a020]">
               990원
             </p>
           </div>
@@ -123,10 +111,9 @@ function NewReadingContent() {
               {config.features.map((feature) => (
                 <div
                   key={feature}
-                  className="flex items-center gap-2 text-sm"
-                  style={{ color: "#2c2418" }}
+                  className="flex items-center gap-2 text-sm text-[#2c2418]"
                 >
-                  <span style={{ color: "#2e8b4e", fontFamily: "var(--font-pixel)" }}>
+                  <span className="text-[#2e8b4e] font-[family-name:var(--font-pixel)]">
                     ✓
                   </span>
                   {feature}
@@ -136,10 +123,7 @@ function NewReadingContent() {
           </div>
 
           {error && (
-            <p
-              className="text-sm mb-4"
-              style={{ fontFamily: "var(--font-pixel)", color: "#d04040" }}
-            >
+            <p className="text-sm mb-4 font-[family-name:var(--font-pixel)] text-[#d04040]">
               {error}
             </p>
           )}
@@ -152,7 +136,7 @@ function NewReadingContent() {
           >
             {loading ? config.loadingLabel : config.buttonLabel}
           </PixelButton>
-          <p className="text-xs mt-3" style={{ color: "#8a8070" }}>
+          <p className="text-xs mt-3 text-[#8a8070]">
             결제 연동 전 테스트 모드 (무료)
           </p>
         </div>

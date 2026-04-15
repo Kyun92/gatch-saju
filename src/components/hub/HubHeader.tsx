@@ -7,35 +7,17 @@ interface HubHeaderProps {
 export default function HubHeader({ userName }: HubHeaderProps) {
   return (
     <header
-      className="flex items-center justify-between px-4"
-      style={{
-        height: "48px",
-        backgroundColor: "#f5f0e8",
-        borderBottom: "1px solid #b8944c",
-      }}
+      className="flex items-center justify-between px-4 h-12 bg-[#f5f0e8] border-b border-[#b8944c]"
     >
       <span
-        style={{
-          fontFamily: "var(--font-pixel)",
-          fontSize: "1.25rem",
-          color: "#b8883c",
-          letterSpacing: "0.05em",
-        }}
+        className="font-[family-name:var(--font-pixel)] text-xl text-[#b8883c] tracking-[0.05em]"
       >
         ✦ 천명 ✦
       </span>
 
       <Link
         href="/mypage"
-        style={{
-          fontFamily: "var(--font-pixel)",
-          fontSize: "0.6875rem",
-          color: "#8a8070",
-          textDecoration: "none",
-          display: "flex",
-          alignItems: "center",
-          gap: "4px",
-        }}
+        className="font-[family-name:var(--font-pixel)] text-[0.6875rem] text-[#8a8070] no-underline flex items-center gap-1"
       >
         👤 {userName}
       </Link>

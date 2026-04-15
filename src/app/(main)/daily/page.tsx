@@ -77,19 +77,13 @@ export default async function DailyPage({ searchParams }: DailyPageProps) {
   }
 
   return (
-    <div
-      className="w-full mx-auto px-4 py-6"
-      style={{ maxWidth: "768px", minHeight: "100vh" }}
-    >
+    <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
       {/* Header */}
       <div className="mb-6">
-        <h1
-          className="text-xl mb-1"
-          style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
-        >
+        <h1 className="text-xl mb-1 font-[family-name:var(--font-pixel)] text-[#b8883c]">
           📜 오늘의 퀘스트
         </h1>
-        <p className="text-sm" style={{ color: "#8a8070" }}>
+        <p className="text-sm text-[#8a8070]">
           {character.name}님의 일일 운세
           {character.mbti ? ` | ${character.mbti}` : ""}
         </p>
@@ -99,27 +93,18 @@ export default async function DailyPage({ searchParams }: DailyPageProps) {
         <PixelFrame variant="accent" className="p-5">
           {/* Fortune Content */}
           <div className="mb-4">
-            <h2
-              className="text-lg mb-3"
-              style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-            >
+            <h2 className="text-lg mb-3 font-[family-name:var(--font-pixel)] text-[#9a7040]">
               {todayReading.character_title ?? "오늘의 운세"}
             </h2>
-            <div
-              className="daily-fortune-content whitespace-pre-wrap"
-              style={{ color: "#2c2418" }}
-            >
+            <div className="daily-fortune-content whitespace-pre-wrap text-[#2c2418]">
               {todayReading.content}
             </div>
           </div>
 
           {/* Lucky Items */}
           {todayReading.stat_scores && (
-            <div className="mt-4 pt-4" style={{ borderTop: "1px solid #b8944c" }}>
-              <p
-                className="text-xs mb-2"
-                style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
-              >
+            <div className="mt-4 pt-4 border-t border-[#b8944c]">
+              <p className="text-xs mb-2 font-[family-name:var(--font-pixel)] text-[#9a7040]">
                 행운 아이템
               </p>
               <div className="flex gap-3 flex-wrap">
@@ -130,22 +115,10 @@ export default async function DailyPage({ searchParams }: DailyPageProps) {
                     key={key}
                     className="pixel-frame-simple px-3 py-2 text-center"
                   >
-                    <div
-                      className="text-xs"
-                      style={{
-                        fontFamily: "var(--font-pixel)",
-                        color: "#8a8070",
-                      }}
-                    >
+                    <div className="text-xs font-[family-name:var(--font-pixel)] text-[#8a8070]">
                       {key}
                     </div>
-                    <div
-                      className="text-sm mt-1"
-                      style={{
-                        fontFamily: "var(--font-pixel)",
-                        color: "#b8883c",
-                      }}
-                    >
+                    <div className="text-sm mt-1 font-[family-name:var(--font-pixel)] text-[#b8883c]">
                       {String(value)}
                     </div>
                   </div>

@@ -66,24 +66,15 @@ export default function GeneratingPage() {
 
   if (status === "error") {
     return (
-      <div
-        className="w-full mx-auto px-4 py-6 flex flex-col items-center justify-center"
-        style={{ maxWidth: "768px", minHeight: "80vh" }}
-      >
+      <div className="w-full mx-auto px-4 py-6 flex flex-col items-center justify-center max-w-[768px] min-h-[80vh]">
         <PixelFrame variant="accent" className="p-6 text-center w-full">
-          <div
-            className="text-4xl mb-4"
-            style={{ fontFamily: "var(--font-pixel)" }}
-          >
+          <div className="text-4xl mb-4 font-[family-name:var(--font-pixel)]">
             &#x274C;
           </div>
-          <h1
-            className="text-lg mb-3"
-            style={{ fontFamily: "var(--font-pixel)", color: "#d04040" }}
-          >
+          <h1 className="text-lg mb-3 font-[family-name:var(--font-pixel)] text-[#d04040]">
             감정 실패
           </h1>
-          <p className="text-sm mb-6" style={{ color: "#4a3e2c" }}>
+          <p className="text-sm mb-6 text-[#4a3e2c]">
             {errorMessage}
           </p>
           <PixelButton onClick={() => router.push("/reading/new")}>
@@ -95,32 +86,20 @@ export default function GeneratingPage() {
   }
 
   return (
-    <div
-      className="w-full mx-auto px-4 py-6 flex flex-col items-center justify-center"
-      style={{ maxWidth: "768px", minHeight: "80vh" }}
-    >
+    <div className="w-full mx-auto px-4 py-6 flex flex-col items-center justify-center max-w-[768px] min-h-[80vh]">
       <PixelFrame variant="accent" className="p-8 text-center w-full">
         {/* Spinning crystal ball */}
-        <div
-          className="text-5xl mb-6 animate-spin-slow"
-          style={{ fontFamily: "var(--font-pixel)" }}
-        >
+        <div className="text-5xl mb-6 animate-spin-slow font-[family-name:var(--font-pixel)]">
           &#x1F52E;
         </div>
 
         {/* Title */}
-        <h1
-          className="text-lg mb-2"
-          style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
-        >
+        <h1 className="text-lg mb-2 font-[family-name:var(--font-pixel)] text-[#b8883c]">
           운세를 감정하고 있습니다
         </h1>
 
         {/* Blinking progress message */}
-        <p
-          className="text-sm animate-pulse"
-          style={{ fontFamily: "var(--font-pixel)", color: "#4a3e2c" }}
-        >
+        <p className="text-sm animate-pulse font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
           {PROGRESS_MESSAGES[messageIndex]}
         </p>
 
@@ -129,20 +108,15 @@ export default function GeneratingPage() {
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="w-2 h-2"
+              className="w-2 h-2 bg-[#b8883c] transition-opacity duration-300"
               style={{
-                backgroundColor: "#b8883c",
                 opacity: ((messageIndex + i) % 3) === 0 ? 1 : 0.3,
-                transition: "opacity 0.3s",
               }}
             />
           ))}
         </div>
 
-        <p
-          className="text-xs mt-6"
-          style={{ color: "#8a8070" }}
-        >
+        <p className="text-xs mt-6 text-[#8a8070]">
           약 30초~1분 정도 소요됩니다
         </p>
       </PixelFrame>
