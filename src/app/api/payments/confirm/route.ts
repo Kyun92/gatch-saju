@@ -11,15 +11,45 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { paymentKey, orderId, amount, characterId } = body as {
+    const {
+      paymentKey,
+      orderId,
+      amount,
+      characterId,
+      type = "comprehensive",
+      targetYear,
+    } = body as {
       paymentKey: string;
       orderId: string;
       amount: number;
       characterId: string;
+      type?: "comprehensive" | "yearly";
+      targetYear?: number;
     };
 
     if (!paymentKey || !orderId || !amount || !characterId) {
-      return NextResponse.json({ error: "결제 정보가 누락되었습니다" }, { status: 400 });
+      return NextResponse.json(
+        { error: "결제 정보가 누락되었습니다" },
+        { status: 400 },
+      );
+    }
+
+    // Unlock gate: non-comprehensive types require character to be unlocked BEFORE payment
+    if (type !== "comprehensive") {
+      const supabaseCheck = createServerSupabaseClient();
+      const { data: character } = await supabaseCheck
+        .from("characters")
+        .select("unlocked")
+        .eq("id", characterId)
+        .eq("user_id", session.user.userId)
+        .single();
+
+      if (!character?.unlocked) {
+        return NextResponse.json(
+          { error: "종합감정을 먼저 받아야 합니다" },
+          { status: 400 },
+        );
+      }
     }
 
     // Confirm payment via Toss
@@ -28,17 +58,21 @@ export async function POST(request: NextRequest) {
     const supabase = createServerSupabaseClient();
 
     // Log payment
-    await supabase.from("payment_log").insert({
-      user_id: session.user.userId,
-      character_id: characterId,
-      payment_key: payment.paymentKey,
-      order_id: payment.orderId,
-      order_name: payment.orderName,
-      amount: payment.totalAmount,
-      status: payment.status,
-      method: payment.method,
-      approved_at: payment.approvedAt,
-    });
+    const { data: paymentLog } = await supabase
+      .from("payment_log")
+      .insert({
+        user_id: session.user.userId,
+        character_id: characterId,
+        payment_key: payment.paymentKey,
+        order_id: payment.orderId,
+        order_name: payment.orderName,
+        amount: payment.totalAmount,
+        status: payment.status,
+        method: payment.method,
+        approved_at: payment.approvedAt,
+      })
+      .select("id")
+      .single();
 
     // Trigger reading generation
     const generateRes = await fetch(
@@ -49,17 +83,31 @@ export async function POST(request: NextRequest) {
           "Content-Type": "application/json",
           cookie: request.headers.get("cookie") ?? "",
         },
-        body: JSON.stringify({ characterId }),
+        body: JSON.stringify({ characterId, type, targetYear }),
       },
     );
 
-    const generateData = (await generateRes.json()) as { readingId?: string; error?: string };
+    const generateData = (await generateRes.json()) as {
+      readingId?: string;
+      error?: string;
+    };
 
     if (!generateRes.ok || !generateData.readingId) {
       return NextResponse.json(
-        { error: "결제는 완료되었지만 감정 생성에 실패했습니다. 고객센터에 문의해주세요." },
+        {
+          error:
+            "결제는 완료되었지만 감정 생성에 실패했습니다. 고객센터에 문의해주세요.",
+        },
         { status: 500 },
       );
+    }
+
+    // Link reading to payment log
+    if (paymentLog?.id && generateData.readingId) {
+      await supabase
+        .from("payment_log")
+        .update({ reading_id: generateData.readingId })
+        .eq("id", paymentLog.id);
     }
 
     return NextResponse.json({

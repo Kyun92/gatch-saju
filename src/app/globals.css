@@ -685,6 +685,29 @@ body {
   background-color: #f5f0e8 !important;
 }
 
+/* ============================================================
+   SKILL TREE
+   ============================================================ */
+
+.skill-tree-container {
+  padding: 0;
+}
+
+.skill-node {
+  border-radius: 0;
+}
+
+a:hover .skill-node {
+  border-color: #9a7040 !important;
+  box-shadow: 3px 3px 0px rgba(154, 112, 64, 0.2) !important;
+}
+
+a:active .skill-node {
+  transform: translateY(2px);
+  border-bottom-width: 2px !important;
+  box-shadow: none !important;
+}
+
 /* Service card color bar */
 .service-card-bar {
   position: absolute;

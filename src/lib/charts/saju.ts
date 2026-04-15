@@ -106,6 +106,60 @@ export function generateSajuChart(info: BirthInfo): SajuChart {
   };
 }
 
+/** 특정 연도의 세운/대운/월운 간지 */
+export function getYearlyGanZhi(
+  birthDate: string,
+  birthTime: string,
+  gender: string,
+  targetYear: number,
+): {
+  yearGanZhi: string;
+  daYunGanZhi: string;
+  monthlyGanZhi: { month: string; ganZhi: string }[];
+} {
+  const [y, m, d] = birthDate.split("-").map(Number);
+  const [h, min] = birthTime.split(":").map(Number);
+  const solar = Solar.fromYmdHms(y, m, d, h, min, 0);
+  const lunar = solar.getLunar();
+  const ec = lunar.getEightChar();
+  const genderNum = gender === "male" ? 1 : 0;
+  const yun = ec.getYun(genderNum);
+  const daYunArr = yun.getDaYun();
+
+  // 해당 연도가 속하는 대운 찾기
+  let daYunGanZhi = "";
+  let targetLiuNian = null;
+
+  for (const daYun of daYunArr) {
+    const liuNianArr = daYun.getLiuNian();
+    for (const liuNian of liuNianArr) {
+      if (liuNian.getYear() === targetYear) {
+        daYunGanZhi = daYun.getGanZhi();
+        targetLiuNian = liuNian;
+        break;
+      }
+    }
+    if (targetLiuNian) break;
+  }
+
+  // 세운 간지
+  const yearGanZhi = targetLiuNian ? targetLiuNian.getGanZhi() : "";
+
+  // 12개월 월운 간지
+  const monthlyGanZhi: { month: string; ganZhi: string }[] = [];
+  if (targetLiuNian) {
+    const liuYueArr = targetLiuNian.getLiuYue();
+    for (const liuYue of liuYueArr) {
+      monthlyGanZhi.push({
+        month: liuYue.getMonthInChinese(),
+        ganZhi: liuYue.getGanZhi(),
+      });
+    }
+  }
+
+  return { yearGanZhi, daYunGanZhi, monthlyGanZhi };
+}
+
 /** 오늘의 천간지지 (일간지) */
 export function getTodayGanZhi(): {
   yearGanZhi: string;

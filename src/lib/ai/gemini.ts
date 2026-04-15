@@ -3,6 +3,7 @@ import {
   COMPREHENSIVE_SYSTEM,
   DAILY_SYSTEM,
   COMPATIBILITY_SYSTEM,
+  YEARLY_SYSTEM,
 } from "./prompts";
 import type { AllCharts } from "../charts/types";
 
@@ -81,6 +82,50 @@ ${mbti ? `\n[MBTI] ${mbti}` : ""}
   const text = result.response.text();
   const tokensUsed = result.response.usageMetadata?.totalTokenCount ?? 0;
   return { text, tokensUsed };
+}
+
+/** Yearly fortune -- Gemini 3.1 Pro */
+export async function generateYearlyReading(
+  name: string,
+  charts: AllCharts,
+  targetYear: number,
+  yearlyGanZhi: {
+    yearGanZhi: string;
+    daYunGanZhi: string;
+    monthlyGanZhi: { month: string; ganZhi: string }[];
+  },
+  mbti?: string | null,
+): Promise<{ html: string; tokensUsed: number }> {
+  const model = genAI.getGenerativeModel({ model: "gemini-3.1-pro-preview" });
+
+  const userMessage = `다음은 ${name}님의 세 가지 명리/점성 차트 데이터입니다. ${targetYear}년 년운 분석을 부탁합니다.
+
+[사주팔자 원국]
+${JSON.stringify(charts.saju.raw, null, 2)}
+
+[자미두수 원국]
+${JSON.stringify(charts.ziwei.raw, null, 2)}
+
+[서양점성술 원국]
+${JSON.stringify(charts.western.raw, null, 2)}
+
+[${targetYear}년 운세 기반 데이터]
+세운(년운) 간지: ${yearlyGanZhi.yearGanZhi}
+현재 대운 간지: ${yearlyGanZhi.daYunGanZhi}
+
+[12개월 월운 간지]
+${yearlyGanZhi.monthlyGanZhi.map((m) => `${m.month}: ${m.ganZhi}`).join("\n")}
+${mbti ? `\n[MBTI] ${name}님의 MBTI는 ${mbti}입니다. 각 영역에서 자연스럽게 교차 해석해주세요.` : ""}`;
+
+  const result = await model.generateContent({
+    contents: [{ role: "user", parts: [{ text: userMessage }] }],
+    systemInstruction: YEARLY_SYSTEM,
+    generationConfig: { maxOutputTokens: 8192, temperature: 0.8 },
+  });
+
+  const text = result.response.text();
+  const tokensUsed = result.response.usageMetadata?.totalTokenCount ?? 0;
+  return { html: text, tokensUsed };
 }
 
 /** Compatibility -- Gemini 2.5 Pro */

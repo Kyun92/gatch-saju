@@ -13,12 +13,46 @@ export default function NewReadingPage() {
   );
 }
 
+const READING_CONFIG = {
+  comprehensive: {
+    title: "운명의 서를 펼치다",
+    subtitle: "종합 사주 감정",
+    features: [
+      "사주명리학 기반 상세 분석",
+      "자미두수 궁위 해석",
+      "서양 점성술 차트 분석",
+      "AI 종합 감정 리포트",
+    ],
+    buttonLabel: "감정받기",
+    loadingLabel: "감정 시작 중...",
+  },
+  yearly: {
+    title: "올해의 운명을 읽다",
+    subtitle: "년운 분석",
+    features: [
+      "대운 + 세운 교차 분석",
+      "12개월 월운 달력",
+      "직업/재물/연애/건강 영역별 운세",
+      "올해의 개운법",
+    ],
+    buttonLabel: "년운 분석받기",
+    loadingLabel: "년운 분석 시작 중...",
+  },
+} as const;
+
 function NewReadingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const characterId = searchParams.get("characterId");
+  const type = (searchParams.get("type") ?? "comprehensive") as
+    | "comprehensive"
+    | "yearly";
+  const yearParam = searchParams.get("year");
+  const targetYear = yearParam ? parseInt(yearParam, 10) : new Date().getFullYear();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const config = READING_CONFIG[type] ?? READING_CONFIG.comprehensive;
 
   async function handleGenerate() {
     if (!characterId) {
@@ -30,10 +64,15 @@ function NewReadingContent() {
     setError(null);
 
     try {
+      const body: Record<string, unknown> = { characterId, type };
+      if (type === "yearly") {
+        body.targetYear = targetYear;
+      }
+
       const res = await fetch("/api/reading/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ characterId }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
 
@@ -57,7 +96,7 @@ function NewReadingContent() {
         className="text-xl mb-6"
         style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
       >
-        ⚔️ 운명의 서를 펼치다
+        {type === "yearly" ? `📅 ${config.title}` : `⚔️ ${config.title}`}
       </h1>
 
       <PixelFrame variant="accent" className="p-6">
@@ -67,7 +106,9 @@ function NewReadingContent() {
               className="text-sm mb-2"
               style={{ fontFamily: "var(--font-pixel)", color: "#4a3e2c" }}
             >
-              종합 사주 감정
+              {type === "yearly"
+                ? `${targetYear}년 ${config.subtitle}`
+                : config.subtitle}
             </p>
             <p
               className="text-3xl"
@@ -79,12 +120,7 @@ function NewReadingContent() {
 
           <div className="mb-6 text-left">
             <div className="flex flex-col gap-2">
-              {[
-                "사주명리학 기반 상세 분석",
-                "자미두수 궁위 해석",
-                "서양 점성술 차트 분석",
-                "AI 종합 감정 리포트",
-              ].map((feature) => (
+              {config.features.map((feature) => (
                 <div
                   key={feature}
                   className="flex items-center gap-2 text-sm"
@@ -114,7 +150,7 @@ function NewReadingContent() {
             onClick={handleGenerate}
             disabled={loading}
           >
-            {loading ? "감정 시작 중..." : "감정받기"}
+            {loading ? config.loadingLabel : config.buttonLabel}
           </PixelButton>
           <p className="text-xs mt-3" style={{ color: "#8a8070" }}>
             결제 연동 전 테스트 모드 (무료)

@@ -8,6 +8,7 @@ import ProfileCard from "@/components/reading/ProfileCard";
 import StatGrid from "@/components/reading/StatGrid";
 import ReadingAccordion from "@/components/reading/ReadingAccordion";
 import ReadingCTA from "@/components/reading/ReadingCTA";
+import YearlyReadingView from "@/components/reading/YearlyReadingView";
 import PixelDivider from "@/components/ui/PixelDivider";
 import type { StatScores } from "@/lib/ai/stat-scorer";
 
@@ -49,7 +50,7 @@ export default async function ReadingDetailPage({
   const { data: reading, error } = await supabase
     .from("readings")
     .select(
-      "id, status, content, stat_scores, character_title, charts_data, created_at, character_id",
+      "id, status, content, stat_scores, character_title, charts_data, created_at, character_id, type, year",
     )
     .eq("id", id)
     .single();
@@ -118,7 +119,74 @@ export default async function ReadingDetailPage({
   const dayMasterDisplay = `${dayMaster}${preset?.element === "wood" ? "木" : preset?.element === "fire" ? "火" : preset?.element === "earth" ? "土" : preset?.element === "metal" ? "金" : "水"}`;
   const htmlContent = reading.content ?? "";
   const keywords = extractKeywords(htmlContent);
+  const readingType = (reading.type as string) ?? "comprehensive";
+  const readingYear = (reading.year as number) ?? new Date().getFullYear();
 
+  // Yearly reading layout
+  if (readingType === "yearly") {
+    return (
+      <div
+        className="w-full mx-auto px-4 py-6"
+        style={{ maxWidth: "768px", minHeight: "100vh" }}
+      >
+        {/* 헤더 */}
+        <div className="text-center mb-6">
+          <h1
+            className="text-xl"
+            style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
+          >
+            {readingYear}년 운세 감정서
+          </h1>
+          <p
+            className="text-sm mt-2"
+            style={{ fontFamily: "var(--font-pixel)", color: "#8a8070" }}
+          >
+            {character.name ?? "모험자"}의 년운 분석
+          </p>
+        </div>
+
+        {/* 캐릭터 히어로 */}
+        <CharacterHero
+          avatarUrl={avatarUrl}
+          dayMaster={dayMasterDisplay}
+          level={level}
+          classTitle={preset?.className ?? "운명의 여행자"}
+          characterTitle={reading.character_title ?? statScores.title}
+          element={preset?.element ?? "water"}
+          mbti={character.mbti}
+        />
+
+        <div className="mt-6" />
+
+        {/* 프로필 카드 */}
+        <ProfileCard
+          name={character.name ?? "모험자"}
+          birthDate={character.birth_date ?? "-"}
+          birthTime={character.birth_time}
+          gender={gender}
+          dayMaster={dayMasterDisplay}
+          mbti={character.mbti}
+        />
+
+        <PixelDivider label={`${readingYear}년 운세`} className="my-6" />
+
+        {/* 년운 전용 뷰 */}
+        <YearlyReadingView
+          content={htmlContent}
+          year={readingYear}
+          characterName={character.name ?? "모험자"}
+        />
+
+        {/* 하단 CTA */}
+        <ReadingCTA />
+
+        {/* 하단 네비 공간 확보 */}
+        <div className="h-16" />
+      </div>
+    );
+  }
+
+  // Comprehensive reading layout (default)
   return (
     <div
       className="w-full mx-auto px-4 py-6"

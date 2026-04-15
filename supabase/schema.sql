@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS readings (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   character_id    UUID NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
   type            TEXT NOT NULL DEFAULT 'comprehensive',
+  year            INTEGER,
   status          TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'generating', 'complete', 'error')),
   content         TEXT,
   stat_scores     JSONB,

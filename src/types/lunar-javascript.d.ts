@@ -61,6 +61,32 @@ declare module "lunar-javascript" {
     getEndYear(): number;
     getStartAge(): number;
     getEndAge(): number;
+    getLiuNian(): LiuNian[];
+    [key: string]: any;
+  }
+  export class LiuNian {
+    getYear(): number;
+    getAge(): number;
+    getGanZhi(): string;
+    getGan(): string;
+    getZhi(): string;
+    getLiuYue(): LiuYue[];
+    getXiaoYun(): XiaoYun;
+    [key: string]: any;
+  }
+  export class LiuYue {
+    getMonthInChinese(): string;
+    getGanZhi(): string;
+    getGan(): string;
+    getZhi(): string;
+    [key: string]: any;
+  }
+  export class XiaoYun {
+    getYear(): number;
+    getAge(): number;
+    getGanZhi(): string;
+    getGan(): string;
+    getZhi(): string;
     [key: string]: any;
   }
 }
