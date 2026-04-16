@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useRef, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
@@ -13,7 +13,26 @@ export default function NewReadingPage() {
   );
 }
 
-const READING_CONFIG = {
+type ReadingType =
+  | "comprehensive"
+  | "yearly"
+  | "compatibility"
+  | "love"
+  | "career"
+  | "wealth"
+  | "health"
+  | "study";
+
+const READING_CONFIG: Record<
+  ReadingType,
+  {
+    title: string;
+    subtitle: string;
+    icon: string;
+    features: string[];
+    orderName: string;
+  }
+> = {
   comprehensive: {
     title: "운명의 서를 펼치다",
     subtitle: "종합 사주 감정",
@@ -24,8 +43,7 @@ const READING_CONFIG = {
       "서양 점성술 차트 분석",
       "AI 종합 감정 리포트",
     ],
-    buttonLabel: "감정받기",
-    loadingLabel: "감정 시작 중...",
+    orderName: "갓챠사주 종합감정",
   },
   yearly: {
     title: "올해의 운명을 읽다",
@@ -37,8 +55,19 @@ const READING_CONFIG = {
       "직업/재물/연애/건강 영역별 운세",
       "올해의 개운법",
     ],
-    buttonLabel: "년운 분석받기",
-    loadingLabel: "년운 분석 시작 중...",
+    orderName: "갓챠사주 년운 분석",
+  },
+  compatibility: {
+    title: "운명의 궁합을 읽다",
+    subtitle: "궁합 분석",
+    icon: "",
+    features: [
+      "두 사람의 사주 교차 분석",
+      "오행 상생/상극 궁합 해석",
+      "연애/결혼/사업 궁합별 점수",
+      "관계 개선 개운법",
+    ],
+    orderName: "갓챠사주 궁합 분석",
   },
   love: {
     title: "사랑의 별자리를 읽다",
@@ -50,8 +79,7 @@ const READING_CONFIG = {
       "대운 기반 연애/결혼 최적 시기",
       "3체계 교차 연애 조언",
     ],
-    buttonLabel: "연애운 분석받기",
-    loadingLabel: "연애운 분석 시작 중...",
+    orderName: "갓챠사주 연애운 분석",
   },
   career: {
     title: "천직을 찾아서",
@@ -63,8 +91,7 @@ const READING_CONFIG = {
       "대운 기반 이직/전환 최적 시기",
       "사업 적합성 + 커리어 전략",
     ],
-    buttonLabel: "직업운 분석받기",
-    loadingLabel: "직업운 분석 시작 중...",
+    orderName: "갓챠사주 직업운 분석",
   },
   wealth: {
     title: "재물의 흐름을 읽다",
@@ -76,8 +103,7 @@ const READING_CONFIG = {
       "대운 기반 재물 기회 시기",
       "투자 성향 + 재테크 조언",
     ],
-    buttonLabel: "금전운 분석받기",
-    loadingLabel: "금전운 분석 시작 중...",
+    orderName: "갓챠사주 금전운 분석",
   },
   health: {
     title: "몸과 마음의 지도",
@@ -89,8 +115,7 @@ const READING_CONFIG = {
       "계절별/나이대별 예방법",
       "일상 건강 관리 개운법",
     ],
-    buttonLabel: "건강운 분석받기",
-    loadingLabel: "건강운 분석 시작 중...",
+    orderName: "갓챠사주 건강운 분석",
   },
   study: {
     title: "배움의 길을 밝히다",
@@ -102,31 +127,30 @@ const READING_CONFIG = {
       "대운 기반 시험운 시기",
       "최적 공부법 + 집중 시간대",
     ],
-    buttonLabel: "학업운 분석받기",
-    loadingLabel: "학업운 분석 시작 중...",
+    orderName: "갓챠사주 학업운 분석",
   },
-} as const;
+};
 
 function NewReadingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const characterId = searchParams.get("characterId");
-  const type = (searchParams.get("type") ?? "comprehensive") as
-    | "comprehensive"
-    | "yearly"
-    | "love"
-    | "career"
-    | "wealth"
-    | "health"
-    | "study";
+  const characterId2 = searchParams.get("characterId2");
+  const type = (searchParams.get("type") ?? "comprehensive") as ReadingType;
   const yearParam = searchParams.get("year");
-  const targetYear = yearParam ? parseInt(yearParam, 10) : new Date().getFullYear();
+  const targetYear = yearParam
+    ? parseInt(yearParam, 10)
+    : new Date().getFullYear();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const paymentRef = useRef<any>(null);
+
   const config = READING_CONFIG[type] ?? READING_CONFIG.comprehensive;
 
-  async function handleGenerate() {
+  const handlePayment = useCallback(async () => {
     if (!characterId) {
       setError("캐릭터 정보가 없습니다. 홈으로 돌아가 다시 시도해주세요.");
       return;
@@ -136,28 +160,49 @@ function NewReadingContent() {
     setError(null);
 
     try {
-      const body: Record<string, unknown> = { characterId, type };
-      if (type === "yearly") {
-        body.targetYear = targetYear;
+      // SDK 동적 로드
+      if (!paymentRef.current) {
+        const { loadTossPayments } = await import(
+          "@tosspayments/tosspayments-sdk"
+        );
+        const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
+        if (!clientKey) {
+          setError("결제 설정이 누락되었습니다");
+          setLoading(false);
+          return;
+        }
+        const tossPayments = await loadTossPayments(clientKey);
+        paymentRef.current = tossPayments.payment({
+          customerKey: "ANONYMOUS",
+        });
       }
 
-      const res = await fetch("/api/reading/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+      const orderId = `GACHA_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+      // 메타데이터를 successUrl에 포함
+      const meta = new URLSearchParams({
+        characterId,
+        type,
+        ...(characterId2 ? { characterId2 } : {}),
+        ...(type === "yearly" ? { targetYear: String(targetYear) } : {}),
       });
-      const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.error ?? "감정 생성에 실패했습니다");
-      }
-
-      router.push(`/reading/generating/${data.readingId}`);
+      await paymentRef.current.requestPayment({
+        method: "CARD",
+        amount: { currency: "KRW", value: 990 },
+        orderId,
+        orderName: config.orderName,
+        successUrl: `${window.location.origin}/reading/new/success?${meta.toString()}`,
+        failUrl: `${window.location.origin}/reading/new/fail`,
+      });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "오류가 발생했습니다");
+      const msg = e instanceof Error ? e.message : "결제 요청에 실패했습니다";
+      if (!msg.includes("USER_CANCEL") && !msg.includes("PAY_PROCESS_CANCELED")) {
+        setError(msg);
+      }
       setLoading(false);
     }
-  }
+  }, [characterId, characterId2, type, targetYear, config.orderName]);
 
   return (
     <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
@@ -203,14 +248,11 @@ function NewReadingContent() {
           <PixelButton
             size="lg"
             className="w-full"
-            onClick={handleGenerate}
+            onClick={handlePayment}
             disabled={loading}
           >
-            {loading ? config.loadingLabel : config.buttonLabel}
+            {loading ? "결제 진행 중..." : "990원 결제하기"}
           </PixelButton>
-          <p className="text-xs mt-3 text-[#8a8070]">
-            결제 연동 전 테스트 모드 (무료)
-          </p>
         </div>
       </PixelFrame>
     </div>

@@ -1,16 +1,21 @@
-/* ─── Gacha Machine Animations ─────────────────────────── */
-
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 80vh;
-  gap: 2rem;
+  gap: 1rem;
 }
 
-.machineWrapper {
-  animation: machineShake 0.5s infinite;
+.svg {
+  width: 240px;
+  height: 320px;
+  shape-rendering: crispEdges;
+}
+
+.machine {
+  animation: machineShake 0.5s infinite ease-in-out;
+  transform-origin: 150px 300px;
 }
 
 .message {
@@ -19,60 +24,37 @@
   font-size: 1rem;
   letter-spacing: 0.04em;
   text-align: center;
-  animation: blink 1.2s ease-in-out infinite;
+  animation: blink 1s infinite step-end;
 }
 
-/* ─── Capsule bounces ─────────────────────────────────── */
-
-.capsule1 {
-  animation: bounce1 0.6s ease-in-out infinite alternate;
-}
-
-.capsule2 {
-  animation: bounce2 0.7s ease-in-out infinite alternate;
-}
-
-.capsule3 {
-  animation: bounce3 0.55s ease-in-out infinite alternate;
-}
-
-.capsule4 {
-  animation: bounce4 0.65s ease-in-out infinite alternate;
-}
-
-/* ─── Keyframes ───────────────────────────────────────── */
+.cap1 { animation: bounce1 0.4s infinite alternate; }
+.cap2 { animation: bounce2 0.45s infinite alternate 0.15s; }
+.cap3 { animation: bounce3 0.55s infinite alternate 0.3s; }
+.cap4 { animation: bounce1 0.5s infinite alternate 0.2s; }
 
 @keyframes machineShake {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  15% { transform: translate(-1.5px, 0.5px) rotate(-0.3deg); }
-  30% { transform: translate(1px, -0.5px) rotate(0.2deg); }
-  45% { transform: translate(-0.5px, 1px) rotate(-0.1deg); }
-  60% { transform: translate(1.5px, 0.5px) rotate(0.3deg); }
-  75% { transform: translate(-1px, -0.5px) rotate(-0.2deg); }
-  90% { transform: translate(0.5px, 1px) rotate(0.1deg); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-2px) rotate(-1deg); }
+  50% { transform: translateY(2px) rotate(1deg); }
+  75% { transform: translateY(-1px) rotate(-0.5deg); }
 }
 
 @keyframes bounce1 {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-8px); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 @keyframes bounce2 {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-11px); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
 }
 
 @keyframes bounce3 {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-6px); }
-}
-
-@keyframes bounce4 {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-9px); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  50% { opacity: 0; }
 }

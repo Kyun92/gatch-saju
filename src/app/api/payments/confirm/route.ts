@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       amount: number;
       characterId: string;
       characterId2?: string;
-      type?: "comprehensive" | "yearly" | "compatibility";
+      type?: "comprehensive" | "yearly" | "compatibility" | "love" | "career" | "wealth" | "health" | "study";
       targetYear?: number;
     };
 

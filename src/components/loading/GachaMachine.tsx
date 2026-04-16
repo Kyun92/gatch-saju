@@ -11,78 +11,72 @@ export default function GachaMachine({
 }: GachaMachineProps) {
   return (
     <div className={styles.container}>
-      <div className={styles.machineWrapper}>
-        <svg
-          width="200"
-          height="280"
-          viewBox="0 0 200 280"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-label="갓챠 머신 애니메이션"
-        >
-          {/* Machine body */}
-          <rect x="30" y="60" width="140" height="180" rx="0" fill="#c0392b" />
-          <rect x="30" y="60" width="140" height="180" rx="0" stroke="#8b1a1a" strokeWidth="4" fill="none" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 300 400"
+        className={styles.svg}
+        aria-label="갓챠 머신 애니메이션"
+      >
+        <g className={styles.machine}>
+          {/* 기계 바닥 */}
+          <rect x="80" y="320" width="140" height="20" fill="#D32F2F" stroke="#2C3E50" strokeWidth="4" />
 
-          {/* Top dome */}
-          <path d="M50 60 Q100 10 150 60" fill="#e74c3c" stroke="#8b1a1a" strokeWidth="3" />
+          {/* 기계 본체 */}
+          <rect x="90" y="200" width="120" height="120" fill="#F44336" stroke="#2C3E50" strokeWidth="4" />
 
-          {/* Knob on top */}
-          <circle cx="100" cy="28" r="10" fill="#f1c40f" stroke="#b8960c" strokeWidth="3" />
-
-          {/* Glass dome (capsule window) */}
-          <rect x="50" y="80" width="100" height="90" rx="0" fill="#1a2844" />
-          <rect x="50" y="80" width="100" height="90" rx="0" stroke="#0d1a30" strokeWidth="3" fill="none" />
-
-          {/* Glass highlight */}
-          <rect x="54" y="84" width="30" height="6" rx="0" fill="rgba(255,255,255,0.2)" />
-
-          {/* Capsules inside the glass */}
-          <g className={styles.capsule1}>
-            <ellipse cx="75" cy="140" rx="10" ry="8" fill="#e74c3c" />
-            <ellipse cx="75" cy="146" rx="10" ry="8" fill="#ecf0f1" />
-          </g>
-          <g className={styles.capsule2}>
-            <ellipse cx="105" cy="130" rx="10" ry="8" fill="#3070c0" />
-            <ellipse cx="105" cy="136" rx="10" ry="8" fill="#ecf0f1" />
-          </g>
-          <g className={styles.capsule3}>
-            <ellipse cx="125" cy="148" rx="10" ry="8" fill="#2e8b4e" />
-            <ellipse cx="125" cy="154" rx="10" ry="8" fill="#ecf0f1" />
-          </g>
-          <g className={styles.capsule4}>
-            <ellipse cx="88" cy="118" rx="10" ry="8" fill="#c8a020" />
-            <ellipse cx="88" cy="124" rx="10" ry="8" fill="#ecf0f1" />
-          </g>
-
-          {/* Metal band below glass */}
-          <rect x="40" y="170" width="120" height="14" rx="0" fill="#7f8c8d" stroke="#5a6268" strokeWidth="2" />
-          <rect x="40" y="174" width="120" height="3" rx="0" fill="rgba(255,255,255,0.15)" />
-
-          {/* Coin slot */}
-          <rect x="82" y="192" width="36" height="6" rx="0" fill="#2c3e50" stroke="#1a252f" strokeWidth="1.5" />
-
-          {/* Dispensing chute */}
-          <rect x="65" y="224" width="70" height="16" rx="0" fill="#2c3e50" stroke="#1a252f" strokeWidth="2" />
-          <rect x="75" y="228" width="50" height="8" rx="0" fill="#0d1a30" />
-
-          {/* Lever (right side) */}
-          <rect x="170" y="110" width="10" height="50" rx="0" fill="#7f8c8d" stroke="#5a6268" strokeWidth="2" />
-          <circle cx="175" cy="108" r="10" fill="#e74c3c" stroke="#8b1a1a" strokeWidth="2" />
-
-          {/* Machine legs */}
-          <rect x="40" y="240" width="14" height="20" rx="0" fill="#95a5a6" stroke="#7f8c8d" strokeWidth="2" />
-          <rect x="146" y="240" width="14" height="20" rx="0" fill="#95a5a6" stroke="#7f8c8d" strokeWidth="2" />
-
-          {/* Decorative star on machine front */}
-          <polygon
-            points="100,196 103,204 112,204 105,209 108,218 100,213 92,218 95,209 88,204 97,204"
-            fill="#f1c40f"
-            stroke="#b8960c"
-            strokeWidth="1"
+          {/* 유리 돔 */}
+          <defs>
+            <clipPath id="domeClip">
+              <path d="M102 200 L102 122 L112 122 L112 92 L142 92 L142 82 L158 82 L158 92 L188 92 L188 122 L198 122 L198 200 Z" />
+            </clipPath>
+          </defs>
+          <path
+            d="M100 200 L100 120 L110 120 L110 90 L140 90 L140 80 L160 80 L160 90 L190 90 L190 120 L200 120 L200 200 Z"
+            fill="#E0F7FA"
+            opacity="0.8"
           />
-        </svg>
-      </div>
+
+          {/* 캡슐들 — 유리 돔 안에 클리핑 */}
+          <g clipPath="url(#domeClip)">
+            <g className={styles.cap1} transform="translate(115, 170)">
+              <rect x="0" y="0" width="18" height="18" fill="#FFC107" stroke="#2C3E50" strokeWidth="2" />
+              <rect x="0" y="9" width="18" height="9" fill="#FF9800" />
+            </g>
+            <g className={styles.cap2} transform="translate(142, 160)">
+              <rect x="0" y="0" width="18" height="18" fill="#E91E63" stroke="#2C3E50" strokeWidth="2" />
+              <rect x="0" y="9" width="18" height="9" fill="#C2185B" />
+            </g>
+            <g className={styles.cap3} transform="translate(168, 172)">
+              <rect x="0" y="0" width="18" height="18" fill="#03A9F4" stroke="#2C3E50" strokeWidth="2" />
+              <rect x="0" y="9" width="18" height="9" fill="#0288D1" />
+            </g>
+            <g className={styles.cap4} transform="translate(130, 178)">
+              <rect x="0" y="0" width="18" height="18" fill="#8BC34A" stroke="#2C3E50" strokeWidth="2" />
+              <rect x="0" y="9" width="18" height="9" fill="#689F38" />
+            </g>
+          </g>
+
+          {/* 유리 돔 테두리 (캡슐 위에 렌더링) */}
+          <path
+            d="M100 200 L100 120 L110 120 L110 90 L140 90 L140 80 L160 80 L160 90 L190 90 L190 120 L200 120 L200 200 Z"
+            fill="none"
+            stroke="#2C3E50"
+            strokeWidth="4"
+          />
+
+          {/* 유리 하이라이트 */}
+          <rect x="110" y="100" width="10" height="20" fill="#FFFFFF" opacity="0.5" />
+          <rect x="125" y="100" width="10" height="10" fill="#FFFFFF" opacity="0.5" />
+
+          {/* 레버 */}
+          <rect x="135" y="220" width="30" height="30" fill="#CFD8DC" stroke="#2C3E50" strokeWidth="4" />
+          <rect x="145" y="225" width="10" height="20" fill="#607D8B" />
+
+          {/* 배출구 */}
+          <rect x="125" y="270" width="50" height="30" fill="#2C3E50" />
+          <rect x="130" y="275" width="40" height="20" fill="#1A252F" />
+        </g>
+      </svg>
 
       <p className={styles.message}>{message}</p>
     </div>
