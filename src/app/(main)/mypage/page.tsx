@@ -137,80 +137,127 @@ export default async function MyPage() {
               : 2000;
             const level = new Date().getFullYear() - birthYear;
 
-            return (
-              <Link
-                key={char.id}
-                href={char.unlocked ? `/daily?characterId=${char.id}` : `/reading/new?characterId=${char.id}`}
-                className="no-underline"
-              >
-                <PixelFrame
-                  variant={char.unlocked ? "default" : "simple"}
-                  className="p-3"
+            if (!char.unlocked) {
+              // 잠긴 캐릭터: 종합감정 구매로 이동
+              return (
+                <Link
+                  key={char.id}
+                  href={`/reading/new?characterId=${char.id}`}
+                  className="no-underline"
                 >
-                  <div className="flex items-center gap-3">
-                    {/* 미니 아바타 */}
-                    <div
-                      className={`w-12 h-12 shrink-0 overflow-hidden relative ${char.unlocked ? "border-2 border-[#b8944c]" : "border-2 border-[#d4cfc8]"}`}
-                    >
-                      <Image
-                        src={`/characters/${element}-${char.gender}.png`}
-                        alt={char.name}
-                        fill
-                        className={`object-cover [image-rendering:pixelated] ${char.unlocked ? "opacity-100" : "opacity-30 grayscale"}`}
-                        sizes="48px"
-                      />
-                    </div>
-
-                    {/* 캐릭터 정보 */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <span
-                          className={`font-[family-name:var(--font-pixel)] text-sm ${char.unlocked ? "text-[#2c2418]" : "text-[#8a8070]"}`}
-                        >
-                          {char.name}
-                        </span>
-                        <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890]">
-                          Lv.{level}
-                        </span>
-                        {char.is_self && (
-                          <span className="font-[family-name:var(--font-pixel)] text-[0.4375rem] text-[#9a7040] border border-[#b8944c] px-1 py-px">
-                            본인
-                          </span>
-                        )}
+                  <PixelFrame variant="simple" className="p-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 shrink-0 overflow-hidden relative border-2 border-[#d4cfc8]">
+                        <Image
+                          src={`/characters/${element}-${char.gender}.png`}
+                          alt={char.name}
+                          fill
+                          className="object-cover [image-rendering:pixelated] opacity-30 grayscale"
+                          sizes="48px"
+                        />
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <ElementTag element={element} size="sm" />
-                        {dayMaster && (
-                          <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#8a8070]">
-                            {dayMaster}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <span className="font-[family-name:var(--font-pixel)] text-sm text-[#8a8070]">
+                            {char.name}
                           </span>
-                        )}
-                        {char.mbti && (
-                          <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#6858b8]">
-                            {char.mbti}
+                          <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890]">
+                            Lv.{level}
                           </span>
-                        )}
-                      </div>
-                      {title && (
-                        <div className="font-[family-name:var(--font-body)] text-[0.6875rem] text-[#8a8070] italic mt-0.5">
-                          &ldquo;{title}&rdquo;
+                          {char.is_self && (
+                            <span className="font-[family-name:var(--font-pixel)] text-[0.4375rem] text-[#9a7040] border border-[#b8944c] px-1 py-px">
+                              본인
+                            </span>
+                          )}
                         </div>
+                        <div className="flex items-center gap-1.5">
+                          <ElementTag element={element} size="sm" />
+                          {dayMaster && (
+                            <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#8a8070]">
+                              {dayMaster}
+                            </span>
+                          )}
+                        </div>
+                        <div className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#c8a020] mt-1">
+                          종합감정으로 해금하기 &rarr;
+                        </div>
+                      </div>
+                      <span className="font-[family-name:var(--font-pixel)] text-[0.5rem] shrink-0 px-1.5 py-0.5 text-[#c8a020] border border-[#c8a020]">
+                        잠김
+                      </span>
+                    </div>
+                  </PixelFrame>
+                </Link>
+              );
+            }
+
+            // 해금된 캐릭터: 일일 퀘스트 + 심화 특성 두 경로 제공
+            return (
+              <PixelFrame key={char.id} variant="default" className="p-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 shrink-0 overflow-hidden relative border-2 border-[#b8944c]">
+                    <Image
+                      src={`/characters/${element}-${char.gender}.png`}
+                      alt={char.name}
+                      fill
+                      className="object-cover [image-rendering:pixelated]"
+                      sizes="48px"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="font-[family-name:var(--font-pixel)] text-sm text-[#2c2418]">
+                        {char.name}
+                      </span>
+                      <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890]">
+                        Lv.{level}
+                      </span>
+                      {char.is_self && (
+                        <span className="font-[family-name:var(--font-pixel)] text-[0.4375rem] text-[#9a7040] border border-[#b8944c] px-1 py-px">
+                          본인
+                        </span>
                       )}
                     </div>
-
-                    {/* 상태 뱃지 */}
-                    <span
-                      className={`font-[family-name:var(--font-pixel)] text-[0.5rem] shrink-0 px-1.5 py-0.5 ${
-                        char.unlocked
-                          ? "text-[#2e8b4e] border border-[#2e8b4e]"
-                          : "text-[#c8a020] border border-[#c8a020]"
-                      }`}
-                    >
-                      {char.unlocked ? "해금" : "잠김"}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <ElementTag element={element} size="sm" />
+                      {dayMaster && (
+                        <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#8a8070]">
+                          {dayMaster}
+                        </span>
+                      )}
+                      {char.mbti && (
+                        <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#6858b8]">
+                          {char.mbti}
+                        </span>
+                      )}
+                    </div>
+                    {title && (
+                      <div className="font-[family-name:var(--font-body)] text-[0.6875rem] text-[#8a8070] italic mt-0.5">
+                        &ldquo;{title}&rdquo;
+                      </div>
+                    )}
                   </div>
-                </PixelFrame>
-              </Link>
+                  <span className="font-[family-name:var(--font-pixel)] text-[0.5rem] shrink-0 px-1.5 py-0.5 text-[#2e8b4e] border border-[#2e8b4e]">
+                    해금
+                  </span>
+                </div>
+
+                {/* 액션 버튼 */}
+                <div className="flex gap-2 mt-3 pt-3 border-t border-[#e8e0d0]">
+                  <Link
+                    href={`/daily?characterId=${char.id}`}
+                    className="flex-1 no-underline text-center font-[family-name:var(--font-pixel)] text-[0.6875rem] py-2 bg-[#f5f0e8] border border-[#b8944c] text-[#9a7040] hover:bg-[#ede5d5] transition-colors"
+                  >
+                    일일 퀘스트
+                  </Link>
+                  <Link
+                    href={`/characters/${char.id}`}
+                    className="flex-1 no-underline text-center font-[family-name:var(--font-pixel)] text-[0.6875rem] py-2 bg-[#9a7040] border border-[#7a5830] text-white hover:bg-[#8a6030] transition-colors"
+                  >
+                    심화 특성
+                  </Link>
+                </div>
+              </PixelFrame>
             );
           })}
 
@@ -227,8 +274,21 @@ export default async function MyPage() {
       </div>
 
       {/* 로그아웃 */}
-      <div className="mt-6 mb-10">
+      <div className="mt-6 mb-6">
         <LogoutButton />
+      </div>
+
+      {/* 사업자 정보 */}
+      <div className="mb-10 pt-4 border-t border-[#e8e0d0]">
+        <p className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890] mb-1">
+          온아토 | 대표 임승균
+        </p>
+        <p className="text-[0.5rem] text-[#c8c0b0] mb-0.5">
+          사업자등록번호 607-29-96690
+        </p>
+        <p className="text-[0.5rem] text-[#c8c0b0]">
+          경기도 용인시 기흥구 신정로 25, 108동 2205호
+        </p>
       </div>
     </div>
   );

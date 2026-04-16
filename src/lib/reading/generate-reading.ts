@@ -2,7 +2,16 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { generateAllCharts } from "@/lib/charts";
 import { generateStatScores } from "@/lib/ai/stat-scorer";
 import { sanitizeReadingHtml } from "@/lib/ai/sanitize-html";
+import { MOCK_READINGS, MOCK_STAT_SCORES } from "@/lib/reading/mock-data";
 import type { BirthInfo, AllCharts } from "@/lib/charts/types";
+
+/**
+ * Mock 모드 활성화 여부
+ * .env.local에 USE_MOCK_READINGS=true 설정 시 Gemini 호출 대신 mock 데이터 사용
+ *
+ * ⚠️ 프로덕션 배포 전 반드시 false(미설정)인지 확인할 것
+ */
+const USE_MOCK = process.env.USE_MOCK_READINGS === "true";
 
 export interface CharacterData {
   name: string | null;
@@ -34,6 +43,42 @@ export async function executeReadingGeneration(
       .from("readings")
       .update({ status: "generating" })
       .eq("id", readingId);
+
+    // ──────────────────────────────────────────
+    // Mock 모드: Gemini 호출 없이 즉시 완료
+    // ──────────────────────────────────────────
+    if (USE_MOCK) {
+      console.log(`[MOCK] Reading ${readingId} (${type}) — using mock data`);
+
+      // 실제 로딩 느낌을 위해 2초 딜레이
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const mockContent = MOCK_READINGS[type] ?? MOCK_READINGS.comprehensive;
+      const isCmp = type === "comprehensive";
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "complete",
+          content: mockContent,
+          stat_scores: isCmp ? MOCK_STAT_SCORES : null,
+          character_title: isCmp ? MOCK_STAT_SCORES.title : null,
+          tokens_used: 0,
+        })
+        .eq("id", readingId);
+
+      if (isCmp) {
+        await supabase
+          .from("characters")
+          .update({ unlocked: true })
+          .eq("id", characterId);
+      }
+      return;
+    }
+
+    // ──────────────────────────────────────────
+    // Live 모드: Gemini API 호출
+    // ──────────────────────────────────────────
 
     // 2. birthInfo + charts
     const birthInfo: BirthInfo = {

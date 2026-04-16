@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
 import GachaMachine from "@/components/loading/GachaMachine";
@@ -18,6 +19,13 @@ const DAILY_MESSAGES = [
   "운명의 흐름을 해석합니다...",
   "당신의 하루를 점치는 중...",
 ];
+
+function FullscreenOverlay({ children }: { children: React.ReactNode }) {
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] bg-[#f5f0e8]">{children}</div>,
+    document.body,
+  );
+}
 
 export default function DailyFortuneClient({ characterId }: DailyFortuneClientProps) {
   const [stage, setStage] = useState<Stage>("idle");
@@ -47,45 +55,37 @@ export default function DailyFortuneClient({ characterId }: DailyFortuneClientPr
     }
   }
 
-  if (stage === "generating") {
-    return (
-      <div className="w-full mx-auto flex flex-col items-center justify-center min-h-screen fixed inset-0 z-50 bg-[#f5f0e8]">
-        <GachaMachine message={DAILY_MESSAGES[messageIndex]} />
-      </div>
-    );
-  }
-
-  if (stage === "capsule") {
-    return (
-      <div className="w-full mx-auto flex flex-col items-center justify-center min-h-screen fixed inset-0 z-50 bg-[#f5f0e8]">
-        <GachaCapsuleOpen onComplete={() => window.location.reload()} />
-      </div>
-    );
-  }
-
   return (
-    <PixelFrame variant="default" className="p-6 text-center">
-      <div
-        className="text-4xl mb-4"
-        role="img"
-        aria-label="scroll"
-      >
-
-      </div>
-      <p className="text-sm mb-6 font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
-        오늘의 운세가 아직 열리지 않았습니다
-      </p>
-      {error && (
-        <p className="text-sm mb-4 font-[family-name:var(--font-pixel)] text-[#d04040]">
-          {error}
+    <>
+      <PixelFrame variant="default" className="p-6 text-center">
+        <p className="text-sm mb-6 font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
+          오늘의 운세가 아직 열리지 않았습니다
         </p>
+        {error && (
+          <p className="text-sm mb-4 font-[family-name:var(--font-pixel)] text-[#d04040]">
+            {error}
+          </p>
+        )}
+        <PixelButton
+          onClick={handleGetFortune}
+          size="lg"
+          disabled={stage !== "idle"}
+        >
+          {stage === "idle" ? "오늘의 운세를 확인하세요" : "생성 중..."}
+        </PixelButton>
+      </PixelFrame>
+
+      {stage === "generating" && (
+        <FullscreenOverlay>
+          <GachaMachine message={DAILY_MESSAGES[messageIndex]} />
+        </FullscreenOverlay>
       )}
-      <PixelButton
-        onClick={handleGetFortune}
-        size="lg"
-      >
-        오늘의 운세를 확인하세요
-      </PixelButton>
-    </PixelFrame>
+
+      {stage === "capsule" && (
+        <FullscreenOverlay>
+          <GachaCapsuleOpen onComplete={() => window.location.reload()} />
+        </FullscreenOverlay>
+      )}
+    </>
   );
 }

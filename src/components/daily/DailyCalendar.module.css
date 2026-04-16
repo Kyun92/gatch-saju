@@ -44,7 +44,6 @@
 .today {
   outline: 3px solid #2c2418;
   outline-offset: -3px;
-  z-index: 2;
 }
 
 .future {

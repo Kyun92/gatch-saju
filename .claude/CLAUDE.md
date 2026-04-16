@@ -215,6 +215,10 @@ LLM에 전달되는 데이터: 사주 JSON + 자미두수 JSON + 서양점성술
 - 클라이언트 3초 폴링 → 완료 시 결과 페이지
 - 실패 시 자동 재시도 1회 → 최종 실패 시 사용자 친화 에러 메시지 (AI 공급자 정보 비노출)
 - 공통 래퍼: `src/lib/reading/generate-reading.ts`의 `executeReadingGeneration()`
+- **Dev/Live 분기**: `USE_MOCK_READINGS=true` 환경변수로 Gemini 호출 없이 mock 데이터 사용 가능
+  - mock 데이터: `src/lib/reading/mock-data.ts` (임승균 캐릭터 실제 결과 기반)
+  - ⚠️ **프로덕션 배포 시 `USE_MOCK_READINGS`를 반드시 제거하거나 `false`로 설정**
+  - Vercel 환경변수에는 이 값을 절대 설정하지 말 것
 
 ### DB 구조 (1계정 N캐릭터)
 
