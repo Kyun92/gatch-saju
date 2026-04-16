@@ -277,7 +277,7 @@ export default function CharacterSlot({
                   padding: "8px 4px",
                 }}
               >
-                {"📜 오늘의 운세"}
+                {"오늘의 운세"}
               </Link>
               <Link
                 href={`/characters/${character.id}`}
@@ -289,7 +289,7 @@ export default function CharacterSlot({
                   padding: "8px 4px",
                 }}
               >
-                {"🌟 심화 특성"}
+                {"심화 특성"}
               </Link>
             </div>
           </div>
@@ -307,7 +307,7 @@ export default function CharacterSlot({
               textShadow: "0 1px 1px rgba(0,0,0,0.2)",
             }}
           >
-            {"⚔️ 운명의 서를 열다 — 990원"}
+            {"운명의 서를 열다 — 990원"}
           </Link>
         )}
       </div>

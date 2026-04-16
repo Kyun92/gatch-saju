@@ -66,7 +66,7 @@ Say "setup omc" or run `/oh-my-claudecode:omc-setup`.
 
 ---
 
-# 천명 (天命) — 운명의 RPG 사주풀이
+# 갓챠사주 — 운명의 RPG 사주풀이
 
 ## 프로젝트 정체성
 

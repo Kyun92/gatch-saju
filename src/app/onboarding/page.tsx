@@ -118,7 +118,7 @@ export default function OnboardingPage() {
     <div className="min-h-screen flex flex-col items-center px-4 py-8 bg-[#f5f0e8]">
       {/* Header */}
       <h1 className="text-2xl mb-6 font-[family-name:var(--font-pixel)] text-[#b8883c]">
-        ⚔️ 캐릭터 생성
+        캐릭터 생성
       </h1>
 
       {/* Progress Dots */}
@@ -292,7 +292,7 @@ export default function OnboardingPage() {
             {/* Character Preview */}
             <div className="pixel-frame-accent p-4 w-full flex flex-col items-center gap-3">
               <div className="w-20 h-20 pixel-frame-simple flex items-center justify-center bg-[#faf7f2] text-[2.5rem]">
-                ⚔️
+                
               </div>
               <div className="text-xl font-[family-name:var(--font-pixel)] text-[#b8883c]">
                 {name}
@@ -336,7 +336,7 @@ export default function OnboardingPage() {
                 className="flex-1"
                 disabled={loading}
               >
-                {loading ? "생성 중..." : "모험 시작! ⚔️"}
+                {loading ? "생성 중..." : "모험 시작! "}
               </PixelButton>
             </div>
           </div>

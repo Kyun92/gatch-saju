@@ -17,7 +17,7 @@ const READING_CONFIG = {
   comprehensive: {
     title: "운명의 서를 펼치다",
     subtitle: "종합 사주 감정",
-    icon: "⚔️",
+    icon: "",
     features: [
       "사주명리학 기반 상세 분석",
       "자미두수 궁위 해석",
@@ -30,7 +30,7 @@ const READING_CONFIG = {
   yearly: {
     title: "올해의 운명을 읽다",
     subtitle: "년운 분석",
-    icon: "📅",
+    icon: "",
     features: [
       "대운 + 세운 교차 분석",
       "12개월 월운 달력",
@@ -43,7 +43,7 @@ const READING_CONFIG = {
   love: {
     title: "사랑의 별자리를 읽다",
     subtitle: "연애운 특화 분석",
-    icon: "💕",
+    icon: "",
     features: [
       "타고난 연애 기질 + 이상형 분석",
       "연애 패턴 + 갈등/이별 패턴",
@@ -56,7 +56,7 @@ const READING_CONFIG = {
   career: {
     title: "천직을 찾아서",
     subtitle: "직업운 특화 분석",
-    icon: "💼",
+    icon: "",
     features: [
       "타고난 적성 + 능력 분석",
       "구체적 직종 5개 이상 추천",
@@ -69,7 +69,7 @@ const READING_CONFIG = {
   wealth: {
     title: "재물의 흐름을 읽다",
     subtitle: "금전운 특화 분석",
-    icon: "💰",
+    icon: "",
     features: [
       "재물 복 구조 + 돈과의 관계",
       "수입원/지출 패턴 분석",
@@ -82,7 +82,7 @@ const READING_CONFIG = {
   health: {
     title: "몸과 마음의 지도",
     subtitle: "건강운 특화 분석",
-    icon: "🏥",
+    icon: "",
     features: [
       "타고난 체질 + 오행 균형 분석",
       "취약 부위 + 장기 건강 예측",
@@ -95,7 +95,7 @@ const READING_CONFIG = {
   study: {
     title: "배움의 길을 밝히다",
     subtitle: "학업운 특화 분석",
-    icon: "📚",
+    icon: "",
     features: [
       "타고난 학습 스타일 분석",
       "적성 전공/자격증 추천",

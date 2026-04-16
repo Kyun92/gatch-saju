@@ -52,7 +52,7 @@ export default function DailyTeaser({ todayReading }: DailyTeaserProps) {
           <p
             className="font-[family-name:var(--font-body)] text-sm text-[#4a3e2c]"
           >
-            📜 오늘의 퀘스트가 기다리고 있습니다
+            오늘의 퀘스트가 기다리고 있습니다
           </p>
           <Link href="/daily">
             <PixelButton variant="primary" size="sm">

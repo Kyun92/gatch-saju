@@ -11,13 +11,13 @@ interface YearlyReadingViewProps {
 }
 
 const YEARLY_SECTIONS = [
-  { id: "yearly-summary", icon: "🌅", title: "올해의 운세 요약" },
-  { id: "yearly-career", icon: "💼", title: "직업/사업운" },
-  { id: "yearly-wealth", icon: "💰", title: "재물/금전운" },
-  { id: "yearly-love", icon: "💕", title: "연애/인간관계" },
-  { id: "yearly-health", icon: "🌿", title: "건강/컨디션" },
-  { id: "yearly-monthly", icon: "📆", title: "12개월 월별 운세" },
-  { id: "yearly-tips", icon: "🍀", title: "올해의 개운법" },
+  { id: "yearly-summary", icon: "", title: "올해의 운세 요약" },
+  { id: "yearly-career", icon: "", title: "직업/사업운" },
+  { id: "yearly-wealth", icon: "", title: "재물/금전운" },
+  { id: "yearly-love", icon: "", title: "연애/인간관계" },
+  { id: "yearly-health", icon: "", title: "건강/컨디션" },
+  { id: "yearly-monthly", icon: "", title: "12개월 월별 운세" },
+  { id: "yearly-tips", icon: "", title: "올해의 개운법" },
 ];
 
 function extractSection(htmlContent: string, sectionId: string): string {

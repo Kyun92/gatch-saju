@@ -4,10 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  { href: "/daily", label: "일일", icon: "📜" },
-  { href: "/reading", label: "종합", icon: "⚔️" },
-  { href: "/compatibility", label: "궁합", icon: "💕" },
-  { href: "/mypage", label: "MY", icon: "👤" },
+  { href: "/daily", label: "일일", icon: "" },
+  { href: "/reading", label: "종합", icon: "" },
+  { href: "/compatibility", label: "궁합", icon: "" },
+  { href: "/mypage", label: "MY", icon: "" },
 ];
 
 export default function PixelNavBar() {

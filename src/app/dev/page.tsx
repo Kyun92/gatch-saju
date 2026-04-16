@@ -25,7 +25,7 @@ const DUMMY_STATS = {
 
 const DUMMY_HTML = `
 <section class="reading-section" id="intro">
-  <h2>✨ 인사 및 전체 요약</h2>
+  <h2>인사 및 전체 요약</h2>
   <p>당신은 마치 깊은 밤바다를 홀로 항해하는 등대지기입니다. 끝없는 어둠 속에서도 흔들리지 않는 빛을 지니고 있지만, 정작 자신은 그 빛이 얼마나 밝은지 모르고 있죠.</p>
   <div class="highlight-box">
     <p><strong>핵심 키워드:</strong> 깊은 직관 · 숨겨진 리더십 · 감성 지능</p>
@@ -35,7 +35,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="saju-analysis">
-  <h2>🀄 사주 원국 분석</h2>
+  <h2>사주 원국 분석</h2>
   <p>당신의 타고난 기운은 '깊은 바다' 타입(壬水)입니다. 끝이 보이지 않는 수면 아래에 상상할 수 없을 만큼 복잡하고 풍부한 내면 세계가 펼쳐져 있어요.</p>
   <table class="fortune-table">
     <thead><tr><th>구분</th><th>천간</th><th>지지</th><th>십성</th><th>의미</th></tr></thead>
@@ -50,7 +50,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="five-elements">
-  <h2>🌊 오행 분석</h2>
+  <h2>오행 분석</h2>
   <p>끝없이 펼쳐진 깊은 바다와 같은 사주입니다. 물 기운이 넘치고, 불꽃 기운이 부족한 구조예요.</p>
   <table class="fortune-table">
     <thead><tr><th>오행</th><th>개수</th><th>비중</th><th>상태</th><th>영향</th></tr></thead>
@@ -68,7 +68,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="day-pillar">
-  <h2>🌙 일주(日柱) 분석</h2>
+  <h2>일주(日柱) 분석</h2>
   <p>깊은 바다 + 호랑이(壬寅 일주) — 고요한 바다 위를 성큼성큼 걷는 호랑이의 이미지예요. 겉으로는 온화하지만 내면에는 야생의 에너지가 살아 숨 쉬고 있습니다.</p>
   <p>INFP의 내향 감정(Fi) 기능과 이 일주의 관조적 성향이 시너지를 이루고 있어요. 깊은 감정의 바다에서 진짜 보물을 건져올리는 능력이 있습니다.</p>
   <blockquote class="wisdom-quote">
@@ -77,7 +77,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="frank-truth">
-  <h2>💣 팩트 폭격: 솔직한 조언</h2>
+  <h2>팩트 폭격: 솔직한 조언</h2>
   <div class="frank-box">
     <p>솔직히 말씀드리면, 생각만 하다가 날이 새는 패턴이 이 사주에 고스란히 보입니다.</p>
     <ul>
@@ -92,7 +92,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="warmth">
-  <h2>🤗 따뜻한 위로</h2>
+  <h2>따뜻한 위로</h2>
   <div class="warmth-box">
     <p>여기까지 오느라 정말 수고했어요. 당신의 사주를 보면, 남들보다 훨씬 더 많은 것을 느끼고, 더 깊이 고민하고, 더 오래 상처받는 구조입니다. 그런데도 여전히 여기 서 있다는 것 자체가 대단한 거예요.</p>
   </div>
@@ -102,7 +102,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="personality">
-  <h2>🎭 성격 분석</h2>
+  <h2>성격 분석</h2>
   <p>타고난 성격의 빛: 깊은 공감 능력, 예술적 감수성, 직관적 통찰력</p>
   <p>타고난 성격의 그림자: 우유부단함, 완벽주의에 의한 마비, 감정 과부하</p>
   <p>INFP로 표현되는 당신의 성격은 사주가 이미 가리키고 있던 방향의 자연스러운 귀결입니다. 세 체계 모두 "깊이 있는 내면의 탐험가"를 가리키고 있어요.</p>
@@ -112,7 +112,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="career">
-  <h2>💼 직업운과 적성</h2>
+  <h2>직업운과 적성</h2>
   <p>커리어 하우스에 '문학과 예술의 별'이 빛나고 있어요. 여기에 INFP의 창의성이 더해지면 글쓰기/상담/예술 분야에서 강력한 교집합이 만들어집니다.</p>
   <table class="fortune-table">
     <thead><tr><th>분야</th><th>구체적 직종</th><th>적합도</th></tr></thead>
@@ -120,7 +120,7 @@ const DUMMY_HTML = `
       <tr><td>창작/예술</td><td>작가, 디자이너, 음악가</td><td>★★★★★</td></tr>
       <tr><td>상담/교육</td><td>심리상담사, 코치, 교사</td><td>★★★★☆</td></tr>
       <tr><td>기획/전략</td><td>콘텐츠 기획, 마케터</td><td>★★★☆☆</td></tr>
-      <tr><td>피해야 할 분야</td><td>영업, 현장 관리직</td><td>❌</td></tr>
+      <tr><td>피해야 할 분야</td><td>영업, 현장 관리직</td><td></td></tr>
     </tbody>
   </table>
   <div class="advice-card">
@@ -129,7 +129,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="wealth">
-  <h2>💰 재물운</h2>
+  <h2>재물운</h2>
   <p>재물 하우스에 안정적인 에너지가 흐르고 있어요. 큰 부자보다는 안정적인 수입을 만드는 구조입니다.</p>
   <table class="fortune-table">
     <thead><tr><th>항목</th><th>추천</th><th>비추천</th></tr></thead>
@@ -145,7 +145,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="relationships">
-  <h2>❤️ 이성운과 인간관계</h2>
+  <h2>️ 이성운과 인간관계</h2>
   <p>배우자 하우스에 따뜻한 에너지가 자리잡고 있어요. 깊은 정서적 교감을 나눌 수 있는 파트너를 만날 운명입니다.</p>
   <table class="fortune-table">
     <thead><tr><th>관계</th><th>특징</th><th>조언</th></tr></thead>
@@ -158,7 +158,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="health">
-  <h2>🌿 건강 · 방위 · 거주</h2>
+  <h2>건강 · 방위 · 거주</h2>
   <p>물 기운 과다로 신장과 방광 계통에 주의가 필요합니다. 손발이 차가운 체질이에요.</p>
   <table class="fortune-table">
     <thead><tr><th>항목</th><th>길(吉)</th><th>흉(凶)</th></tr></thead>
@@ -171,7 +171,7 @@ const DUMMY_HTML = `
 </section>
 
 <section class="reading-section" id="guide">
-  <h2>🗺️ 종합 개운법</h2>
+  <h2>종합 개운법</h2>
   <div class="warmth-box">
     <p>당신은 이미 깊은 바다를 품고 있는 사람입니다. 이제 필요한 건 그 바다에 불꽃 하나를 띄우는 것뿐이에요.</p>
   </div>
@@ -210,9 +210,9 @@ export default function DevPreviewPage() {
         {(
           [
             ["reading", "📊 종합감정"],
-            ["daily", "📜 일일운세"],
+            ["daily", "일일운세"],
             ["login", "🏠 로그인"],
-            ["onboarding", "⚔️ 온보딩"],
+            ["onboarding", "온보딩"],
             ["components", "🧩 컴포넌트"],
           ] as [Section, string][]
         ).map(([key, label]) => (
@@ -295,7 +295,7 @@ function DailyPreview() {
       <div className="flex flex-col gap-4 py-6">
         <div className="text-center">
           <h1 style={{ fontFamily: "var(--font-pixel)", color: "#b8883c", fontSize: "1.25rem" }}>
-            📜 오늘의 퀘스트
+            오늘의 퀘스트
           </h1>
           <p style={{ fontFamily: "var(--font-pixel)", color: "#8a8070", fontSize: "0.75rem" }}>
             2026년 4월 13일 (일) · 丙午일
@@ -306,7 +306,7 @@ function DailyPreview() {
           <div className="flex flex-col gap-4">
             <div>
               <h3 style={{ fontFamily: "var(--font-pixel)", color: "#d04040", fontSize: "0.85rem" }}>
-                🔥 오늘의 기운
+                오늘의 기운
               </h3>
               <p className="mt-2 text-sm leading-relaxed" style={{ color: "#2c2418" }}>
                 활활 타오르는 불꽃 기운이 당신의 행동력을 끌어올리는 날입니다. 평소 미뤄왔던 일을 시작하기에 최적의 타이밍이에요.
@@ -317,7 +317,7 @@ function DailyPreview() {
 
             <div>
               <h3 style={{ fontFamily: "var(--font-pixel)", color: "#c8a020", fontSize: "0.85rem" }}>
-                ⚠️ 주의할 점
+                주의할 점
               </h3>
               <p className="mt-2 text-sm leading-relaxed" style={{ color: "#2c2418" }}>
                 급한 결정은 피하세요. 불꽃이 강한 날이라 감정적으로 치우칠 수 있어요. INFP인 당신에게는 특히 혼자 정리하는 시간이 필요합니다.
@@ -329,7 +329,7 @@ function DailyPreview() {
             {/* Lucky Items */}
             <div>
               <h3 style={{ fontFamily: "var(--font-pixel)", color: "#2e8b4e", fontSize: "0.85rem" }}>
-                🍀 행운 아이템
+                행운 아이템
               </h3>
               <div className="grid grid-cols-3 gap-2 mt-3">
                 {[
@@ -370,7 +370,7 @@ function DailyPreview() {
         {/* CTA */}
         <PixelFrame variant="simple" className="p-4 text-center">
           <p style={{ fontFamily: "var(--font-pixel)", color: "#9a7040", fontSize: "0.8rem" }}>
-            ⚔️ 더 깊은 운명의 서를 펼쳐보세요
+            더 깊은 운명의 서를 펼쳐보세요
           </p>
           <p className="text-xs mt-1" style={{ color: "#8a8070" }}>
             종합 사주감정 — 990원
@@ -398,7 +398,7 @@ function LoginPreview() {
             textShadow: "0 0 16px rgba(200,160,32,0.5), 0 0 32px rgba(200,160,32,0.25)",
           }}
         >
-          ✦ 천명 ✦
+          갓챠사주
         </h1>
         <p style={{ fontFamily: "var(--font-pixel)", color: "#9a7040", fontSize: "1.1rem" }}>
           운명의 사주풀이
@@ -469,7 +469,7 @@ function OnboardingPreview() {
       <div className="flex flex-col gap-6 py-6">
         <PixelFrame variant="accent" className="p-4 text-center">
           <h1 style={{ fontFamily: "var(--font-pixel)", color: "#b8883c", fontSize: "1.1rem" }}>
-            ⚔️ 캐릭터 생성
+            캐릭터 생성
           </h1>
         </PixelFrame>
 
@@ -701,12 +701,12 @@ function ComponentGallery() {
           </h2>
           <PixelFrame variant="default" className="p-4">
             <div className="flex flex-col gap-3">
-              <StatBar icon="❤" label="생명력" value={67} color="#d04040" />
-              <StatBar icon="💰" label="재물운" value={42} color="#3070c0" />
-              <StatBar icon="💕" label="연애운" value={78} color="#d06890" />
-              <StatBar icon="💼" label="직업운" value={85} color="#6858b8" />
-              <StatBar icon="🌿" label="건강" value={55} color="#2e8b4e" />
-              <StatBar icon="⭐" label="행운" value={91} color="#c8a020" />
+              <StatBar icon="" label="생명력" value={67} color="#d04040" />
+              <StatBar icon="" label="재물운" value={42} color="#3070c0" />
+              <StatBar icon="" label="연애운" value={78} color="#d06890" />
+              <StatBar icon="" label="직업운" value={85} color="#6858b8" />
+              <StatBar icon="" label="건강" value={55} color="#2e8b4e" />
+              <StatBar icon="" label="행운" value={91} color="#c8a020" />
             </div>
           </PixelFrame>
         </section>

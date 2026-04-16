@@ -35,7 +35,7 @@ export default function DailyFortuneClient({ characterId }: DailyFortuneClientPr
         role="img"
         aria-label="scroll"
       >
-        📜
+        
       </div>
       <p
         className="text-sm mb-6"

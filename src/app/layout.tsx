@@ -15,9 +15,9 @@ const notoSansKR = Noto_Sans_KR({
 // The CSS variable --font-pixel is declared in globals.css with a monospace fallback.
 
 export const metadata: Metadata = {
-  title: "천명 | 운명의 RPG 사주풀이",
+  title: "갓챠사주 | 운명의 RPG 사주풀이",
   description:
-    "사주명리학을 RPG 스타일로 풀어드리는 천명입니다. 생년월일로 나만의 캐릭터를 만들고, 오행 운세·직업운·연애운·건강운을 확인하세요.",
+    "사주 × 자미두수 × 서양점성술 3체계 AI 교차분석. 나만의 RPG 캐릭터를 만들고 운명을 탐험하세요. 990원.",
   keywords: [
     "사주",
     "사주풀이",
@@ -25,16 +25,16 @@ export const metadata: Metadata = {
     "RPG 사주",
     "오행",
     "명리학",
-    "천명",
+    "갓챠사주",
     "사주 캐릭터",
-    "일간",
-    "2024 운세",
+    "자미두수",
+    "서양점성술",
     "무료 사주",
   ],
-  authors: [{ name: "천명" }],
+  authors: [{ name: "갓챠사주" }],
   openGraph: {
-    title: "천명 | 운명의 RPG 사주풀이",
-    description: "나만의 RPG 사주 캐릭터를 만들어 운명을 탐험하세요.",
+    title: "갓챠사주 | 운명의 RPG 사주풀이",
+    description: "사주 × 자미두수 × 서양점성술 3체계 AI 교차분석. 990원.",
     locale: "ko_KR",
     type: "website",
   },

@@ -8,13 +8,13 @@ interface CompatibilityAccordionProps {
 }
 
 const SECTIONS = [
-  { id: "compat-summary", icon: "💕", title: "첫인상과 전체 요약" },
-  { id: "compat-saju", icon: "🔮", title: "사주 궁합 분석" },
-  { id: "compat-ziwei", icon: "⭐", title: "자미두수 궁합 분석" },
-  { id: "compat-western", icon: "🌙", title: "서양점성술 궁합 분석" },
-  { id: "compat-synergy", icon: "✨", title: "강점과 시너지" },
-  { id: "compat-conflict", icon: "⚡", title: "갈등 포인트와 극복법" },
-  { id: "compat-roadmap", icon: "🗺️", title: "관계 발전 로드맵" },
+  { id: "compat-summary", icon: "", title: "첫인상과 전체 요약" },
+  { id: "compat-saju", icon: "", title: "사주 궁합 분석" },
+  { id: "compat-ziwei", icon: "", title: "자미두수 궁합 분석" },
+  { id: "compat-western", icon: "", title: "서양점성술 궁합 분석" },
+  { id: "compat-synergy", icon: "", title: "강점과 시너지" },
+  { id: "compat-conflict", icon: "", title: "갈등 포인트와 극복법" },
+  { id: "compat-roadmap", icon: "", title: "관계 발전 로드맵" },
 ];
 
 function extractSection(htmlContent: string, sectionId: string): string {

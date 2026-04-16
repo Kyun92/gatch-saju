@@ -24,7 +24,7 @@ export default function LoginPage() {
             textShadow: "0 0 16px rgba(154,112,64,0.4), 0 0 32px rgba(154,112,64,0.2)",
           }}
         >
-          ✦ 천명 ✦
+          갓챠사주
         </h1>
         <p className="text-lg mb-4 font-[family-name:var(--font-pixel)] text-[#9a7040]">
           운명의 사주풀이

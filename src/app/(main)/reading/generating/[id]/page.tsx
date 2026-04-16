@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
+import GachaMachine from "@/components/loading/GachaMachine";
+import GachaCapsuleOpen from "@/components/loading/GachaCapsuleOpen";
 
 const PROGRESS_MESSAGES = [
   "운명의 별자리를 해석하는 중...",
@@ -45,7 +47,6 @@ export default function GeneratingPage() {
 
       if (data.reading?.status === "complete") {
         setStatus("complete");
-        router.push(`/reading/${id}`);
       } else if (data.reading?.status === "error") {
         setStatus("error");
         setErrorMessage(
@@ -55,21 +56,21 @@ export default function GeneratingPage() {
     } catch {
       // Silently retry on network error
     }
-  }, [id, router]);
+  }, [id]);
 
   useEffect(() => {
     const interval = setInterval(pollStatus, 3000);
-    // Also poll immediately
     pollStatus();
     return () => clearInterval(interval);
   }, [pollStatus]);
 
+  // 에러 상태
   if (status === "error") {
     return (
       <div className="w-full mx-auto px-4 py-6 flex flex-col items-center justify-center max-w-[768px] min-h-[80vh]">
         <PixelFrame variant="accent" className="p-6 text-center w-full">
-          <div className="text-4xl mb-4 font-[family-name:var(--font-pixel)]">
-            &#x274C;
+          <div className="text-4xl mb-4 font-[family-name:var(--font-pixel)] text-[#d04040]">
+            X
           </div>
           <h1 className="text-lg mb-3 font-[family-name:var(--font-pixel)] text-[#d04040]">
             감정 실패
@@ -77,49 +78,27 @@ export default function GeneratingPage() {
           <p className="text-sm mb-6 text-[#4a3e2c]">
             {errorMessage}
           </p>
-          <PixelButton onClick={() => router.push("/reading/new")}>
-            다시 시도하기
+          <PixelButton onClick={() => router.push("/")}>
+            홈으로 돌아가기
           </PixelButton>
         </PixelFrame>
       </div>
     );
   }
 
+  // 생성 완료 → 캡슐 오픈 연출
+  if (status === "complete") {
+    return (
+      <div className="w-full mx-auto flex flex-col items-center justify-center min-h-screen bg-[#f5f0e8]">
+        <GachaCapsuleOpen onComplete={() => router.push(`/reading/${id}`)} />
+      </div>
+    );
+  }
+
+  // 생성 중 → 갓챠 머신
   return (
-    <div className="w-full mx-auto px-4 py-6 flex flex-col items-center justify-center max-w-[768px] min-h-[80vh]">
-      <PixelFrame variant="accent" className="p-8 text-center w-full">
-        {/* Spinning crystal ball */}
-        <div className="text-5xl mb-6 animate-spin-slow font-[family-name:var(--font-pixel)]">
-          &#x1F52E;
-        </div>
-
-        {/* Title */}
-        <h1 className="text-lg mb-2 font-[family-name:var(--font-pixel)] text-[#b8883c]">
-          운세를 감정하고 있습니다
-        </h1>
-
-        {/* Blinking progress message */}
-        <p className="text-sm animate-pulse font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
-          {PROGRESS_MESSAGES[messageIndex]}
-        </p>
-
-        {/* Progress dots */}
-        <div className="flex justify-center gap-2 mt-6">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="w-2 h-2 bg-[#b8883c] transition-opacity duration-300"
-              style={{
-                opacity: ((messageIndex + i) % 3) === 0 ? 1 : 0.3,
-              }}
-            />
-          ))}
-        </div>
-
-        <p className="text-xs mt-6 text-[#8a8070]">
-          약 30초~1분 정도 소요됩니다
-        </p>
-      </PixelFrame>
+    <div className="w-full mx-auto flex flex-col items-center justify-center min-h-screen bg-[#f5f0e8]">
+      <GachaMachine message={PROGRESS_MESSAGES[messageIndex]} />
     </div>
   );
 }

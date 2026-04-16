@@ -12,14 +12,14 @@ export default function HubHeader({ userName }: HubHeaderProps) {
       <span
         className="font-[family-name:var(--font-pixel)] text-xl text-[#b8883c] tracking-[0.05em]"
       >
-        ✦ 천명 ✦
+        갓챠사주
       </span>
 
       <Link
         href="/mypage"
         className="font-[family-name:var(--font-pixel)] text-[0.6875rem] text-[#8a8070] no-underline flex items-center gap-1"
       >
-        👤 {userName}
+        {userName}
       </Link>
     </header>
   );

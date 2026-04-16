@@ -25,7 +25,7 @@ const SKILL_NODES: SkillNode[] = [
   {
     type: "comprehensive",
     label: "종합감정",
-    icon: "⚔️",
+    icon: "",
     description: "평생 운명 분석",
     prerequisite: null,
     comingSoon: false,
@@ -33,7 +33,7 @@ const SKILL_NODES: SkillNode[] = [
   {
     type: "yearly",
     label: "년운 분석",
-    icon: "📅",
+    icon: "",
     description: "올해의 운세 + 12개월",
     prerequisite: "comprehensive",
     comingSoon: false,
@@ -41,7 +41,7 @@ const SKILL_NODES: SkillNode[] = [
   {
     type: "love",
     label: "연애운",
-    icon: "💕",
+    icon: "",
     description: "이상형·연애패턴·결혼시기",
     prerequisite: "comprehensive",
     comingSoon: false,
@@ -49,7 +49,7 @@ const SKILL_NODES: SkillNode[] = [
   {
     type: "career",
     label: "직업운",
-    icon: "💼",
+    icon: "",
     description: "적성업종·이직시기",
     prerequisite: "comprehensive",
     comingSoon: false,
@@ -57,7 +57,7 @@ const SKILL_NODES: SkillNode[] = [
   {
     type: "wealth",
     label: "금전운",
-    icon: "💰",
+    icon: "",
     description: "재물운·투자성향",
     prerequisite: "comprehensive",
     comingSoon: false,
@@ -65,7 +65,7 @@ const SKILL_NODES: SkillNode[] = [
   {
     type: "health",
     label: "건강운",
-    icon: "🏥",
+    icon: "",
     description: "체질·건강관리",
     prerequisite: "comprehensive",
     comingSoon: false,
@@ -73,7 +73,7 @@ const SKILL_NODES: SkillNode[] = [
   {
     type: "study",
     label: "학업운",
-    icon: "📚",
+    icon: "",
     description: "적성분야·시험운",
     prerequisite: "comprehensive",
     comingSoon: false,
@@ -81,7 +81,7 @@ const SKILL_NODES: SkillNode[] = [
   {
     type: "compatibility",
     label: "궁합 분석",
-    icon: "💑",
+    icon: "",
     description: "두 운명의 교차점",
     prerequisite: "comprehensive",
     comingSoon: false,
@@ -137,7 +137,7 @@ export default function SkillTree({
       {/* Section header */}
       <div className="flex items-center gap-2 mb-3">
         <span className="font-[family-name:var(--font-pixel)] text-[0.75rem] text-[#9a7040] tracking-[0.06em]">
-          {"⚔️ 심화 특성"}
+          {"심화 특성"}
         </span>
         <span
           className="flex-1 h-px opacity-40"
@@ -300,7 +300,7 @@ function SkillNodeCard({
             filter: isLocked || isComingSoon ? "grayscale(80%)" : "none",
           }}
         >
-          {isLocked ? "🔒" : node.icon}
+          {isLocked ? "" : node.icon}
         </span>
 
         {/* Label + description */}

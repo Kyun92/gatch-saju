@@ -4,7 +4,7 @@ export default function UpsellBanner() {
   return (
     <div className="pixel-frame-accent mt-6 p-4 flex items-center gap-3 bg-[rgba(154,112,64,0.04)]">
       <span className="text-2xl" aria-hidden="true">
-        ⚔️
+        
       </span>
       <div className="flex-1 min-w-0">
         <p className="font-[family-name:var(--font-pixel)] text-[0.6875rem] text-[#9a7040] mb-0.5">

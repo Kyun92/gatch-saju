@@ -81,7 +81,7 @@ export default async function DailyPage({ searchParams }: DailyPageProps) {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl mb-1 font-[family-name:var(--font-pixel)] text-[#b8883c]">
-          📜 오늘의 퀘스트
+          오늘의 퀘스트
         </h1>
         <p className="text-sm text-[#8a8070]">
           {character.name}님의 일일 운세

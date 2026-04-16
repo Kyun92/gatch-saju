@@ -10,12 +10,12 @@ const STATS: {
   key: keyof Omit<StatScores, "title">;
   color: string;
 }[] = [
-  { icon: "❤", label: "생명력", key: "vitality_score", color: "#d04040" },
-  { icon: "💰", label: "재물운", key: "wealth_score", color: "#3070c0" },
-  { icon: "💕", label: "연애운", key: "love_score", color: "#d06890" },
-  { icon: "💼", label: "직업운", key: "career_score", color: "#6858b8" },
-  { icon: "🌿", label: "건강", key: "health_score", color: "#2e8b4e" },
-  { icon: "⭐", label: "행운", key: "luck_score", color: "#c8a020" },
+  { icon: "", label: "생명력", key: "vitality_score", color: "#d04040" },
+  { icon: "", label: "재물운", key: "wealth_score", color: "#3070c0" },
+  { icon: "", label: "연애운", key: "love_score", color: "#d06890" },
+  { icon: "", label: "직업운", key: "career_score", color: "#6858b8" },
+  { icon: "", label: "건강", key: "health_score", color: "#2e8b4e" },
+  { icon: "", label: "행운", key: "luck_score", color: "#c8a020" },
 ];
 
 export default function StatGrid({ statScores }: StatGridProps) {

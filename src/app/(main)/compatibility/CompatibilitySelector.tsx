@@ -59,7 +59,7 @@ export default function CompatibilitySelector({
   if (unlockedCharacters.length < 2) {
     return (
       <PixelFrame variant="accent" className="p-6 text-center">
-        <div className="text-3xl mb-4">{"🔒"}</div>
+        <div className="text-3xl mb-4">{""}</div>
         <h2 className="text-base mb-3 font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
           캐릭터 2명 이상 해금 필요
         </h2>
@@ -239,7 +239,7 @@ export default function CompatibilitySelector({
       >
         {loading
           ? "궁합 분석 중..."
-          : "💑 궁합 분석하기 — 990원"}
+          : "궁합 분석하기 — 990원"}
       </PixelButton>
 
       <p className="text-xs text-center text-[#8a8070]">

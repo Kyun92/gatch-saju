@@ -38,7 +38,7 @@ export default async function ReadingPage({ searchParams }: ReadingPageProps) {
   return (
     <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
       <h1 className="text-xl mb-6 font-[family-name:var(--font-pixel)] text-[#b8883c]">
-        ⚔️ 종합 사주 감정
+        종합 사주 감정
       </h1>
 
       {/* CTA */}

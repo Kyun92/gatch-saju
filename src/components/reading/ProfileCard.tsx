@@ -32,7 +32,7 @@ export default function ProfileCard({
         className="text-sm mb-3"
         style={{ fontFamily: "var(--font-pixel)", color: "#9a7040" }}
       >
-        📜 모험자 프로필
+        모험자 프로필
       </h3>
       <table className="fortune-table">
         <tbody>

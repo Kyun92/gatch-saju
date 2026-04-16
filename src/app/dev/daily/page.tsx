@@ -45,7 +45,7 @@ export default function DevDailyPage() {
           className="text-xl"
           style={{ fontFamily: "var(--font-pixel)", color: "#b8883c" }}
         >
-          📜 오늘의 퀘스트
+          오늘의 퀘스트
         </h1>
         <p className="text-sm" style={{ color: "#8a8070" }}>
           임승균님의 일일 운세 | INFP

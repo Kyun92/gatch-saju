@@ -8,14 +8,14 @@ interface ReadingAccordionProps {
 }
 
 const SECTIONS = [
-  { id: "saju-analysis", icon: "🔮", title: "사주 분석" },
-  { id: "personality", icon: "🧠", title: "성격 분석" },
-  { id: "career", icon: "💼", title: "직업운" },
-  { id: "wealth", icon: "💰", title: "재물운" },
-  { id: "relationships", icon: "💕", title: "연애운" },
-  { id: "health", icon: "🌿", title: "건강" },
-  { id: "guide", icon: "🍀", title: "개운법" },
-  { id: "frank-truth", icon: "⚡", title: "팩폭" },
+  { id: "saju-analysis", icon: "", title: "사주 분석" },
+  { id: "personality", icon: "", title: "성격 분석" },
+  { id: "career", icon: "", title: "직업운" },
+  { id: "wealth", icon: "", title: "재물운" },
+  { id: "relationships", icon: "", title: "연애운" },
+  { id: "health", icon: "", title: "건강" },
+  { id: "guide", icon: "", title: "개운법" },
+  { id: "frank-truth", icon: "", title: "팩폭" },
 ];
 
 function extractSection(htmlContent: string, sectionId: string): string {
