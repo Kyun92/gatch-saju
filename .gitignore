@@ -4,9 +4,12 @@ data/*.db
 .env
 .env.local
 .env*.local
+.env.vercel
+.env.production
 *.log
 .next/
 .omc/
+.vercel/
 
 # TypeScript incremental build cache
 tsconfig.tsbuildinfo
