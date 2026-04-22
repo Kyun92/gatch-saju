@@ -220,24 +220,8 @@ export default async function MyPage() {
       </div>
 
       {/* 로그아웃 */}
-      <div className="mt-6 mb-6">
+      <div className="mt-6 mb-10">
         <LogoutButton />
-      </div>
-
-      {/* 사업자 정보 */}
-      <div className="mb-10 pt-4 border-t border-[#e8e0d0]">
-        <p className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890] mb-1">
-          온아토 | 대표 임승균
-        </p>
-        <p className="text-[0.5rem] text-[#c8c0b0] mb-0.5">
-          사업자등록번호 607-29-96690
-        </p>
-        <p className="text-[0.5rem] text-[#c8c0b0] mb-0.5">
-          경기도 용인시 기흥구 신정로 25, 108동 2205호
-        </p>
-        <p className="text-[0.5rem] text-[#c8c0b0]">
-          고객센터 010-6889-8909 · lsk9105@gmail.com
-        </p>
       </div>
     </div>
   );

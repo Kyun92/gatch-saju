@@ -57,7 +57,7 @@ export default function RootLayout({
       style={{ colorScheme: "light" }}
     >
       <body
-        className="h-dvh flex flex-col antialiased overflow-hidden"
+        className="h-screen flex flex-col antialiased overflow-hidden"
         style={{
           backgroundColor: "#f5f0e8",
           color: "#2c2418",
