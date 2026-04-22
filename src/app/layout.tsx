@@ -57,7 +57,7 @@ export default function RootLayout({
       style={{ colorScheme: "light" }}
     >
       <body
-        className="min-h-full flex flex-col antialiased"
+        className="h-dvh flex flex-col antialiased overflow-hidden"
         style={{
           backgroundColor: "#f5f0e8",
           color: "#2c2418",
@@ -65,7 +65,11 @@ export default function RootLayout({
         }}
       >
         <SessionProvider>
-          <div className="flex-1 flex flex-col">{children}</div>
+          {/* 내부 스크롤 컨테이너 — SubPageHeader의 sticky top-0은
+              이 컨테이너 기준으로 고정된다 */}
+          <div className="flex-1 min-h-0 overflow-y-auto flex flex-col">
+            {children}
+          </div>
           <Footer />
         </SessionProvider>
       </body>
