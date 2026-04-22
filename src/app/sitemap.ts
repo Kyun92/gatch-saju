@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-  "https://gatcha-saju.vercel.app";
+  "https://gatch-saju.onato.co.kr";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

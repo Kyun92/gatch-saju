@@ -16,3 +16,5 @@ Disallow: /characters/
 Disallow: /daily
 Disallow: /coins
 Disallow: /compatibility
+
+Sitemap: https://gatch-saju.onato.co.kr/sitemap.xml
