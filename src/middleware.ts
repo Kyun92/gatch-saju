@@ -11,6 +11,7 @@ const STATIC_PATHS = [
   "/privacy",
   "/refund",
   "/contact",
+  "/pricing",
 ];
 
 const DEV_ONLY_PATHS = ["/dev", "/api/dev"];

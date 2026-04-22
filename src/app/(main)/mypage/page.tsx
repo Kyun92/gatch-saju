@@ -232,8 +232,11 @@ export default async function MyPage() {
         <p className="text-[0.5rem] text-[#c8c0b0] mb-0.5">
           사업자등록번호 607-29-96690
         </p>
-        <p className="text-[0.5rem] text-[#c8c0b0]">
+        <p className="text-[0.5rem] text-[#c8c0b0] mb-0.5">
           경기도 용인시 기흥구 신정로 25, 108동 2205호
+        </p>
+        <p className="text-[0.5rem] text-[#c8c0b0]">
+          고객센터 010-6889-8909 · lsk9105@gmail.com
         </p>
       </div>
     </div>

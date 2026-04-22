@@ -184,6 +184,7 @@ export default function PrivacyPage() {
         <h2 className="legal-h2">10. 개인정보보호책임자</h2>
         <div className="legal-callout">
           <p>· 책임자: 임승균</p>
+          <p>· 전화: 010-6889-8909</p>
           <p>· 이메일: lsk9105@gmail.com</p>
           <p>· 담당 업무: 개인정보 처리 관련 민원 접수 및 처리</p>
         </div>

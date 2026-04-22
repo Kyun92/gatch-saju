@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BUSINESS_INFO, CUSTOMER_SUPPORT } from "@/lib/copy/contact";
 
 const LEGAL_LINKS: [string, string][] = [
   ["/terms", "이용약관"],
@@ -22,13 +23,21 @@ export default function Footer() {
         ))}
       </nav>
       <p className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890] mb-1">
-        온아토 | 대표 임승균 | 사업자등록번호 607-29-96690
+        {BUSINESS_INFO.tradeName} | 대표 {BUSINESS_INFO.representative} | 사업자등록번호{" "}
+        {BUSINESS_INFO.businessRegistrationNumber}
       </p>
       <p className="text-[0.5rem] text-[#c8c0b0] mb-1">
-        경기도 용인시 기흥구 신정로 25, 108동 2205호
+        {BUSINESS_INFO.address}
       </p>
       <p className="text-[0.5rem] text-[#c8c0b0]">
-        고객센터 lsk9105@gmail.com
+        고객센터{" "}
+        <a href={CUSTOMER_SUPPORT.phoneHref} className="text-[#c8c0b0] no-underline">
+          {CUSTOMER_SUPPORT.phone}
+        </a>
+        {" · "}
+        <a href={CUSTOMER_SUPPORT.emailHref} className="text-[#c8c0b0] no-underline">
+          {CUSTOMER_SUPPORT.email}
+        </a>
       </p>
     </footer>
   );

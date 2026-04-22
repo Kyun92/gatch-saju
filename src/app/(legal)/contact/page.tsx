@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BUSINESS_INFO, CUSTOMER_SUPPORT } from "@/lib/copy/contact";
 
 export const metadata: Metadata = {
   title: "고객센터 | 갓챠사주",
@@ -10,15 +11,16 @@ export default function ContactPage() {
   return (
     <div className="legal-doc">
       <h1 className="legal-title">고객센터</h1>
-      <p className="legal-meta">문의는 이메일로 접수해 주세요</p>
+      <p className="legal-meta">전화 또는 이메일로 접수해 주세요</p>
 
       <section className="legal-section">
         <h2 className="legal-h2">연락처 안내</h2>
         <div className="legal-callout">
-          <p>· 담당자: 임승균</p>
-          <p>· 이메일: <a href="mailto:lsk9105@gmail.com" className="legal-link">lsk9105@gmail.com</a></p>
-          <p>· 운영시간: 평일 10:00 ~ 18:00 (주말·공휴일 제외)</p>
-          <p>· 답변 소요: 영업일 기준 1~2일 내 회신</p>
+          <p>· 담당자: {CUSTOMER_SUPPORT.representative}</p>
+          <p>· 전화: <a href={CUSTOMER_SUPPORT.phoneHref} className="legal-link">{CUSTOMER_SUPPORT.phone}</a></p>
+          <p>· 이메일: <a href={CUSTOMER_SUPPORT.emailHref} className="legal-link">{CUSTOMER_SUPPORT.email}</a></p>
+          <p>· 운영시간: {CUSTOMER_SUPPORT.hours}</p>
+          <p>· 답변 소요: {CUSTOMER_SUPPORT.responseSla} 내 회신</p>
         </div>
         <p className="mt-2">
           운영시간 외에 접수된 문의는 다음 영업일에 순차적으로 처리됩니다.
@@ -33,23 +35,27 @@ export default function ContactPage() {
           <tbody>
             <tr>
               <th>상호</th>
-              <td>온아토</td>
+              <td>{BUSINESS_INFO.tradeName}</td>
             </tr>
             <tr>
               <th>대표자</th>
-              <td>임승균</td>
+              <td>{BUSINESS_INFO.representative}</td>
             </tr>
             <tr>
               <th>사업자등록번호</th>
-              <td>607-29-96690</td>
+              <td>{BUSINESS_INFO.businessRegistrationNumber}</td>
             </tr>
             <tr>
               <th>사업장 주소</th>
-              <td>경기도 용인시 기흥구 신정로 25, 108동 2205호</td>
+              <td>{BUSINESS_INFO.address}</td>
+            </tr>
+            <tr>
+              <th>전화</th>
+              <td>{CUSTOMER_SUPPORT.phone}</td>
             </tr>
             <tr>
               <th>이메일</th>
-              <td>lsk9105@gmail.com</td>
+              <td>{CUSTOMER_SUPPORT.email}</td>
             </tr>
           </tbody>
         </table>

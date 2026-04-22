@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 Allow: /landing
 Allow: /login
+Allow: /pricing
 Allow: /terms
 Allow: /privacy
 Allow: /refund

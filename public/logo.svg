@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" width="100%" height="100%">
+  <defs>
+    <style>
+      /* 레트로 픽셀 느낌을 내기 위해 '둥근모꼴' 한글 웹 폰트를 불러옵니다. */
+      @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff');
+      
+      .pixel-text {
+        font-family: 'DungGeunMo', 'Courier New', monospace;
+        font-size: 90px;
+        text-anchor: middle;
+        dominant-baseline: central;
+      }
+      
+      /* 그림자 스타일 */
+      .shadow {
+        fill: #1a1829;
+      }
+      
+      /* 두꺼운 테두리 스타일 */
+      .outline {
+        fill: none;
+        stroke: #1a1829;
+        stroke-width: 16px;
+        stroke-linejoin: miter;
+      }
+      
+      /* 내부 그라데이션 스타일 */
+      .fill {
+        fill: url(#titleGrad);
+      }
+    </style>
+    
+    <!-- 32비트 스타일의 화려한 그라데이션 -->
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fffb8f" />
+      <stop offset="40%" stop-color="#ffb300" />
+      <stop offset="80%" stop-color="#f57c00" />
+      <stop offset="100%" stop-color="#bf360c" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. 우측 하단 그림자 (가장 아래 레이어) -->
+  <text x="258" y="83" class="pixel-text shadow">가챠사주</text>
+  
+  <!-- 2. 검은색 두꺼운 테두리 (중간 레이어) -->
+  <text x="250" y="75" class="pixel-text outline">가챠사주</text>
+  
+  <!-- 3. 메인 그라데이션 텍스트 (가장 위 레이어) -->
+  <text x="250" y="75" class="pixel-text fill">가챠사주</text>
+</svg>

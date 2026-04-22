@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import GachaHero from "@/components/landing/GachaHero";
 import InsertCoinCTA from "@/components/landing/InsertCoinCTA";
 import PixelStarfield from "@/components/landing/PixelStarfield";
@@ -77,6 +78,12 @@ export default function LandingPage() {
         <p className="animate-blink text-xs font-[family-name:var(--font-pixel)] text-[#8a8070] mt-2">
           다음 캡슐엔 뭐가 들었을까
         </p>
+        <Link
+          href="/pricing"
+          className="font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#9a7040] underline underline-offset-2 tracking-widest"
+        >
+          요금 안내
+        </Link>
       </motion.div>
     </div>
     <Footer />

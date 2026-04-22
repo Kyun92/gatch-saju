@@ -83,7 +83,7 @@ export default function RefundPage() {
       <section className="legal-section">
         <h2 className="legal-h2">6. 환불 절차</h2>
         <ol className="legal-ol">
-          <li>마이페이지의 &ldquo;환불 요청&rdquo; 링크 또는 고객센터(lsk9105@gmail.com)로 환불을 요청합니다.</li>
+          <li>마이페이지의 &ldquo;환불 요청&rdquo; 링크 또는 고객센터(010-6889-8909 / lsk9105@gmail.com)로 환불을 요청합니다.</li>
           <li>요청 시 다음 정보를 함께 전달해 주시기 바랍니다.
             <ul className="legal-ul mt-1">
               <li>가입 이메일</li>
@@ -115,6 +115,7 @@ export default function RefundPage() {
         <h2 className="legal-h2">8. 환불 문의</h2>
         <div className="legal-callout">
           <p>· 담당자: 임승균</p>
+          <p>· 전화: 010-6889-8909</p>
           <p>· 이메일: lsk9105@gmail.com</p>
           <p>· 운영시간: 평일 10:00 ~ 18:00 (주말·공휴일 제외)</p>
           <p>· 처리 소요: 영업일 기준 1~3일</p>
