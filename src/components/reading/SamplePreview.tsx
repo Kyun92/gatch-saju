@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CoinSvg from "@/components/ui/CoinSvg";
 
 export default function SamplePreview() {
   return (
@@ -38,10 +39,13 @@ export default function SamplePreview() {
       </div>
 
       {/* CTA */}
-      <Link href="/reading/new" className="block">
-        <button className="pixel-btn pixel-btn-primary w-full py-3 text-sm font-[family-name:var(--font-pixel)]">
-          내 스탯 확인하기 — 990원
-        </button>
+      <Link
+        href="/reading/new"
+        className="gacha-coin-btn w-full justify-center"
+        aria-label="내 스탯 확인하기 코인 1개 사용"
+      >
+        <CoinSvg size={24} className="animate-spin-coin" />
+        <span>내 스탯 확인하기 — 코인 1개</span>
       </Link>
     </div>
   );

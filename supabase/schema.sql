@@ -1,5 +1,5 @@
 -- ============================================================
--- 천명 — Supabase PostgreSQL Schema
+-- 갓챠사주 — Supabase PostgreSQL Schema
 -- ============================================================
 
 -- Users (NextAuth fields only — fortune profile moved to characters)
@@ -66,6 +66,8 @@ CREATE TABLE IF NOT EXISTS characters (
   )),
   is_self     BOOLEAN NOT NULL DEFAULT TRUE,
   unlocked    BOOLEAN NOT NULL DEFAULT FALSE,
+  free_stat_scores JSONB,
+  free_summary TEXT,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -127,3 +129,65 @@ CREATE INDEX IF NOT EXISTS idx_readings_character_id ON readings(character_id);
 CREATE INDEX IF NOT EXISTS idx_payment_log_user_id ON payment_log(user_id);
 CREATE INDEX IF NOT EXISTS idx_payment_log_character_id ON payment_log(character_id);
 CREATE INDEX IF NOT EXISTS idx_payment_log_reading_id ON payment_log(reading_id);
+
+-- ============================================================
+-- Credit Wallet (Coins) — 2026-04 추가
+-- Credit Wallet 모델: users.coins 잔액 + coin_transactions 이력
+-- ============================================================
+
+-- users: 코인 잔액 (CHECK로 음수 차단)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS coins INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE users DROP CONSTRAINT IF EXISTS users_coins_nonneg;
+ALTER TABLE users ADD CONSTRAINT users_coins_nonneg CHECK (coins >= 0);
+
+-- 코인 이력: 충전(+N) / 차감(-1) / 환불(-N)
+CREATE TABLE IF NOT EXISTS coin_transactions (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  delta           INTEGER NOT NULL CHECK (delta <> 0),
+  reason          TEXT NOT NULL CHECK (reason IN ('purchase','spend','refund')),
+  payment_log_id  UUID REFERENCES payment_log(id) ON DELETE SET NULL,
+  reading_id      UUID REFERENCES readings(id) ON DELETE SET NULL,
+  note            TEXT,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- payment_log: 코인 충전 결제임을 명시
+ALTER TABLE payment_log ADD COLUMN IF NOT EXISTS coin_quantity INTEGER;
+ALTER TABLE payment_log ADD COLUMN IF NOT EXISTS package_id TEXT;
+
+-- readings: 소비된 코인 트랜잭션 연결
+ALTER TABLE readings ADD COLUMN IF NOT EXISTS coin_transaction_id UUID REFERENCES coin_transactions(id) ON DELETE SET NULL;
+
+-- 코인 이력 인덱스
+CREATE INDEX IF NOT EXISTS idx_coin_transactions_user ON coin_transactions(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_coin_transactions_payment_log ON coin_transactions(payment_log_id);
+CREATE INDEX IF NOT EXISTS idx_coin_transactions_reading ON coin_transactions(reading_id);
+CREATE INDEX IF NOT EXISTS idx_readings_coin_tx ON readings(coin_transaction_id);
+
+-- Atomic 코인 증감 (음수 잔액 차단)
+-- p_delta > 0 (충전), < 0 (차감/환불)
+-- 잔액 부족 시 'insufficient_coins' 예외
+CREATE OR REPLACE FUNCTION adjust_user_coins(
+  p_user_id UUID,
+  p_delta   INTEGER
+) RETURNS INTEGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  v_new_balance INTEGER;
+BEGIN
+  UPDATE users
+     SET coins      = coins + p_delta,
+         updated_at = now()
+   WHERE id = p_user_id
+     AND coins + p_delta >= 0
+  RETURNING coins INTO v_new_balance;
+
+  IF v_new_balance IS NULL THEN
+    RAISE EXCEPTION 'insufficient_coins';
+  END IF;
+
+  RETURN v_new_balance;
+END;
+$$;

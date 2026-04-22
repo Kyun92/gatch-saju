@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// iztro 반환 객체는 동적 필드가 많아 any가 불가피.
 import { astro } from "iztro";
 import type { BirthInfo, ZiweiChart } from "./types";
 import { parseTimeIndex } from "../utils/datetime";

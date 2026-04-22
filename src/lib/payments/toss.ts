@@ -44,13 +44,15 @@ export async function confirmPayment(
   });
 }
 
-/** 결제 취소 */
+/** 결제 취소 (cancelAmount 생략 시 전액 취소) */
 export async function cancelPayment(
   paymentKey: string,
-  cancelReason: string
+  cancelReason: string,
+  cancelAmount?: number,
 ): Promise<TossPayment> {
   return tossRequest<TossPayment>("POST", `/payments/${paymentKey}/cancel`, {
     cancelReason,
+    ...(cancelAmount !== undefined ? { cancelAmount } : {}),
   });
 }
 

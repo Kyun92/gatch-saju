@@ -51,7 +51,7 @@ export default async function ReadingPage({ searchParams }: ReadingPageProps) {
         </p>
         <Link href={`/reading/new?characterId=${characterId}`}>
           <PixelButton size="lg">
-            종합 사주 감정받기 — 990원
+            종합 사주 감정받기 — 코인 1개
           </PixelButton>
         </Link>
       </PixelFrame>

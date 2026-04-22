@@ -101,6 +101,50 @@ export async function POST(request: NextRequest) {
       character2 = char2;
     }
 
+    // 코인 차감 (atomic). 잔액 부족 시 insufficient_coins 예외.
+    const { error: spendError } = await supabase.rpc("adjust_user_coins", {
+      p_user_id: userId,
+      p_delta: -1,
+    });
+
+    if (spendError) {
+      const isInsufficient = /insufficient_coins/.test(spendError.message ?? "");
+      return NextResponse.json(
+        {
+          error: isInsufficient
+            ? "코인이 부족합니다. 지갑에서 충전해주세요."
+            : "코인 차감 중 오류가 발생했습니다",
+          code: isInsufficient ? "insufficient_balance" : "spend_failed",
+        },
+        { status: isInsufficient ? 402 : 500 },
+      );
+    }
+
+    // 차감 이력 기록 (reading_id는 아래 INSERT 성공 후 UPDATE)
+    const { data: coinTx, error: txError } = await supabase
+      .from("coin_transactions")
+      .insert({
+        user_id: userId,
+        delta: -1,
+        reason: "spend",
+        note: type,
+      })
+      .select("id")
+      .single();
+
+    if (txError || !coinTx) {
+      // 차감은 됐는데 이력 기록 실패 → 롤백
+      await supabase.rpc("adjust_user_coins", {
+        p_user_id: userId,
+        p_delta: 1,
+      });
+      console.error("Coin transaction log failed:", txError);
+      return NextResponse.json(
+        { error: "감정 생성 준비 중 오류가 발생했습니다" },
+        { status: 500 },
+      );
+    }
+
     // Create reading row with pending status
     const readingId = uuidv4();
     const { error: insertError } = await supabase.from("readings").insert({
@@ -109,16 +153,29 @@ export async function POST(request: NextRequest) {
       ...(type === "compatibility" && characterId2 ? { character_id_2: characterId2 } : {}),
       type,
       status: "pending",
+      coin_transaction_id: coinTx.id,
       ...(type === "yearly" && targetYear ? { year: targetYear } : {}),
     });
 
     if (insertError) {
+      // 롤백: 차감 취소 + 이력 삭제
+      await supabase.rpc("adjust_user_coins", {
+        p_user_id: userId,
+        p_delta: 1,
+      });
+      await supabase.from("coin_transactions").delete().eq("id", coinTx.id);
       console.error("Failed to create reading:", insertError);
       return NextResponse.json(
         { error: "감정 생성에 실패했습니다" },
         { status: 500 },
       );
     }
+
+    // 이력에 reading_id 연결
+    await supabase
+      .from("coin_transactions")
+      .update({ reading_id: readingId })
+      .eq("id", coinTx.id);
 
     // Build generator function based on type
     const characterData: CharacterData = {

@@ -3,8 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100%;
-  height: 100%;
+  width: 100%;
   gap: 1rem;
 }
 
@@ -25,7 +24,7 @@
   font-size: 1rem;
   letter-spacing: 0.04em;
   text-align: center;
-  animation: blink 1s infinite step-end;
+  /* 깜빡임 제거 — 로딩이 멈춘 것 같은 인상을 피하기 위함 */
 }
 
 .cap1 { animation: bounce1 0.4s infinite alternate; }

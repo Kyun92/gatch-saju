@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import CoinSvg from "@/components/ui/CoinSvg";
 
 type SkillNodeType =
   | "comprehensive"
@@ -322,17 +323,20 @@ function SkillNodeCard({
           </div>
         </div>
 
-        {/* Price badge for available nodes */}
+        {/* 가용 노드: 코인 1개 뱃지 (아케이드 코인 스타일) */}
         {isAvailable && (
           <span
-            className="font-[family-name:var(--font-pixel)] text-[0.625rem] text-white px-2 py-[3px] shrink-0 border border-[#9a7040]"
+            className="inline-flex items-center gap-1.5 font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#fce474] px-2 py-[3px] shrink-0 tracking-wider whitespace-nowrap"
             style={{
-              background:
-                "linear-gradient(180deg, #d4b070 0%, #b8883c 50%, #9a7040 100%)",
-              textShadow: "0 1px 1px rgba(0,0,0,0.15)",
+              backgroundColor: "#2b2b36",
+              border: "2px solid #111",
+              boxShadow:
+                "inset 1px 1px 0 rgba(255,255,255,0.18), inset -1px -1px 0 rgba(0,0,0,0.5), 0 2px 0 #0a0a0f",
             }}
+            aria-label="코인 1개 사용"
           >
-            990원
+            <CoinSvg size={12} className="skill-node-coin" />
+            1
           </span>
         )}
 

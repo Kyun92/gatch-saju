@@ -7,9 +7,13 @@ const PAGE_TITLES: [string, string][] = [
   ["/characters/new", "새 캐릭터 추가"],
   ["/characters/", "심화 특성"],
   ["/daily", "일일 퀘스트"],
+  ["/reading/preview", "종합 분석"],
   ["/reading", "종합 감정"],
   ["/compatibility", "궁합 분석"],
   ["/mypage", "마이페이지"],
+  ["/coins/success", "충전 완료"],
+  ["/coins/fail", "결제 실패"],
+  ["/coins", "코인 충전"],
 ];
 
 export default function SubPageHeader() {

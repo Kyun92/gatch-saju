@@ -17,7 +17,7 @@ const notoSansKR = Noto_Sans_KR({
 export const metadata: Metadata = {
   title: "갓챠사주 | 운명의 RPG 사주풀이",
   description:
-    "사주 × 자미두수 × 서양점성술 3체계 AI 교차분석. 나만의 RPG 캐릭터를 만들고 운명을 탐험하세요. 990원.",
+    "사주 × 자미두수 × 서양점성술 3체계 교차분석. 나만의 RPG 캐릭터를 만들고 운명을 탐험하세요. 990원부터.",
   keywords: [
     "사주",
     "사주풀이",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   authors: [{ name: "갓챠사주" }],
   openGraph: {
     title: "갓챠사주 | 운명의 RPG 사주풀이",
-    description: "사주 × 자미두수 × 서양점성술 3체계 AI 교차분석. 990원.",
+    description: "사주 × 자미두수 × 서양점성술 3체계 교차분석. 990원부터.",
     locale: "ko_KR",
     type: "website",
   },

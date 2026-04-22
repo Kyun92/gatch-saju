@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { generateAllCharts } from "@/lib/charts";
+import { getTodayGanZhi } from "@/lib/charts/saju";
 import { generateDailyFortune } from "@/lib/ai/gemini";
 import type { BirthInfo, AllCharts } from "@/lib/charts/types";
 
@@ -61,12 +62,7 @@ export async function GET(request: NextRequest) {
 
     const charts: AllCharts = generateAllCharts(birthInfo);
 
-    // TODO: Calculate today's GanZhi properly from lunar-javascript
-    const todayGanZhi = {
-      yearGanZhi: "乙巳",
-      monthGanZhi: "庚辰",
-      dayGanZhi: "甲子",
-    };
+    const todayGanZhi = getTodayGanZhi();
 
     const { text, tokensUsed } = await generateDailyFortune(
       birthInfo.name,

@@ -7,3 +7,13 @@ data/*.db
 *.log
 .next/
 .omc/
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+
+# Claude Code personal state (per-user)
+.claude/memory/
+.claude/launch.json
+
+# OS
+.DS_Store

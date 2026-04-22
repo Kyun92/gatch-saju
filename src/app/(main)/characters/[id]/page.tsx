@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import CharacterHero from "@/components/character/CharacterHero";
+import CharacterActions from "@/components/character/CharacterActions";
 import SkillTree from "@/components/hub/SkillTree";
 
 type ElementType = "wood" | "fire" | "earth" | "metal" | "water";
@@ -29,7 +30,7 @@ export default async function CharacterDetailPage({ params }: CharacterDetailPag
   // 캐릭터 조회 + 소유권 확인
   const { data: character } = await supabase
     .from("characters")
-    .select("id, name, birth_date, gender, mbti, unlocked, user_id")
+    .select("id, name, birth_date, gender, mbti, unlocked, user_id, is_self")
     .eq("id", characterId)
     .single();
 
@@ -103,6 +104,16 @@ export default async function CharacterDetailPage({ params }: CharacterDetailPag
           mbti={character.mbti ?? null}
         />
       </section>
+
+      {/* 캐릭터 편집/삭제 */}
+      <div className="mb-4">
+        <CharacterActions
+          characterId={character.id}
+          characterName={character.name}
+          mbti={character.mbti ?? null}
+          isSelf={character.is_self}
+        />
+      </div>
 
       {/* 스킬트리 */}
       <SkillTree

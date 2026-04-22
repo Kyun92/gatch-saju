@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { STAT_SCORING_SYSTEM } from "./prompts";
+import { withAiTimeout } from "./timeout";
 import { z } from "zod/v4";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -59,15 +60,18 @@ export async function generateStatScores(
       },
     });
 
-    const result = await model.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: `${chartsSummary}\n\n---\n\n${readingHtml}` }],
-        },
-      ],
-      systemInstruction: STAT_SCORING_SYSTEM,
-    });
+    const result = await withAiTimeout(
+      model.generateContent({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: `${chartsSummary}\n\n---\n\n${readingHtml}` }],
+          },
+        ],
+        systemInstruction: STAT_SCORING_SYSTEM,
+      }),
+      "스탯 점수",
+    );
 
     const parsed = JSON.parse(result.response.text());
     return StatScoresSchema.parse(parsed);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
 import type { CharacterOption } from "./page";
@@ -14,6 +14,8 @@ export default function CompatibilitySelector({
   characters,
 }: CompatibilitySelectorProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [selected1, setSelected1] = useState<string | null>(null);
   const [selected2, setSelected2] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -44,6 +46,13 @@ export default function CompatibilitySelector({
         }),
       });
       const data = await res.json();
+
+      if (res.status === 402 || data.code === "insufficient_balance") {
+        const qs = searchParams?.toString();
+        const returnTo = qs ? `${pathname}?${qs}` : pathname;
+        router.push(`/coins?returnTo=${encodeURIComponent(returnTo)}`);
+        return;
+      }
 
       if (!res.ok) {
         throw new Error(data.error ?? "궁합 분석 생성에 실패했습니다");
@@ -239,11 +248,11 @@ export default function CompatibilitySelector({
       >
         {loading
           ? "궁합 분석 중..."
-          : "궁합 분석하기 — 990원"}
+          : "궁합 분석하기 — 코인 1개"}
       </PixelButton>
 
       <p className="text-xs text-center text-[#8a8070]">
-        결제 연동 전 테스트 모드 (무료)
+        잔액이 부족하면 충전 페이지로 이동합니다
       </p>
 
       {/* Bottom nav spacer */}

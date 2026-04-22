@@ -513,9 +513,73 @@ body {
   50%       { box-shadow: 0 0 12px rgba(154, 112, 64, 0.6); }
 }
 
-.animate-blink    { animation: blink    1s step-end infinite; }
-.animate-twinkle  { animation: twinkle  2s ease-in-out infinite; }
-.animate-px-glow  { animation: pixel-glow 2s ease-in-out infinite; }
+@keyframes spin-coin {
+  0%   { transform: scaleX(1); }
+  25%  { transform: scaleX(0.4); }
+  50%  { transform: scaleX(-1); }
+  75%  { transform: scaleX(-0.4); }
+  100% { transform: scaleX(1); }
+}
+
+@keyframes capsule-drop {
+  0%, 78% { transform: translateY(0); opacity: 0; }
+  82%      { transform: translateY(0);  opacity: 1; }
+  93%      { transform: translateY(14px); opacity: 1; }
+  100%     { transform: translateY(20px); opacity: 0; }
+}
+
+@keyframes element-fuse {
+  0%, 15%  { transform: translate(0, 0) scale(1); opacity: 1; }
+  45%      { transform: translate(var(--fuse-x), var(--fuse-y)) scale(0.4); opacity: 0.9; }
+  55%, 100% { transform: translate(var(--fuse-x), var(--fuse-y)) scale(0); opacity: 0; }
+}
+
+@keyframes capsule-emerge {
+  0%, 50%  { transform: scale(0); opacity: 0; }
+  65%      { transform: scale(1.2); opacity: 1; }
+  75%      { transform: scale(1); opacity: 1; }
+  90%, 100% { transform: scale(1); opacity: 0; }
+}
+
+@keyframes machine-shake {
+  0%, 92%, 100% { transform: rotate(0deg) translateY(0); }
+  93%           { transform: rotate(-1.2deg) translateY(-1px); }
+  94%           { transform: rotate(1.4deg) translateY(0); }
+  95%           { transform: rotate(-1deg) translateY(-1px); }
+  96%           { transform: rotate(1.2deg) translateY(0); }
+  97%           { transform: rotate(-0.6deg) translateY(0); }
+}
+
+@keyframes capsule-orbit {
+  0%   { transform: rotate(0deg) translateX(22px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(22px) rotate(-360deg); }
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    text-shadow:
+      0 0 4px rgba(208, 64, 64, 0.9),
+      0 0 12px rgba(208, 64, 64, 0.6),
+      0 0 24px rgba(208, 64, 64, 0.3);
+  }
+  50% {
+    text-shadow:
+      0 0 6px rgba(208, 64, 64, 1),
+      0 0 18px rgba(208, 64, 64, 0.8),
+      0 0 36px rgba(208, 64, 64, 0.5);
+  }
+}
+
+.animate-blink          { animation: blink    1s step-end infinite; }
+.animate-twinkle        { animation: twinkle  2s ease-in-out infinite; }
+.animate-px-glow        { animation: pixel-glow 2s ease-in-out infinite; }
+.animate-spin-coin      { animation: spin-coin 0.8s steps(4) infinite; }
+.animate-capsule-drop   { animation: capsule-drop 3.2s ease-in infinite; }
+.animate-element-fuse   { animation: element-fuse 4s ease-in-out infinite; }
+.animate-capsule-emerge { animation: capsule-emerge 4s ease-in-out infinite; }
+.animate-machine-shake  { animation: machine-shake 5s ease-in-out infinite; }
+.animate-capsule-orbit  { animation: capsule-orbit 6s linear infinite; }
+.animate-neon-pulse     { animation: neon-pulse 1.4s ease-in-out infinite; }
 
 .pixel-cursor::after {
   content: '█';
@@ -708,6 +772,11 @@ a:active .skill-node {
   box-shadow: none !important;
 }
 
+/* 스킬트리 코인 배지 호버 시 회전 */
+a:hover .skill-node-coin {
+  animation: spin-coin 0.8s steps(4) infinite;
+}
+
 /* Service card color bar */
 .service-card-bar {
   position: absolute;
@@ -814,6 +883,586 @@ a:active .skill-node {
   font-size: 0.875rem;
   color: #9a7040;
   letter-spacing: 0.04em;
+}
+
+/* Gold CTA button — capsule machine purchase */
+.pixel-cta-gold {
+  background: linear-gradient(180deg, #d4b070 0%, #b8883c 50%, #9a7040 100%);
+  border: 2px solid #9a7040;
+  border-bottom-width: 4px;
+  box-shadow: 0 2px 0 #6b4e28;
+  padding: 14px 8px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+  color: white;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.pixel-cta-gold:active:not(:disabled) {
+  border-bottom-width: 2px;
+  box-shadow: none;
+  transform: translateY(2px);
+}
+
+.pixel-cta-gold:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   ARCADE INSERT-COIN CTA (landing page)
+   ============================================================ */
+
+.gacha-coin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background-color: #2b2b36;
+  color: #fce474;
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  padding: 16px 28px;
+  cursor: pointer;
+  image-rendering: pixelated;
+  text-decoration: none;
+  outline: 4px solid #111;
+  box-shadow:
+    inset 4px 4px 0 rgba(255, 255, 255, 0.2),
+    inset -4px -4px 0 rgba(0, 0, 0, 0.5),
+    0 8px 0 #0a0a0f;
+  transition: transform 100ms, box-shadow 100ms;
+}
+
+.gacha-coin-btn:hover span {
+  color: #ffffff;
+}
+
+.gacha-coin-btn:active {
+  transform: translateY(8px);
+  box-shadow:
+    inset 4px 4px 0 rgba(255, 255, 255, 0.2),
+    inset -4px -4px 0 rgba(0, 0, 0, 0.5),
+    0 0 0 #0a0a0f;
+}
+
+/* Compact variant — 탐색 맥락(허브/마이페이지)용. 카드 안에 들어갈 때 시각 무게 축소 */
+.gacha-coin-btn[data-size="sm"] {
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 0.8125rem;
+  outline-width: 2px;
+  box-shadow:
+    inset 3px 3px 0 rgba(255, 255, 255, 0.18),
+    inset -3px -3px 0 rgba(0, 0, 0, 0.5),
+    0 4px 0 #0a0a0f;
+}
+
+.gacha-coin-btn[data-size="sm"]:active {
+  transform: translateY(4px);
+  box-shadow:
+    inset 3px 3px 0 rgba(255, 255, 255, 0.18),
+    inset -3px -3px 0 rgba(0, 0, 0, 0.5),
+    0 0 0 #0a0a0f;
+}
+
+/* ============================================================
+   HUB / MYPAGE — ARCADE GACHA TONE (허브·마이페이지 가챠 확장)
+   주의 (R7/R8): 아래 .capsule-frame, .character-slot, .stat-mini 등의
+   요소에는 Tailwind 색상 utility(bg-, border-)를 병용하지 말 것.
+   Tailwind utilities 레이어가 @layer components를 덮어쓰므로 색상 일관성이 깨짐.
+   ============================================================ */
+
+/* 캡슐 프레임 — 공용 아바타 래퍼 (CharacterSlot / MyPageCharacterCard 공유) */
+.capsule-frame {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: rgba(0, 0, 0, 0.12);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+/* 상단 얇은 색상 스트립 — 오행 식별용, 아바타를 가리지 않음 */
+.capsule-frame::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-color: var(--capsule-dome, #9a7040);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.35);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 상단 스트립 광택 포인트 (픽셀 하이라이트) */
+.capsule-frame::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 8%;
+  width: 20%;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.6);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.capsule-frame[data-size="sm"] {
+  width: 48px;
+  height: 48px;
+  border-width: 2px;
+}
+
+.capsule-frame[data-element="wood"]  { --capsule-dome: #2e8b4e; }
+.capsule-frame[data-element="fire"]  { --capsule-dome: #d04040; }
+.capsule-frame[data-element="earth"] { --capsule-dome: #a87838; }
+.capsule-frame[data-element="metal"] { --capsule-dome: #6878a0; }
+.capsule-frame[data-element="water"] { --capsule-dome: #3070c0; }
+
+.capsule-frame[data-locked="true"] {
+  filter: grayscale(100%);
+  border-color: #b8a890;
+}
+
+.capsule-frame[data-locked="true"]::before {
+  background-color: #8a8070;
+}
+
+/* 캡슐 프레임 안쪽 아바타 이미지 */
+.capsule-frame-avatar {
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  image-rendering: pixelated;
+  z-index: 1;
+}
+
+/* CharacterSlot 외부 카드 — 오행색 풀-블리드 배경 */
+.character-slot {
+  position: relative;
+  padding: 20px;
+  overflow: hidden;
+  background-color: var(--slot-bg, #d4cfc8);
+  border: 2px solid var(--slot-border, #b8a890);
+  box-shadow: var(--slot-shadow, 3px 3px 0 rgba(0, 0, 0, 0.08));
+}
+
+.character-slot[data-element="wood"]  { --slot-bg: #2e8b4e; }
+.character-slot[data-element="fire"]  { --slot-bg: #d04040; }
+.character-slot[data-element="earth"] { --slot-bg: #a87838; }
+.character-slot[data-element="metal"] { --slot-bg: #6878a0; }
+.character-slot[data-element="water"] { --slot-bg: #3070c0; }
+
+.character-slot[data-unlocked="true"] {
+  --slot-border: rgba(255, 255, 255, 0.2);
+  --slot-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15),
+                 inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* 잠긴 상태는 회색 베이스 */
+.character-slot[data-unlocked="false"] {
+  --slot-bg: #d4cfc8;
+}
+
+/* 캐릭터 슬롯 내부 버튼(해금) — 유리 느낌 */
+.character-slot-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--font-pixel);
+  font-size: 0.6875rem;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 8px 4px;
+  transition: background-color 100ms ease;
+}
+
+.character-slot-btn-ghost {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-bottom-width: 4px;
+}
+
+.character-slot-btn-primary {
+  background-color: #ffffff;
+  color: var(--slot-bg, #9a7040);
+  font-weight: bold;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-bottom-width: 4px;
+}
+
+/* 잠금 상태의 구매 CTA — ghost 버튼 + 가격 배지 (허브 전용) */
+.character-slot-btn-price {
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  padding: 2px 8px;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.03em;
+}
+
+/* 허브 "가족·친구 추가" 버튼 — parchment 위 점선 가로형 */
+.hub-add-character {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 24px;
+  background-color: #faf7f2;
+  border: 2px dashed #b8944c;
+  color: #9a7040;
+  font-family: var(--font-pixel);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+}
+
+.hub-add-character:hover {
+  background-color: #f1ece0;
+  border-color: #9a7040;
+}
+
+.hub-add-character-icon {
+  font-family: var(--font-pixel);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #b8944c;
+}
+
+/* 스탯 미니바 — locked 상태를 data-locked로 분기 (Architect change 4) */
+.stat-mini {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-mini-icon {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  width: 18px;
+  flex-shrink: 0;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.stat-mini-bar {
+  height: 6px;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.stat-mini-fill {
+  height: 100%;
+  transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: var(--stat-color, #fff);
+}
+
+.stat-mini-value {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  width: 20px;
+  text-align: right;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.stat-mini[data-locked="true"] .stat-mini-icon,
+.stat-mini[data-locked="true"] .stat-mini-value {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.stat-mini[data-locked="true"] .stat-mini-bar {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.stat-mini[data-locked="true"] .stat-mini-fill {
+  background-color: transparent;
+  width: 0 !important;
+}
+
+/* 컬렉션 카운터 — "내 명부 · N개 보유" */
+.collection-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  color: #2c2418;
+  background-color: #faf7f2;
+  border: 2px solid #b8944c;
+  border-bottom-width: 3px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.08);
+}
+
+.collection-counter-label {
+  letter-spacing: 0.04em;
+  color: #6a5e4c;
+}
+
+.collection-counter-count {
+  font-weight: bold;
+  color: #9a7040;
+}
+
+/* 아케이드 섹션 헤딩 */
+.arcade-heading {
+  font-family: var(--font-pixel);
+  font-size: 0.875rem;
+  color: #9a7040;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  padding: 4px 0;
+}
+
+/* 빈 캡슐 슬롯 — NewCharacterSlot */
+.empty-capsule-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 28px 20px;
+  min-height: 120px;
+  background-color: #faf7f2;
+  border: 2px dashed #b8944c;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.empty-capsule-slot:hover {
+  background-color: #f1ece0;
+  border-color: #9a7040;
+}
+
+.empty-capsule-slot-label {
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  color: #9a7040;
+  letter-spacing: 0.04em;
+}
+
+.empty-capsule-slot-sub {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  color: #8a8070;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* 마이페이지 액션 버튼 — .gacha-coin-btn 라이트 축소판 */
+.gacha-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 8px 4px;
+  font-family: var(--font-pixel);
+  font-size: 0.6875rem;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid #b8944c;
+  border-bottom-width: 3px;
+  background-color: #faf7f2;
+  color: #9a7040;
+  transition: transform 100ms, background-color 100ms, box-shadow 100ms;
+  box-shadow: 0 2px 0 #d4c4a0;
+}
+
+.gacha-action-btn:hover {
+  background-color: #f1ece0;
+}
+
+.gacha-action-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+  box-shadow: 0 0 0 #d4c4a0;
+}
+
+.gacha-action-btn[data-variant="primary"] {
+  background-color: #9a7040;
+  color: #ffffff;
+  border-color: #7a5830;
+  box-shadow: 0 2px 0 #6b4e28;
+}
+
+.gacha-action-btn[data-variant="primary"]:hover {
+  background-color: #8a6030;
+}
+
+.gacha-action-btn[data-variant="subtle"] {
+  flex: 0;
+  padding: 8px 12px;
+  background-color: #faf7f2;
+  color: #8a8070;
+  border-color: #d4cfc8;
+  box-shadow: 0 2px 0 #e8e0d0;
+}
+
+/* 아케이드 배지 — ServiceCard "인기"/"무료"/"990원" 등 */
+.arcade-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  color: #ffffff;
+  white-space: nowrap;
+  border: 2px solid;
+  background-color: var(--badge-bg, #9a7040);
+  border-color: var(--badge-border, #7a5830);
+}
+
+.arcade-badge[data-variant="free"]  { --badge-bg: #2e8b4e; --badge-border: #1e7a3e; }
+.arcade-badge[data-variant="paid"]  { --badge-bg: #9a7040; --badge-border: #7a5830; }
+.arcade-badge[data-variant="hot"]   { --badge-bg: #d04040; --badge-border: #a03030; }
+
+/* 마이페이지 계정 카드 */
+.account-card-avatar {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  background-color: #f0ebe0;
+  border: 2px solid #b8944c;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TrustBadge 3체계 심볼 색상 — data-system 기반 (Architect optional 수용) */
+.system-color[data-system="saju"]    { color: #9a7040; }
+.system-color[data-system="ziwei"]   { color: #6858b8; }
+.system-color[data-system="western"] { color: #3070c0; }
+
+/* 마이페이지 잠긴/해금 상태 배지 */
+.mypage-status-badge {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border: 1px solid;
+}
+
+.mypage-status-badge[data-state="locked"]   { color: #c8a020; border-color: #c8a020; }
+.mypage-status-badge[data-state="unlocked"] { color: #2e8b4e; border-color: #2e8b4e; }
+
+/* ---------- Legal documents ---------- */
+.legal-doc {
+  color: #2c2418;
+  font-family: var(--font-body);
+  line-height: 1.7;
+}
+
+.legal-title {
+  font-family: var(--font-pixel);
+  font-size: 1.5rem;
+  color: #9a7040;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.legal-meta {
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  color: #b8a890;
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed #d4b070;
+}
+
+.legal-section {
+  margin-bottom: 1.75rem;
+}
+
+.legal-h2 {
+  font-family: var(--font-pixel);
+  font-size: 0.875rem;
+  color: #9a7040;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #e8e0d0;
+}
+
+.legal-section p,
+.legal-section li {
+  font-size: 0.8125rem;
+  color: #4a3e2c;
+}
+
+.legal-ol {
+  list-style: decimal;
+  padding-left: 1.25rem;
+}
+
+.legal-ol > li {
+  margin-bottom: 0.5rem;
+}
+
+.legal-ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+
+.legal-ul > li {
+  margin-bottom: 0.375rem;
+}
+
+.legal-table {
+  width: 100%;
+  font-size: 0.75rem;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.legal-table th,
+.legal-table td {
+  border: 1px solid #d4b070;
+  padding: 0.5rem 0.625rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.legal-table th {
+  background: #faf7f2;
+  font-family: var(--font-pixel);
+  color: #7a5830;
+  font-size: 0.6875rem;
+  font-weight: normal;
+}
+
+.legal-link {
+  color: #9a7040;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legal-link:hover {
+  color: #7a5830;
+}
+
+.legal-callout {
+  background: #faf7f2;
+  border-left: 3px solid #b8944c;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  font-size: 0.8125rem;
+  color: #4a3e2c;
 }
 
 } /* end @layer components — DAILY CALENDAR */

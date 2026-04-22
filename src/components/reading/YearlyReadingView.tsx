@@ -1,7 +1,6 @@
 "use client";
 
 import PixelFrame from "@/components/ui/PixelFrame";
-import PixelDivider from "@/components/ui/PixelDivider";
 import ReadingSection from "./ReadingSection";
 
 interface YearlyReadingViewProps {
@@ -31,10 +30,10 @@ function extractSection(htmlContent: string, sectionId: string): string {
 
 export default function YearlyReadingView({
   content,
-  year,
-  characterName,
+  year: _year,
+  characterName: _characterName,
 }: YearlyReadingViewProps) {
-  // Check if content has HTML sections (structured output from AI)
+  // Check if content has HTML sections (structured output)
   const hasHtmlSections = /<section[^>]*id=/.test(content);
 
   if (hasHtmlSections) {

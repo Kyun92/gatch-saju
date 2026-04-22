@@ -59,7 +59,7 @@ function extractSection(htmlContent: string, sectionId: string): string {
 export default function CategoryReadingView({
   content,
   category,
-  characterName,
+  characterName: _characterName,
 }: CategoryReadingViewProps) {
   const sections = CATEGORY_SECTIONS[category];
   const hasHtmlSections = /<section[^>]*id=/.test(content);

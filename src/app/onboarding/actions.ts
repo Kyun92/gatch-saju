@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { generateAllCharts } from "@/lib/charts";
 import { getCityInfo } from "@/lib/data/cities";
-// redirect is handled client-side
+import { generateFreeStatScores } from "@/lib/ai/free-stat-scorer";
 
 const VALID_MBTI = [
   "INTJ","INTP","ENTJ","ENTP",
@@ -30,7 +30,6 @@ export async function createCharacter(data: OnboardingData) {
   }
 
   const userId = session.user.userId;
-  console.log("[onboarding] userId:", userId);
   const supabase = createServerSupabaseClient();
   const cityInfo = getCityInfo(data.birthCity);
 
@@ -71,7 +70,6 @@ export async function createCharacter(data: OnboardingData) {
     }
     throw new Error("캐릭터 생성에 실패했습니다.");
   }
-  console.log("[onboarding] character created:", character.id);
 
   // Generate all charts
   const charts = generateAllCharts({
@@ -84,8 +82,6 @@ export async function createCharacter(data: OnboardingData) {
     gender: data.gender,
     timezone: cityInfo.timezone,
   });
-
-  console.log("[onboarding] charts generated:", Object.keys(charts));
 
   // Insert charts with character_id
   const chartEntries = [
@@ -102,6 +98,20 @@ export async function createCharacter(data: OnboardingData) {
       console.error("[onboarding] chart insert error:", entry.type, insertError);
     }
   }
-  console.log("[onboarding] charts saved, done");
+
+  // Generate free stat scores from chart data (Flash model, ~1-2s)
+  try {
+    const freeStats = await generateFreeStatScores(charts, mbtiValue);
+    await supabase
+      .from("characters")
+      .update({
+        free_stat_scores: freeStats,
+        free_summary: freeStats.summary,
+      })
+      .eq("id", character.id);
+  } catch (e) {
+    console.error("[onboarding] free stat generation failed (non-blocking):", e);
+  }
+
   return { success: true };
 }

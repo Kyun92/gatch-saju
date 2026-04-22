@@ -1,5 +1,5 @@
 {
-  "name": "fortune-web",
+  "name": "gatcha-saju",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,6 +14,7 @@
     "@supabase/supabase-js": "^2.103.0",
     "@tosspayments/tosspayments-sdk": "^2.6.0",
     "circular-natal-horoscope-js": "^1.1.0",
+    "framer-motion": "^12.38.0",
     "isomorphic-dompurify": "^3.8.0",
     "iztro": "^2.5.8",
     "lunar-javascript": "^1.7.7",

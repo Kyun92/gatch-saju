@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// lunar-javascript는 외부 라이브러리 타입 래퍼가 느슨해 any가 불가피.
 import { Solar } from "lunar-javascript";
 import type { BirthInfo, SajuChart } from "./types";
 

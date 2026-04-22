@@ -56,7 +56,7 @@ export default function CharacterHero({
         {classTitle}
       </div>
 
-      {/* Character title (from AI stat scoring) */}
+      {/* Character title (from stat scoring) */}
       <div
         className="text-sm"
         style={{ color: "#8a8070", fontStyle: "italic" }}

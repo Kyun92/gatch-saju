@@ -1,7 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
-
-type ElementType = "wood" | "fire" | "earth" | "metal" | "water";
+import CapsuleFrame, { type Element as ElementType } from "./CapsuleFrame";
 
 interface StatScores {
   health_score: number;
@@ -27,22 +25,6 @@ interface CharacterSlotProps {
   statScores?: StatScores | null;
   characterTitle?: string | null;
 }
-
-const ELEMENT_BG: Record<ElementType, string> = {
-  wood: "#2e8b4e",
-  fire: "#d04040",
-  earth: "#a87838",
-  metal: "#6878a0",
-  water: "#3070c0",
-};
-
-const ELEMENT_BG_LIGHT: Record<ElementType, string> = {
-  wood: "rgba(46,139,78,0.15)",
-  fire: "rgba(208,64,64,0.15)",
-  earth: "rgba(168,120,56,0.15)",
-  metal: "rgba(104,120,160,0.15)",
-  water: "rgba(48,112,192,0.15)",
-};
 
 const ELEMENT_LABEL: Record<ElementType, string> = {
   wood: "목(木)",
@@ -75,39 +57,20 @@ function StatMiniBar({
   locked: boolean;
 }) {
   return (
-    <div className="stat-mini" aria-label={`${label}: ${locked ? "잠김" : value}`}>
-      <span
-        className="stat-mini-icon font-[family-name:var(--font-pixel)] text-[0.5rem] w-[18px] shrink-0 text-right"
-        style={{
-          color: locked ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.8)",
-        }}
-      >
-        {icon}
-      </span>
-      <div
-        className="stat-mini-bar h-1.5 flex-1 relative overflow-hidden"
-        style={{
-          backgroundColor: locked
-            ? "rgba(0,0,0,0.15)"
-            : "rgba(255,255,255,0.2)",
-        }}
-      >
+    <div
+      className="stat-mini"
+      data-locked={locked ? "true" : "false"}
+      aria-label={`${label}: ${locked ? "잠김" : value}`}
+    >
+      <span className="stat-mini-icon">{icon}</span>
+      <div className="stat-mini-bar">
         <div
-          className="stat-mini-fill h-full transition-[width] duration-[600ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-          style={{
-            width: locked ? "0%" : `${value}%`,
-            backgroundColor: locked ? "transparent" : color,
-          }}
+          className="stat-mini-fill"
+          // 동적 값 예외: width/color는 props(value/color)에서만 나오므로 inline 허용
+          style={{ width: `${value}%`, ["--stat-color" as string]: color }}
         />
       </div>
-      <span
-        className="font-[family-name:var(--font-pixel)] text-[0.5rem] w-5 text-right shrink-0"
-        style={{
-          color: locked ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.9)",
-        }}
-      >
-        {locked ? "??" : value}
-      </span>
+      <span className="stat-mini-value">{locked ? "??" : value}</span>
     </div>
   );
 }
@@ -121,7 +84,8 @@ export default function CharacterSlot({
   characterTitle,
 }: CharacterSlotProps) {
   const isUnlocked = character.unlocked;
-  const bgColor = isUnlocked ? ELEMENT_BG[element] : "#d4cfc8";
+  const hasStats = !!statScores;
+  const showColor = isUnlocked || hasStats;
   const avatarUrl = `/characters/${element}-${character.gender}.png`;
 
   // Title: from prop -> from statScores -> from element
@@ -130,24 +94,14 @@ export default function CharacterSlot({
 
   return (
     <div
-      className="character-slot p-5 relative overflow-hidden"
-      style={{
-        backgroundColor: bgColor,
-        border: isUnlocked
-          ? `2px solid rgba(255,255,255,0.2)`
-          : "2px solid #b8a890",
-        boxShadow: isUnlocked
-          ? `4px 4px 0px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.1)`
-          : "3px 3px 0px rgba(0,0,0,0.08)",
-      }}
+      className="character-slot"
+      data-element={showColor ? element : undefined}
+      data-unlocked={showColor ? "true" : "false"}
     >
       {/* Element badge - top right */}
-      {isUnlocked && (
+      {showColor && (
         <span
-          className="absolute top-2 right-2 font-[family-name:var(--font-pixel)] text-[0.5625rem] tracking-[0.06em]"
-          style={{
-            color: "rgba(255,255,255,0.6)",
-          }}
+          className="absolute top-2 right-2 font-[family-name:var(--font-pixel)] text-[0.5625rem] tracking-[0.06em] text-white/60"
         >
           {ELEMENT_LABEL[element]}
         </span>
@@ -155,75 +109,53 @@ export default function CharacterSlot({
 
       {/* Top section: Avatar + Info */}
       <div className="flex items-start gap-4">
-        {/* Avatar */}
-        <div
-          className="w-[120px] h-[120px] shrink-0 relative overflow-hidden"
-          style={{
-            border: isUnlocked
-              ? "3px solid rgba(255,255,255,0.3)"
-              : "3px solid #b8a890",
-            backgroundColor: isUnlocked
-              ? "rgba(0,0,0,0.1)"
-              : "rgba(0,0,0,0.05)",
-          }}
-        >
-          <Image
-            src={avatarUrl}
-            alt={`${character.name} 캐릭터`}
-            fill
-            className="object-cover [image-rendering:pixelated]"
-            style={{
-              opacity: isUnlocked ? 1 : 0.3,
-              filter: isUnlocked ? "none" : "grayscale(100%)",
-            }}
-            sizes="120px"
-          />
-        </div>
+        {/* Capsule-framed avatar */}
+        <CapsuleFrame
+          avatarSrc={avatarUrl}
+          avatarAlt={`${character.name} 캐릭터`}
+          element={element}
+          size="md"
+          locked={!showColor}
+        />
 
         {/* Info column */}
         <div className="flex-1 min-w-0">
-          {/* Name + Level */}
+          {/* Level */}
           <div className="mb-1">
             <span
-              className="font-[family-name:var(--font-pixel)] text-[0.625rem]"
-              style={{
-                color: isUnlocked
-                  ? "rgba(255,255,255,0.7)"
-                  : "#8a8070",
-              }}
+              className={`font-[family-name:var(--font-pixel)] text-[0.625rem] ${
+                showColor ? "text-white/70" : "text-[#8a8070]"
+              }`}
             >
               Lv.{level}
             </span>
           </div>
+
+          {/* Name */}
           <div
-            className="font-[family-name:var(--font-pixel)] text-[1.125rem] leading-[1.2] mb-1"
-            style={{
-              color: isUnlocked ? "#ffffff" : "#5a4e3c",
-            }}
+            className={`font-[family-name:var(--font-pixel)] text-[1.125rem] leading-[1.2] mb-1 ${
+              showColor ? "text-white" : "text-[#5a4e3c]"
+            }`}
           >
             {character.name}
           </div>
 
-          {/* Day master + Title */}
+          {/* Day master + Element */}
           {dayMaster && (
             <div
-              className="font-[family-name:var(--font-pixel)] text-[0.625rem] mb-0.5"
-              style={{
-                color: isUnlocked
-                  ? "rgba(255,255,255,0.7)"
-                  : "#8a8070",
-              }}
+              className={`font-[family-name:var(--font-pixel)] text-[0.625rem] mb-0.5 ${
+                showColor ? "text-white/70" : "text-[#8a8070]"
+              }`}
             >
               {dayMaster} · {ELEMENT_LABEL[element]}
             </div>
           )}
+
+          {/* Title */}
           <div
-            className="font-[family-name:var(--font-body)] text-[0.6875rem] italic leading-[1.4] mb-2"
-            style={{
-              color: isUnlocked
-                ? "rgba(255,255,255,0.85)"
-                : "#8a8070",
-            }}
+            className={`font-[family-name:var(--font-body)] text-[0.6875rem] italic leading-[1.4] mb-2 ${
+              showColor ? "text-white/85" : "text-[#8a8070]"
+            }`}
           >
             &ldquo;{displayTitle}&rdquo;
           </div>
@@ -231,16 +163,11 @@ export default function CharacterSlot({
           {/* MBTI badge */}
           {character.mbti && (
             <span
-              className="inline-block font-[family-name:var(--font-pixel)] text-[0.5625rem] px-2 py-0.5"
-              style={{
-                backgroundColor: isUnlocked
-                  ? "rgba(255,255,255,0.2)"
-                  : "rgba(0,0,0,0.06)",
-                color: isUnlocked ? "#ffffff" : "#6858b8",
-                border: isUnlocked
-                  ? "1px solid rgba(255,255,255,0.3)"
-                  : "1px solid #6858b8",
-              }}
+              className={
+                showColor
+                  ? "inline-block font-[family-name:var(--font-pixel)] text-[0.5625rem] px-2 py-0.5 text-white bg-white/20 border border-white/30"
+                  : "inline-block font-[family-name:var(--font-pixel)] text-[0.5625rem] px-2 py-0.5 text-[#6858b8] bg-black/5 border border-[#6858b8]"
+              }
             >
               {character.mbti}
             </span>
@@ -248,16 +175,16 @@ export default function CharacterSlot({
         </div>
       </div>
 
-      {/* Stat bars -- 2 columns, 3 rows */}
+      {/* Stat bars — 2 columns, 3 rows */}
       <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 mt-3.5">
         {STAT_CONFIG.map((stat) => (
           <StatMiniBar
             key={stat.key}
             label={stat.label}
             icon={stat.icon}
-            value={isUnlocked && statScores ? (statScores[stat.key] ?? 0) : 0}
-            color={isUnlocked ? stat.color : "transparent"}
-            locked={!isUnlocked}
+            value={statScores ? (statScores[stat.key] ?? 0) : 0}
+            color={stat.color}
+            locked={!showColor}
           />
         ))}
       </div>
@@ -265,49 +192,28 @@ export default function CharacterSlot({
       {/* Bottom buttons */}
       <div className="flex gap-2 mt-3.5">
         {isUnlocked ? (
-          <div className="flex flex-col gap-1.5 w-full">
-            <div className="flex gap-2">
-              <Link
-                href={`/daily?characterId=${character.id}`}
-                className="flex-1 flex items-center justify-center gap-1 font-[family-name:var(--font-pixel)] text-[0.6875rem] text-white no-underline cursor-pointer transition-colors duration-100"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.15)",
-                  border: "2px solid rgba(255,255,255,0.3)",
-                  borderBottomWidth: "4px",
-                  padding: "8px 4px",
-                }}
-              >
-                {"오늘의 운세"}
-              </Link>
-              <Link
-                href={`/characters/${character.id}`}
-                className="flex-1 flex items-center justify-center gap-1 font-[family-name:var(--font-pixel)] text-[0.6875rem] bg-white font-bold no-underline cursor-pointer transition-colors duration-100"
-                style={{
-                  color: ELEMENT_BG[element],
-                  border: "2px solid rgba(255,255,255,0.8)",
-                  borderBottomWidth: "4px",
-                  padding: "8px 4px",
-                }}
-              >
-                {"심화 특성"}
-              </Link>
-            </div>
+          <div className="flex gap-2 w-full">
+            <Link
+              href={`/daily?characterId=${character.id}`}
+              className="character-slot-btn character-slot-btn-ghost"
+            >
+              오늘의 운세
+            </Link>
+            <Link
+              href={`/characters/${character.id}`}
+              className="character-slot-btn character-slot-btn-primary"
+            >
+              심화 특성
+            </Link>
           </div>
         ) : (
           <Link
-            href={`/reading/new?characterId=${character.id}`}
-            className="flex-1 flex items-center justify-center gap-1.5 font-[family-name:var(--font-pixel)] text-[0.75rem] text-white no-underline cursor-pointer tracking-[0.04em]"
-            style={{
-              background:
-                "linear-gradient(180deg, #d4b070 0%, #b8883c 50%, #9a7040 100%)",
-              border: "2px solid #9a7040",
-              borderBottomWidth: "4px",
-              boxShadow: "0 2px 0 #6b4e28",
-              padding: "10px 8px",
-              textShadow: "0 1px 1px rgba(0,0,0,0.2)",
-            }}
+            href={`/reading/preview?characterId=${character.id}`}
+            className="character-slot-btn character-slot-btn-ghost w-full"
+            aria-label="운명 열기 코인 1개 사용"
           >
-            {"운명의 서를 열다 — 990원"}
+            <span>운명 열기</span>
+            <span className="character-slot-btn-price">코인 1</span>
           </Link>
         )}
       </div>

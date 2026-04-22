@@ -1,10 +1,14 @@
 import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import PixelFrame from "@/components/ui/PixelFrame";
-import ElementTag from "@/components/ui/ElementTag";
+import CoinSvg from "@/components/ui/CoinSvg";
+import MyPageCharacterCard from "@/components/mypage/MyPageCharacterCard";
+import CollectionCounter from "@/components/hub/CollectionCounter";
+import NewCharacterSlot from "@/components/hub/NewCharacterSlot";
+import { COPY } from "@/lib/copy/gacha-terms";
 import LogoutButton from "./LogoutButton";
 
 type ElementType = "wood" | "fire" | "earth" | "metal" | "water";
@@ -20,10 +24,10 @@ export default async function MyPage() {
   const supabase = createServerSupabaseClient();
   const userId = session.user.userId;
 
-  // 계정 정보 (users 테이블 — OAuth 정보만)
+  // 계정 정보 (users 테이블 — OAuth 정보 + 코인 잔액)
   const { data: user } = await supabase
     .from("users")
-    .select("name, email, image, created_at")
+    .select("name, email, image, created_at, coins")
     .eq("id", userId)
     .single();
 
@@ -83,13 +87,31 @@ export default async function MyPage() {
     ? new Date(user.created_at).toLocaleDateString("ko-KR")
     : "-";
 
+  const characterCount = characters?.length ?? 0;
+  const coinBalance = user?.coins ?? 0;
+
+  const refundSubject = encodeURIComponent("[갓챠사주] 환불 요청");
+  const refundBody = encodeURIComponent(
+    [
+      "안녕하세요, 갓챠사주 환불을 요청합니다.",
+      "",
+      `· 가입 이메일: ${user?.email ?? ""}`,
+      `· 이름: ${user?.name ?? ""}`,
+      "· 환불 요청 주문번호 (결제일 7일 내): ",
+      "· 환불 사유: ",
+      "",
+      "확인 후 회신 부탁드립니다. 감사합니다.",
+    ].join("\n"),
+  );
+  const refundMailto = `mailto:lsk9105@gmail.com?subject=${refundSubject}&body=${refundBody}`;
+
   return (
     <div className="w-full mx-auto px-4 py-6 max-w-[480px] min-h-screen">
       {/* 계정 정보 */}
       <PixelFrame variant="accent" className="p-5 mb-5">
         <div className="flex items-center gap-4">
           {/* 프로필 이미지 */}
-          <div className="w-16 h-16 shrink-0 bg-[#f0ebe0] border-2 border-[#b8944c] overflow-hidden flex items-center justify-center">
+          <div className="account-card-avatar">
             {user?.image ? (
               <Image
                 src={user.image}
@@ -120,156 +142,80 @@ export default async function MyPage() {
         </div>
       </PixelFrame>
 
-      {/* 내 캐릭터 목록 */}
+      {/* 지갑 */}
+      <PixelFrame className="p-5 mb-5">
+        <div className="flex items-center justify-between mb-3">
+          <span className="font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#8a8070] tracking-[0.25em]">
+            WALLET
+          </span>
+          <Link
+            href="/coins"
+            className="font-[family-name:var(--font-pixel)] text-[0.6875rem] text-[#9a7040] underline underline-offset-2"
+          >
+            충전하기
+          </Link>
+        </div>
+        <div className="flex items-center gap-2 mb-4">
+          <CoinSvg size={22} />
+          <span className="font-[family-name:var(--font-pixel)] text-3xl text-[#b8883c]">
+            {coinBalance}
+          </span>
+          <span className="font-[family-name:var(--font-pixel)] text-[0.75rem] text-[#8a8070] mt-1">
+            코인
+          </span>
+        </div>
+        <div className="flex items-center justify-between pt-3 border-t border-[#e8e0d0]">
+          <span className="font-[family-name:var(--font-body)] text-[0.625rem] text-[#8a8070]">
+            결제일 7일 내 미사용분 전액 환불 가능
+          </span>
+          <a
+            href={refundMailto}
+            className="font-[family-name:var(--font-pixel)] text-[0.6875rem] text-[#9a7040] underline underline-offset-2 whitespace-nowrap"
+          >
+            환불 요청
+          </a>
+        </div>
+      </PixelFrame>
+
+      {/* 내 명부 */}
       <div className="mb-5">
-        <h2 className="font-[family-name:var(--font-pixel)] text-sm text-[#9a7040] mb-3">
-          내 캐릭터 ({characters?.length ?? 0})
-        </h2>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <h2 className="arcade-heading m-0">{COPY.mypage.section_title}</h2>
+          <CollectionCounter count={characterCount} />
+        </div>
 
         <div className="flex flex-col gap-2">
           {(characters ?? []).map((char) => {
             const chartInfo = chartMap.get(char.id);
             const element = chartInfo?.element ?? "water";
             const dayMaster = chartInfo?.dayMaster ?? "";
-            const title = readingMap.get(char.id);
+            const title = readingMap.get(char.id) ?? null;
             const birthYear = char.birth_date
               ? new Date(char.birth_date).getFullYear()
               : 2000;
             const level = new Date().getFullYear() - birthYear;
 
-            if (!char.unlocked) {
-              // 잠긴 캐릭터: 종합감정 구매로 이동
-              return (
-                <Link
-                  key={char.id}
-                  href={`/reading/new?characterId=${char.id}`}
-                  className="no-underline"
-                >
-                  <PixelFrame variant="simple" className="p-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 shrink-0 overflow-hidden relative border-2 border-[#d4cfc8]">
-                        <Image
-                          src={`/characters/${element}-${char.gender}.png`}
-                          alt={char.name}
-                          fill
-                          className="object-cover [image-rendering:pixelated] opacity-30 grayscale"
-                          sizes="48px"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-0.5">
-                          <span className="font-[family-name:var(--font-pixel)] text-sm text-[#8a8070]">
-                            {char.name}
-                          </span>
-                          <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890]">
-                            Lv.{level}
-                          </span>
-                          {char.is_self && (
-                            <span className="font-[family-name:var(--font-pixel)] text-[0.4375rem] text-[#9a7040] border border-[#b8944c] px-1 py-px">
-                              본인
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <ElementTag element={element} size="sm" />
-                          {dayMaster && (
-                            <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#8a8070]">
-                              {dayMaster}
-                            </span>
-                          )}
-                        </div>
-                        <div className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#c8a020] mt-1">
-                          종합감정으로 해금하기 &rarr;
-                        </div>
-                      </div>
-                      <span className="font-[family-name:var(--font-pixel)] text-[0.5rem] shrink-0 px-1.5 py-0.5 text-[#c8a020] border border-[#c8a020]">
-                        잠김
-                      </span>
-                    </div>
-                  </PixelFrame>
-                </Link>
-              );
-            }
-
-            // 해금된 캐릭터: 일일 퀘스트 + 심화 특성 두 경로 제공
             return (
-              <PixelFrame key={char.id} variant="default" className="p-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 shrink-0 overflow-hidden relative border-2 border-[#b8944c]">
-                    <Image
-                      src={`/characters/${element}-${char.gender}.png`}
-                      alt={char.name}
-                      fill
-                      className="object-cover [image-rendering:pixelated]"
-                      sizes="48px"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className="font-[family-name:var(--font-pixel)] text-sm text-[#2c2418]">
-                        {char.name}
-                      </span>
-                      <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890]">
-                        Lv.{level}
-                      </span>
-                      {char.is_self && (
-                        <span className="font-[family-name:var(--font-pixel)] text-[0.4375rem] text-[#9a7040] border border-[#b8944c] px-1 py-px">
-                          본인
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <ElementTag element={element} size="sm" />
-                      {dayMaster && (
-                        <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#8a8070]">
-                          {dayMaster}
-                        </span>
-                      )}
-                      {char.mbti && (
-                        <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#6858b8]">
-                          {char.mbti}
-                        </span>
-                      )}
-                    </div>
-                    {title && (
-                      <div className="font-[family-name:var(--font-body)] text-[0.6875rem] text-[#8a8070] italic mt-0.5">
-                        &ldquo;{title}&rdquo;
-                      </div>
-                    )}
-                  </div>
-                  <span className="font-[family-name:var(--font-pixel)] text-[0.5rem] shrink-0 px-1.5 py-0.5 text-[#2e8b4e] border border-[#2e8b4e]">
-                    해금
-                  </span>
-                </div>
-
-                {/* 액션 버튼 */}
-                <div className="flex gap-2 mt-3 pt-3 border-t border-[#e8e0d0]">
-                  <Link
-                    href={`/daily?characterId=${char.id}`}
-                    className="flex-1 no-underline text-center font-[family-name:var(--font-pixel)] text-[0.6875rem] py-2 bg-[#f5f0e8] border border-[#b8944c] text-[#9a7040] hover:bg-[#ede5d5] transition-colors"
-                  >
-                    일일 퀘스트
-                  </Link>
-                  <Link
-                    href={`/characters/${char.id}`}
-                    className="flex-1 no-underline text-center font-[family-name:var(--font-pixel)] text-[0.6875rem] py-2 bg-[#9a7040] border border-[#7a5830] text-white hover:bg-[#8a6030] transition-colors"
-                  >
-                    심화 특성
-                  </Link>
-                </div>
-              </PixelFrame>
+              <MyPageCharacterCard
+                key={char.id}
+                character={{
+                  id: char.id,
+                  name: char.name,
+                  mbti: char.mbti,
+                  is_self: char.is_self,
+                  unlocked: char.unlocked,
+                }}
+                element={element}
+                level={level}
+                gender={char.gender}
+                dayMaster={dayMaster}
+                title={title}
+              />
             );
           })}
 
-          {/* 새 캐릭터 추가 */}
-          <Link href="/characters/new" className="no-underline">
-            <div className="border-2 border-dashed border-[#b8944c] p-4 flex items-center justify-center gap-2 cursor-pointer">
-              <span className="font-[family-name:var(--font-pixel)] text-base text-[#b8944c]">+</span>
-              <span className="font-[family-name:var(--font-pixel)] text-xs text-[#9a7040]">
-                새 캐릭터 추가
-              </span>
-            </div>
-          </Link>
+          {/* 새 캐릭터 추가 — 랜딩 INSERT COIN과 동일한 아케이드 코인 버튼 */}
+          <NewCharacterSlot />
         </div>
       </div>
 

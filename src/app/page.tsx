@@ -1,10 +1,12 @@
 import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import HubHeader from "@/components/hub/HubHeader";
 import CharacterSlot from "@/components/hub/CharacterSlot";
-import NewCharacterSlot from "@/components/hub/NewCharacterSlot";
 import TrustBadge from "@/components/hub/TrustBadge";
+import CollectionCounter from "@/components/hub/CollectionCounter";
+import { COPY } from "@/lib/copy/gacha-terms";
 import type { ElementType } from "@/lib/character/get-preset";
 
 const HEAVENLY_STEM_ELEMENT: Record<string, ElementType> = {
@@ -25,7 +27,7 @@ export default async function HubPage() {
   // 1. Fetch all characters for this user
   const { data: characters } = await supabase
     .from("characters")
-    .select("id, name, unlocked, gender, mbti, birth_date, is_self")
+    .select("id, name, unlocked, gender, mbti, birth_date, is_self, free_stat_scores, free_summary")
     .eq("user_id", userId)
     .order("is_self", { ascending: false })
     .order("created_at", { ascending: true });
@@ -33,10 +35,10 @@ export default async function HubPage() {
   // If no characters, redirect to onboarding
   if (!characters || characters.length === 0) redirect("/onboarding");
 
-  // 2. Fetch user name for header
+  // 2. Fetch user name + coin balance for header
   const { data: user } = await supabase
     .from("users")
-    .select("name")
+    .select("name, coins")
     .eq("id", userId)
     .single();
 
@@ -111,8 +113,31 @@ export default async function HubPage() {
       : 2000;
     const level = new Date().getFullYear() - birthYear;
 
-    // Reading data
+    // Reading data (unlocked characters) or free stats (locked characters)
     const readingData = readingMap.get(char.id);
+    const freeStats = char.free_stat_scores as Record<string, unknown> | null;
+
+    const statScores = readingData?.stat_scores
+      ? {
+          health_score: readingData.stat_scores.health_score ?? 0,
+          wealth_score: readingData.stat_scores.wealth_score ?? 0,
+          love_score: readingData.stat_scores.love_score ?? 0,
+          career_score: readingData.stat_scores.career_score ?? 0,
+          vitality_score: readingData.stat_scores.vitality_score ?? 0,
+          luck_score: readingData.stat_scores.luck_score ?? 0,
+          title: (readingData.stat_scores as Record<string, unknown>).title as string | undefined,
+        }
+      : freeStats
+        ? {
+            health_score: (freeStats.health_score as number) ?? 0,
+            wealth_score: (freeStats.wealth_score as number) ?? 0,
+            love_score: (freeStats.love_score as number) ?? 0,
+            career_score: (freeStats.career_score as number) ?? 0,
+            vitality_score: (freeStats.vitality_score as number) ?? 0,
+            luck_score: (freeStats.luck_score as number) ?? 0,
+            title: freeStats.title as string | undefined,
+          }
+        : null;
 
     return {
       character: {
@@ -125,33 +150,23 @@ export default async function HubPage() {
       element,
       level,
       dayMaster,
-      statScores: readingData?.stat_scores
-        ? {
-            health_score: readingData.stat_scores.health_score ?? 0,
-            wealth_score: readingData.stat_scores.wealth_score ?? 0,
-            love_score: readingData.stat_scores.love_score ?? 0,
-            career_score: readingData.stat_scores.career_score ?? 0,
-            vitality_score: readingData.stat_scores.vitality_score ?? 0,
-            luck_score: readingData.stat_scores.luck_score ?? 0,
-            title: (readingData.stat_scores as Record<string, unknown>).title as string | undefined,
-          }
-        : null,
-      characterTitle: readingData?.character_title ?? null,
+      statScores,
+      characterTitle: readingData?.character_title ?? (freeStats?.title as string | null) ?? null,
     };
   });
 
   return (
     <div className="hub-bg min-h-screen flex flex-col">
       {/* Header */}
-      <HubHeader userName={user?.name ?? "모험가"} />
+      <HubHeader userName={user?.name ?? "플레이어"} balance={user?.coins ?? 0} />
 
       {/* Main content */}
-      <div
-        className="flex-1 w-full mx-auto px-4 py-5 flex flex-col gap-3"
-        style={{ maxWidth: "480px" }}
-      >
-        {/* Section title */}
-        <div className="pixel-divider">캐릭터 선택</div>
+      <div className="flex-1 w-full mx-auto px-4 py-5 flex flex-col gap-3 max-w-[480px]">
+        {/* Section title + 컬렉션 카운터 */}
+        <div className="flex items-center justify-between gap-2 pt-1">
+          <span className="arcade-heading">{COPY.collection.title}</span>
+          <CollectionCounter count={characterSlots.length} />
+        </div>
 
         {/* Character slots */}
         {characterSlots.map((slot) => (
@@ -166,8 +181,15 @@ export default async function HubPage() {
           />
         ))}
 
-        {/* New character slot */}
-        <NewCharacterSlot />
+        {/* New character slot — 허브 전용 라이트 톤 (mypage는 별도) */}
+        <Link
+          href="/characters/new"
+          className="hub-add-character no-underline"
+          aria-label="새 캐릭터 추가"
+        >
+          <span className="hub-add-character-icon">＋</span>
+          <span>가족·친구 추가</span>
+        </Link>
 
         {/* Trust badge */}
         <TrustBadge />

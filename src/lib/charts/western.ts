@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-require-imports */
+// circular-natal-horoscope-js는 CJS-only. require로 임포트 필수, 타입 래퍼 loose.
 import type { BirthInfo, WesternChart } from "./types";
 
 const { Origin, Horoscope } = require("circular-natal-horoscope-js");

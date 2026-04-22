@@ -30,27 +30,22 @@ export default function ServiceCard({
           <span className={`service-card-bar service-card-bar-${colorBar}`} />
         )}
         {popular && (
-          <span className="service-card-popular-badge">★ 인기</span>
+          <span className="arcade-badge absolute -top-2 right-3" data-variant="hot">
+            ★ 인기
+          </span>
         )}
 
         {/* 좌측: 아이콘 */}
-        <span
-          className="flex-shrink-0 text-[1.75rem] leading-none"
-          aria-hidden="true"
-        >
+        <span className="flex-shrink-0 text-[1.75rem] leading-none" aria-hidden="true">
           {icon}
         </span>
 
         {/* 중앙: 타이틀 + 설명 */}
         <div className="flex-1 min-w-0">
-          <p
-            className="leading-tight mb-0.5 font-[family-name:var(--font-pixel)] text-[0.8125rem] text-[#b8883c]"
-          >
+          <p className="leading-tight mb-0.5 font-[family-name:var(--font-pixel)] text-[0.8125rem] text-[#b8883c]">
             {title}
           </p>
-          <p
-            className="leading-snug truncate text-xs text-[#4a3e2c]"
-          >
+          <p className="leading-snug truncate text-xs text-[#4a3e2c]">
             {description}
           </p>
         </div>
@@ -58,17 +53,9 @@ export default function ServiceCard({
         {/* 우측: 가격 뱃지 */}
         <div className="flex-shrink-0">
           {price === null ? (
-            <span
-              className="inline-block px-3 py-1 font-[family-name:var(--font-pixel)] text-[0.625rem] text-white bg-[#2e8b4e] border-2 border-[#1e7a3e] whitespace-nowrap"
-            >
-              무료
-            </span>
+            <span className="arcade-badge" data-variant="free">무료</span>
           ) : (
-            <span
-              className="inline-block px-3 py-1 font-[family-name:var(--font-pixel)] text-[0.625rem] text-white bg-[#9a7040] border-2 border-[#7a5830] whitespace-nowrap"
-            >
-              {price}
-            </span>
+            <span className="arcade-badge" data-variant="paid">{price}</span>
           )}
         </div>
       </div>

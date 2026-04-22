@@ -10,6 +10,7 @@ import {
   HEALTH_SYSTEM,
   STUDY_SYSTEM,
 } from "./prompts";
+import { withAiTimeout } from "./timeout";
 import type { AllCharts } from "../charts/types";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -34,11 +35,14 @@ ${JSON.stringify(charts.ziwei.raw, null, 2)}
 ${JSON.stringify(charts.western.raw, null, 2)}
 ${mbti ? `\n[MBTI] ${name}님의 MBTI는 ${mbti}입니다. 각 섹션에서 자연스럽게 교차 해석해주세요.` : ""}`;
 
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: userMessage }] }],
-    systemInstruction: COMPREHENSIVE_SYSTEM,
-    generationConfig: { maxOutputTokens: 8192, temperature: 0.8 },
-  });
+  const result = await withAiTimeout(
+    model.generateContent({
+      contents: [{ role: "user", parts: [{ text: userMessage }] }],
+      systemInstruction: COMPREHENSIVE_SYSTEM,
+      generationConfig: { maxOutputTokens: 8192, temperature: 0.8 },
+    }),
+    "종합감정",
+  );
 
   const text = result.response.text();
   const tokensUsed = result.response.usageMetadata?.totalTokenCount ?? 0;
@@ -78,11 +82,14 @@ ${JSON.stringify(sajuSummary, null, 2)}
 ${mbti ? `\n[MBTI] ${mbti}` : ""}
 오늘의 일일운세를 작성해주세요.`;
 
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: userMessage }] }],
-    systemInstruction: DAILY_SYSTEM,
-    generationConfig: { maxOutputTokens: 4096, temperature: 0.8 },
-  });
+  const result = await withAiTimeout(
+    model.generateContent({
+      contents: [{ role: "user", parts: [{ text: userMessage }] }],
+      systemInstruction: DAILY_SYSTEM,
+      generationConfig: { maxOutputTokens: 4096, temperature: 0.8 },
+    }),
+    "일일운세",
+  );
 
   const text = result.response.text();
   const tokensUsed = result.response.usageMetadata?.totalTokenCount ?? 0;
@@ -122,11 +129,14 @@ ${JSON.stringify(charts.western.raw, null, 2)}
 ${yearlyGanZhi.monthlyGanZhi.map((m) => `${m.month}: ${m.ganZhi}`).join("\n")}
 ${mbti ? `\n[MBTI] ${name}님의 MBTI는 ${mbti}입니다. 각 영역에서 자연스럽게 교차 해석해주세요.` : ""}`;
 
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: userMessage }] }],
-    systemInstruction: YEARLY_SYSTEM,
-    generationConfig: { maxOutputTokens: 8192, temperature: 0.8 },
-  });
+  const result = await withAiTimeout(
+    model.generateContent({
+      contents: [{ role: "user", parts: [{ text: userMessage }] }],
+      systemInstruction: YEARLY_SYSTEM,
+      generationConfig: { maxOutputTokens: 8192, temperature: 0.8 },
+    }),
+    "년운",
+  );
 
   const text = result.response.text();
   const tokensUsed = result.response.usageMetadata?.totalTokenCount ?? 0;
@@ -156,11 +166,14 @@ ${mbti1 ? `MBTI: ${mbti1}` : ""}
 서양점성술: ${JSON.stringify(charts2.western.raw, null, 2)}
 ${mbti2 ? `MBTI: ${mbti2}` : ""}`;
 
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: userMessage }] }],
-    systemInstruction: COMPATIBILITY_SYSTEM,
-    generationConfig: { maxOutputTokens: 6144, temperature: 0.8 },
-  });
+  const result = await withAiTimeout(
+    model.generateContent({
+      contents: [{ role: "user", parts: [{ text: userMessage }] }],
+      systemInstruction: COMPATIBILITY_SYSTEM,
+      generationConfig: { maxOutputTokens: 6144, temperature: 0.8 },
+    }),
+    "궁합",
+  );
 
   return {
     html: result.response.text(),
@@ -210,11 +223,14 @@ ${JSON.stringify(charts.ziwei.raw, null, 2)}
 ${JSON.stringify(charts.western.raw, null, 2)}
 ${mbti ? `\n[MBTI] ${name}님의 MBTI는 ${mbti}입니다. 각 섹션에서 자연스럽게 교차 해석해주세요.` : ""}`;
 
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: userMessage }] }],
-    systemInstruction: systemPrompt,
-    generationConfig: { maxOutputTokens: 6144, temperature: 0.8 },
-  });
+  const result = await withAiTimeout(
+    model.generateContent({
+      contents: [{ role: "user", parts: [{ text: userMessage }] }],
+      systemInstruction: systemPrompt,
+      generationConfig: { maxOutputTokens: 6144, temperature: 0.8 },
+    }),
+    label,
+  );
 
   const text = result.response.text();
   const tokensUsed = result.response.usageMetadata?.totalTokenCount ?? 0;

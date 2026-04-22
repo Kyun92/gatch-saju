@@ -9,9 +9,12 @@ import type { BirthInfo, AllCharts } from "@/lib/charts/types";
  * Mock 모드 활성화 여부
  * .env.local에 USE_MOCK_READINGS=true 설정 시 Gemini 호출 대신 mock 데이터 사용
  *
- * ⚠️ 프로덕션 배포 전 반드시 false(미설정)인지 확인할 것
+ * 프로덕션(NODE_ENV === "production")에서는 env 값과 무관하게 강제 false.
+ * 실수로 프로덕션 env에 해당 플래그가 주입돼도 실결제 → mock 데이터 참사 방지.
  */
-const USE_MOCK = process.env.USE_MOCK_READINGS === "true";
+const USE_MOCK =
+  process.env.NODE_ENV !== "production" &&
+  process.env.USE_MOCK_READINGS === "true";
 
 export interface CharacterData {
   name: string | null;
@@ -48,7 +51,7 @@ export async function executeReadingGeneration(
     // Mock 모드: Gemini 호출 없이 즉시 완료
     // ──────────────────────────────────────────
     if (USE_MOCK) {
-      console.log(`[MOCK] Reading ${readingId} (${type}) — using mock data`);
+      console.info(`[MOCK] Reading ${readingId} (${type}) — using mock data`);
 
       // 실제 로딩 느낌을 위해 2초 딜레이
       await new Promise((r) => setTimeout(r, 2000));

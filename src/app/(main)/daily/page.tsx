@@ -23,7 +23,7 @@ export default async function DailyPage({ searchParams }: DailyPageProps) {
   // Fetch character and verify ownership
   const { data: character } = await supabase
     .from("characters")
-    .select("id, name, mbti, user_id")
+    .select("id, name, mbti, user_id, free_summary")
     .eq("id", characterId)
     .single();
 
@@ -128,7 +128,14 @@ export default async function DailyPage({ searchParams }: DailyPageProps) {
           )}
         </PixelFrame>
       ) : (
-        <DailyFortuneClient characterId={characterId} />
+        <DailyFortuneClient
+          characterId={characterId}
+          character={{
+            name: character.name,
+            mbti: character.mbti ?? null,
+            free_summary: character.free_summary ?? null,
+          }}
+        />
       )}
 
       {/* Monthly calendar */}

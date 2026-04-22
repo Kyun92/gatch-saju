@@ -1,31 +1,24 @@
 import Link from "next/link";
+import CoinSvg from "@/components/ui/CoinSvg";
+import { COPY } from "@/lib/copy/gacha-terms";
 
 export default function NewCharacterSlot() {
   return (
-    <Link
-      href="/characters/new"
-      className="no-underline block"
-    >
-      <div
-        className="new-character-slot border-2 border-dashed border-[#b8944c] bg-[#faf7f2] px-5 py-7 flex flex-col items-center justify-center gap-2 cursor-pointer transition-[border-color,background-color] duration-150 ease-in-out min-h-[120px]"
+    <div className="flex flex-col items-center gap-2 my-2">
+      <Link
+        href="/characters/new"
+        className="gacha-coin-btn w-full justify-center"
+        data-size="sm"
+        aria-label={COPY.action.draw_new}
       >
-        <span
-          className="font-[family-name:var(--font-pixel)] text-[2rem] text-[#b8944c] leading-none"
-          aria-hidden="true"
-        >
-          +
+        <CoinSvg size={18} className="animate-spin-coin" />
+        <span className="transition-colors duration-200">
+          {COPY.action.draw_new}
         </span>
-        <span
-          className="font-[family-name:var(--font-pixel)] text-xs text-[#9a7040] tracking-[0.04em]"
-        >
-          새 캐릭터 추가
-        </span>
-        <span
-          className="font-[family-name:var(--font-body)] text-[0.6875rem] text-[#8a8070] text-center leading-normal"
-        >
-          친구, 가족의 사주도 확인해보세요
-        </span>
-      </div>
-    </Link>
+      </Link>
+      <p className="font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#8a8070] tracking-wider">
+        {COPY.action.draw_new_sub}
+      </p>
+    </div>
   );
 }

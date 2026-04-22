@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// 외부 라이브러리 수동 타입 선언. 상세 반환 타입은 문서 부족으로 any 유지.
 declare module "lunar-javascript" {
   export class Solar {
     static fromYmdHms(y: number, m: number, d: number, h: number, min: number, s: number): Solar;

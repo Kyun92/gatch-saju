@@ -25,19 +25,30 @@ export async function GET(
       return NextResponse.json({ error: "감정 결과를 찾을 수 없습니다" }, { status: 404 });
     }
 
-    // Ownership check via character
+    // Ownership check via character + 개인화 힌트용 요약 필드 함께 조회
+    let character: {
+      name: string;
+      mbti: string | null;
+      free_summary: string | null;
+    } | null = null;
+
     if (reading.character_id) {
-      const { data: character } = await supabase
+      const { data: characterRow } = await supabase
         .from("characters")
-        .select("user_id")
+        .select("user_id, name, mbti, free_summary")
         .eq("id", reading.character_id)
         .single();
-      if (character?.user_id !== session.user.userId) {
+      if (characterRow?.user_id !== session.user.userId) {
         return NextResponse.json({ error: "권한 없음" }, { status: 403 });
       }
+      character = {
+        name: characterRow.name,
+        mbti: characterRow.mbti,
+        free_summary: characterRow.free_summary,
+      };
     }
 
-    return NextResponse.json({ reading });
+    return NextResponse.json({ reading, character });
   } catch (e) {
     console.error("Reading status error:", e);
     return NextResponse.json({ error: "상태 조회 중 오류가 발생했습니다" }, { status: 500 });

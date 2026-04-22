@@ -7,7 +7,7 @@ interface GachaMachineProps {
 }
 
 export default function GachaMachine({
-  message = "AI가 명식을 풀이 중...",
+  message = "명식을 풀이 중...",
 }: GachaMachineProps) {
   return (
     <div className={styles.container}>

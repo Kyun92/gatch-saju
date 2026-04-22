@@ -5,9 +5,9 @@ interface TriSystemSymbolProps {
 }
 
 const sizeConfig = {
-  full: { w: 220, h: 200, r: 70, center: 28, label: "0.75rem", sub: "0.5rem", ai: "0.625rem" },
-  medium: { w: 150, h: 136, r: 48, center: 20, label: "0.5625rem", sub: "0.4375rem", ai: "0.4375rem" },
-  mini: { w: 100, h: 90, r: 32, center: 14, label: "0.4375rem", sub: "0", ai: "0.375rem" },
+  full: { w: 220, h: 200, r: 70, center: 28, label: "0.75rem", sub: "0.5rem", core: "0.875rem" },
+  medium: { w: 150, h: 136, r: 48, center: 20, label: "0.5625rem", sub: "0.4375rem", core: "0.625rem" },
+  mini: { w: 100, h: 90, r: 32, center: 14, label: "0.4375rem", sub: "0", core: "0.5rem" },
 } as const;
 
 export default function TriSystemSymbol({ size = "full" }: TriSystemSymbolProps) {
@@ -33,9 +33,9 @@ export default function TriSystemSymbol({ size = "full" }: TriSystemSymbolProps)
     { x: cx, y: bottomY, bg: "rgba(48,112,192,0.15)", border: "#3070c0", text: "★", sub: "점성술" },
   ];
 
-  // AI 원: 세 원 중심의 무게중심
-  const aiX = (leftX + rightX + cx) / 3;
-  const aiY = (topY + topY + bottomY) / 3;
+  // 중심 원: 세 원의 무게중심 (3체계 교차점)
+  const coreX = (leftX + rightX + cx) / 3;
+  const coreY = (topY + topY + bottomY) / 3;
 
   return (
     <div
@@ -67,18 +67,18 @@ export default function TriSystemSymbol({ size = "full" }: TriSystemSymbolProps)
         </div>
       ))}
 
-      {/* AI 중심 원 */}
+      {/* 중심 원 — 3체계 교차점 */}
       <div
         className="animate-px-glow absolute rounded-full bg-[#f5f0e8] border-2 border-[#9a7040] flex items-center justify-center z-[2] shadow-[0_0_8px_rgba(154,112,64,0.4)]"
         style={{
           width: cfg.center,
           height: cfg.center,
-          left: aiX - cfg.center / 2,
-          top: aiY - cfg.center / 2,
+          left: coreX - cfg.center / 2,
+          top: coreY - cfg.center / 2,
         }}
       >
-        <span className="font-[family-name:var(--font-pixel)] text-[#9a7040]" style={{ fontSize: cfg.ai }}>
-          AI
+        <span className="font-[family-name:var(--font-pixel)] text-[#9a7040]" style={{ fontSize: cfg.core }}>
+          命
         </span>
       </div>
     </div>

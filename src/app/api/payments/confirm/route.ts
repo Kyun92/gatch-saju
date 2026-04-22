@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { confirmPayment } from "@/lib/payments/toss";
+import { getCoinPackage } from "@/lib/coins/packages";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,111 +11,106 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "인증이 필요합니다" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const {
-      paymentKey,
-      orderId,
-      amount,
-      characterId,
-      characterId2,
-      type = "comprehensive",
-      targetYear,
-    } = body as {
-      paymentKey: string;
-      orderId: string;
-      amount: number;
-      characterId: string;
-      characterId2?: string;
-      type?: "comprehensive" | "yearly" | "compatibility" | "love" | "career" | "wealth" | "health" | "study";
-      targetYear?: number;
+    const body = (await request.json()) as {
+      paymentKey?: string;
+      orderId?: string;
+      amount?: number;
+      packageId?: string;
     };
 
-    if (!paymentKey || !orderId || !amount || !characterId) {
+    const { paymentKey, orderId, amount, packageId } = body;
+
+    if (!paymentKey || !orderId || !amount || !packageId) {
       return NextResponse.json(
         { error: "결제 정보가 누락되었습니다" },
         { status: 400 },
       );
     }
 
-    // Unlock gate: non-comprehensive types require character to be unlocked BEFORE payment
-    if (type !== "comprehensive") {
-      const supabaseCheck = createServerSupabaseClient();
-      const { data: character } = await supabaseCheck
-        .from("characters")
-        .select("unlocked")
-        .eq("id", characterId)
-        .eq("user_id", session.user.userId)
-        .single();
-
-      if (!character?.unlocked) {
-        return NextResponse.json(
-          { error: "종합감정을 먼저 받아야 합니다" },
-          { status: 400 },
-        );
-      }
+    const pkg = getCoinPackage(packageId);
+    if (!pkg) {
+      return NextResponse.json(
+        { error: "유효하지 않은 상품입니다" },
+        { status: 400 },
+      );
     }
 
-    // Confirm payment via Toss
+    if (amount !== pkg.price) {
+      return NextResponse.json(
+        { error: "결제 금액이 상품 가격과 일치하지 않습니다" },
+        { status: 400 },
+      );
+    }
+
     const payment = await confirmPayment(paymentKey, orderId, amount);
 
-    const supabase = createServerSupabaseClient();
+    if (payment.status !== "DONE") {
+      return NextResponse.json(
+        { error: "결제가 정상적으로 완료되지 않았습니다" },
+        { status: 400 },
+      );
+    }
 
-    // Log payment
-    const { data: paymentLog } = await supabase
+    const supabase = createServerSupabaseClient();
+    const userId = session.user.userId;
+
+    const { data: paymentLog, error: logError } = await supabase
       .from("payment_log")
       .insert({
-        user_id: session.user.userId,
-        character_id: characterId,
+        user_id: userId,
         payment_key: payment.paymentKey,
         order_id: payment.orderId,
         order_name: payment.orderName,
         amount: payment.totalAmount,
-        status: payment.status,
+        status: "success",
         method: payment.method,
         approved_at: payment.approvedAt,
+        coin_quantity: pkg.quantity,
+        package_id: pkg.id,
       })
       .select("id")
       .single();
 
-    // Trigger reading generation
-    const generateRes = await fetch(
-      new URL("/api/reading/generate", request.url),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          cookie: request.headers.get("cookie") ?? "",
-        },
-        body: JSON.stringify({ characterId, characterId2, type, targetYear }),
-      },
-    );
-
-    const generateData = (await generateRes.json()) as {
-      readingId?: string;
-      error?: string;
-    };
-
-    if (!generateRes.ok || !generateData.readingId) {
+    if (logError || !paymentLog) {
+      console.error("Payment log insert failed:", logError);
       return NextResponse.json(
         {
           error:
-            "결제는 완료되었지만 감정 생성에 실패했습니다. 고객센터에 문의해주세요.",
+            "결제는 완료되었지만 기록에 실패했습니다. 고객센터로 문의해주세요.",
         },
         { status: 500 },
       );
     }
 
-    // Link reading to payment log
-    if (paymentLog?.id && generateData.readingId) {
-      await supabase
-        .from("payment_log")
-        .update({ reading_id: generateData.readingId })
-        .eq("id", paymentLog.id);
+    const { data: newBalance, error: adjustError } = await supabase.rpc(
+      "adjust_user_coins",
+      { p_user_id: userId, p_delta: pkg.quantity },
+    );
+
+    if (adjustError) {
+      console.error("Coin credit failed:", adjustError);
+      return NextResponse.json(
+        {
+          error:
+            "결제는 완료되었지만 코인 충전에 실패했습니다. 고객센터로 문의해주세요.",
+        },
+        { status: 500 },
+      );
     }
 
+    await supabase.from("coin_transactions").insert({
+      user_id: userId,
+      delta: pkg.quantity,
+      reason: "purchase",
+      payment_log_id: paymentLog.id,
+      note: pkg.orderName,
+    });
+
     return NextResponse.json({
-      readingId: generateData.readingId,
+      ok: true,
       paymentKey: payment.paymentKey,
+      balance: newBalance,
+      quantity: pkg.quantity,
     });
   } catch (e) {
     console.error("Payment confirm error:", e);

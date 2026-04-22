@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/purity */
+// dev 프리뷰 페이지 — 프로덕션 배포 대상 아님. 렌더링 순도 규칙 완화.
 "use client";
 
 import { useState } from "react";
@@ -401,14 +403,14 @@ function LoginPreview() {
           갓챠사주
         </h1>
         <p style={{ fontFamily: "var(--font-pixel)", color: "#9a7040", fontSize: "1.1rem" }}>
-          운명의 사주풀이
+          네 운명, 한 판 뽑아봐
         </p>
       </div>
 
       <PixelFrame variant="accent" className="w-full max-w-sm p-6">
         <div className="flex flex-col gap-4">
           <p className="text-center text-sm mb-2" style={{ fontFamily: "var(--font-pixel)", color: "#4a3e2c" }}>
-            모험을 시작하려면 로그인하세요
+            캡슐을 뽑으려면 로그인하세요
           </p>
 
           <button
@@ -453,7 +455,7 @@ function LoginPreview() {
           animation: "blink 1.2s step-end infinite",
         }}
       >
-        새로운 모험을 시작하세요
+        다음 캡슐엔 뭐가 들었을까
       </p>
     </div>
   );
