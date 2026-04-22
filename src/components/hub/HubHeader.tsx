@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import CoinSvg from "@/components/ui/CoinSvg";
 
@@ -9,9 +10,16 @@ interface HubHeaderProps {
 export default function HubHeader({ userName, balance = 0 }: HubHeaderProps) {
   return (
     <header className="flex items-center justify-between px-4 h-12 bg-[#f5f0e8] border-b border-[#b8944c]">
-      <span className="font-[family-name:var(--font-pixel)] text-xl text-[#b8883c] tracking-[0.05em]">
-        갓챠사주
-      </span>
+      <Link href="/" aria-label="갓챠사주 홈" className="flex items-center no-underline">
+        <Image
+          src="/logo-2x.png"
+          alt="갓챠사주"
+          width={1000}
+          height={300}
+          priority
+          className="block h-7 w-auto"
+        />
+      </Link>
 
       <div className="flex items-center gap-2">
         <Link

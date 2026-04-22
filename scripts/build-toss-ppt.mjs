@@ -3,11 +3,18 @@
 
 import pptxgen from "/opt/homebrew/lib/node_modules/pptxgenjs/dist/pptxgen.es.js";
 import path from "node:path";
+import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const OUTPUT = path.resolve(__dirname, "..", "docs", "toss-payment-flow.pptx");
+const SHOTS_DIR = path.resolve(__dirname, "..", "docs", "screenshots");
+
+function screenshotPath(name) {
+  const p = path.join(SHOTS_DIR, `${name}.png`);
+  return fs.existsSync(p) ? p : null;
+}
 
 const pres = new pptxgen();
 pres.layout = "LAYOUT_WIDE"; // 13.333 x 7.5 inch
@@ -82,7 +89,26 @@ function addTitle(slide, title, subtitle) {
   }
 }
 
-function addScreenshotPlaceholder(slide, x, y, w, h, url) {
+function addScreenshotPlaceholder(slide, x, y, w, h, url, shotName) {
+  const shot = shotName ? screenshotPath(shotName) : null;
+
+  if (shot) {
+    // 얇은 테두리 프레임 (실제 캡처 강조용)
+    slide.addShape(pres.ShapeType.rect, {
+      x, y, w, h,
+      fill: { color: "FFFFFF" },
+      line: { color: COLORS.border, width: 1 },
+    });
+    // contain 모드로 비율 유지하며 박스 안에 맞춤
+    slide.addImage({
+      path: shot,
+      x, y, w, h,
+      sizing: { type: "contain", w, h },
+    });
+    return;
+  }
+
+  // placeholder (캡처 전 상태)
   slide.addShape(pres.ShapeType.rect, {
     x, y, w, h,
     fill: { color: COLORS.placeholder },
@@ -330,17 +356,17 @@ const TOTAL = 16;
   addFooter(s, 4, TOTAL);
 }
 
-// ---------- Helper: 스크린 슬라이드 ----------
-function addScreenSlide({ pageNum, title, subtitle, url, description }) {
+// ---------- Helper: 스크린 슬라이드 (모바일 세로 캡처 기준 레이아웃) ----------
+function addScreenSlide({ pageNum, title, subtitle, url, description, shotName }) {
   const s = pres.addSlide();
   addTitle(s, title, subtitle);
 
-  // 좌측: 스크린샷 placeholder
-  addScreenshotPlaceholder(s, 0.6, 1.9, 7.5, 4.9, url);
+  // 좌측: 모바일 스크린샷 (세로 프레임, 390:844 ≈ 1:2.16 비율 고려)
+  addScreenshotPlaceholder(s, 0.6, 1.9, 2.5, 5.2, url, shotName);
 
   // 우측: 설명
-  const descX = 8.4;
-  const descW = 4.4;
+  const descX = 3.5;
+  const descW = 9.3;
 
   s.addText("URL", {
     x: descX, y: 1.9, w: descW, h: 0.3,
@@ -348,7 +374,7 @@ function addScreenSlide({ pageNum, title, subtitle, url, description }) {
   });
   s.addText(url || "-", {
     x: descX, y: 2.2, w: descW, h: 0.4,
-    fontSize: 12, color: COLORS.ink, fontFace: FONT_BODY,
+    fontSize: 13, color: COLORS.ink, fontFace: FONT_BODY,
     hyperlink: url ? { url } : undefined,
   });
 
@@ -366,8 +392,8 @@ function addScreenSlide({ pageNum, title, subtitle, url, description }) {
     descLines.map((line) => ({ text: line, options: { breakLine: true, bullet: { code: "25CF" } } })),
     {
       x: descX, y: 3.3, w: descW, h: 3.5,
-      fontSize: 12, color: COLORS.ink, fontFace: FONT_BODY,
-      paraSpaceAfter: 6,
+      fontSize: 13, color: COLORS.ink, fontFace: FONT_BODY,
+      paraSpaceAfter: 8,
     },
   );
 
@@ -381,6 +407,7 @@ addScreenSlide({
   title: "1. 홈 — 비로그인 진입",
   subtitle: "Landing",
   url: "https://gatch-saju.onato.co.kr/landing",
+  shotName: "05-landing",
   description: [
     "비로그인 방문자가 처음 보는 화면",
     "서비스 소개 + 카카오 로그인 CTA",
@@ -393,11 +420,11 @@ addScreenSlide({
   const s = pres.addSlide();
   addTitle(s, "2. 요금 안내 — 상품·가격 공개", "Pricing");
 
-  addScreenshotPlaceholder(s, 0.6, 1.9, 6.8, 4.9, "https://gatch-saju.onato.co.kr/pricing");
+  addScreenshotPlaceholder(s, 0.6, 1.9, 2.5, 5.2, "https://gatch-saju.onato.co.kr/pricing", "06-pricing");
 
-  // 우측 패키지 표
-  const descX = 7.7;
-  const descW = 5.1;
+  // 우측 URL + 패키지 표
+  const descX = 3.5;
+  const descW = 9.3;
 
   s.addText("URL", {
     x: descX, y: 1.9, w: descW, h: 0.3,
@@ -405,11 +432,16 @@ addScreenSlide({
   });
   s.addText("https://gatch-saju.onato.co.kr/pricing", {
     x: descX, y: 2.2, w: descW, h: 0.4,
-    fontSize: 12, color: COLORS.ink, fontFace: FONT_BODY,
+    fontSize: 13, color: COLORS.ink, fontFace: FONT_BODY,
+  });
+
+  s.addShape(pres.ShapeType.line, {
+    x: descX, y: 2.8, w: descW, h: 0,
+    line: { color: COLORS.border, width: 1 },
   });
 
   s.addText("코인 패키지", {
-    x: descX, y: 2.8, w: descW, h: 0.3,
+    x: descX, y: 3.0, w: descW, h: 0.3,
     fontSize: 10, bold: true, color: COLORS.gold, charSpacing: 3, fontFace: FONT_BODY,
   });
 
@@ -430,17 +462,17 @@ addScreenSlide({
   })))];
 
   s.addTable(tableBody, {
-    x: descX, y: 3.1,
-    w: descW,
-    colW: [1.5, 2, 1.6],
-    rowH: 0.45,
-    fontSize: 12,
+    x: descX, y: 3.4,
+    w: 6,
+    colW: [1.8, 2.4, 1.8],
+    rowH: 0.5,
+    fontSize: 13,
     border: { type: "solid", color: COLORS.border, pt: 1 },
   });
 
   s.addText("※ 비로그인 상태로 /pricing 에서 상품·가격 확인 가능.\n   결제 버튼은 로그인 유도로 연결됩니다.", {
-    x: descX, y: 5.6, w: descW, h: 1.1,
-    fontSize: 11, color: COLORS.sub, italic: true, fontFace: FONT_BODY,
+    x: descX, y: 6.0, w: descW, h: 0.8,
+    fontSize: 12, color: COLORS.sub, italic: true, fontFace: FONT_BODY,
   });
 
   addFooter(s, 6, TOTAL);
@@ -452,6 +484,7 @@ addScreenSlide({
   title: "3. 로그인 (카카오)",
   subtitle: "Social Login",
   url: "https://gatch-saju.onato.co.kr/login",
+  shotName: "07-login",
   description: [
     "카카오 계정으로 소셜 로그인",
     "네이버·구글은 현재 \"준비 중\" 상태 (비활성)",
@@ -465,6 +498,7 @@ addScreenSlide({
   title: "4. 허브 — 로그인 후 메인",
   subtitle: "Hub · Balance Badge",
   url: "https://gatch-saju.onato.co.kr/",
+  shotName: "08-hub",
   description: [
     "상단 헤더에 현재 코인 잔액 배지 (✮ N) 항시 노출",
     "캐릭터 슬롯 리스트 — 본인/가족/지인 구분",
@@ -478,6 +512,7 @@ addScreenSlide({
   title: "5. 지갑 — 패키지 선택 (실결제)",
   subtitle: "Wallet · Purchase",
   url: "https://gatch-saju.onato.co.kr/coins",
+  shotName: "09-coins",
   description: [
     "4개 코인 패키지 카드 (1·3·5·10)",
     "카드 클릭 즉시 토스페이먼츠 결제창 호출",
@@ -491,6 +526,7 @@ addScreenSlide({
   title: "6. 토스페이먼츠 결제창",
   subtitle: "Toss Payments SDK",
   url: "tosspayments.com (SDK Popup)",
+  shotName: "10-toss-checkout",
   description: [
     "Toss Payments SDK로 호출되는 공식 결제창",
     "카드 · 간편결제 · 계좌이체 등 사용자가 수단 선택",
@@ -505,6 +541,7 @@ addScreenSlide({
   title: "7. 충전 완료",
   subtitle: "Charge Complete",
   url: "https://gatch-saju.onato.co.kr/coins/success",
+  shotName: "11-coins-success",
   description: [
     "Toss 결제 승인 후 /api/payments/confirm 호출",
     "users.coins 증가 + coin_transactions 이력 기록",
@@ -519,6 +556,7 @@ addScreenSlide({
   title: "8. 결제 실패 화면",
   subtitle: "Payment Failure",
   url: "https://gatch-saju.onato.co.kr/coins/fail",
+  shotName: "12-coins-fail",
   description: [
     "카드사 거절 · 결제 중단 · 시스템 오류 등 실패 케이스",
     "오류 코드 + 친절한 안내 문구 표시",
@@ -532,6 +570,7 @@ addScreenSlide({
   title: "9. 코인 소비 → 감정 결과",
   subtitle: "Reading Result",
   url: "https://gatch-saju.onato.co.kr/reading/{id}",
+  shotName: "13-reading",
   description: [
     "충전된 코인으로 감정을 뽑으면 트랜잭션 내 1코인 차감",
     "백그라운드에서 AI 감정 HTML 생성 (종합감정/년운/궁합 등)",
@@ -614,6 +653,7 @@ addScreenSlide({
   title: "환불 요청 경로",
   subtitle: "Refund Flow",
   url: "https://gatch-saju.onato.co.kr/mypage",
+  shotName: "15-mypage",
   description: [
     "마이페이지 → 지갑 섹션 내 \"환불 요청\" 링크",
     "클릭 시 프리필된 이메일 양식 자동 작성 (가입 이메일·이름 포함)",

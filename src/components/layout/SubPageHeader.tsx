@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -24,12 +25,16 @@ export default function SubPageHeader() {
 
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between px-4 bg-white border-b-2 border-[#b8944c] h-12">
-      {/* 좌측: 홈 링크 */}
-      <Link
-        href="/"
-        className="font-[family-name:var(--font-pixel)] text-xs text-[#9a7040] no-underline"
-      >
-        ← 홈
+      {/* 좌측: 로고 (홈 링크) */}
+      <Link href="/" aria-label="갓챠사주 홈" className="flex items-center no-underline">
+        <Image
+          src="/logo-2x.png"
+          alt="갓챠사주"
+          width={1000}
+          height={300}
+          priority
+          className="block h-7 w-auto"
+        />
       </Link>
 
       {/* 중앙: 페이지 타이틀 */}

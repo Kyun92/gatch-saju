@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import SessionProvider from "@/components/providers/SessionProvider";
+import Footer from "@/components/layout/Footer";
 import "./globals.css";
 
 const notoSansKR = Noto_Sans_KR({
@@ -63,7 +64,10 @@ export default function RootLayout({
           fontFamily: "var(--font-body)",
         }}
       >
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <div className="flex-1 flex flex-col">{children}</div>
+          <Footer />
+        </SessionProvider>
       </body>
     </html>
   );

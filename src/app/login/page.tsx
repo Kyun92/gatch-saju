@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { signIn } from "next-auth/react";
 import PixelFrame from "@/components/ui/PixelFrame";
 import TriSystemSymbol from "@/components/hub/TriSystemSymbol";
-import Footer from "@/components/layout/Footer";
 
 export default function LoginPage() {
   return (
@@ -19,13 +19,16 @@ export default function LoginPage() {
       >
         {/* Title */}
         <div className="text-center mb-8">
-          <h1
-            className="text-4xl mb-3 animate-px-glow inline-block px-6 py-2 font-[family-name:var(--font-pixel)] text-[#9a7040]"
-            style={{
-              textShadow: "0 0 16px rgba(154,112,64,0.4), 0 0 32px rgba(154,112,64,0.2)",
-            }}
-          >
-            갓챠사주
+          <h1 className="mb-3 animate-px-glow inline-block px-6 py-2 m-0 leading-none">
+            <span className="sr-only">갓챠사주</span>
+            <Image
+              src="/logo-2x.png"
+              alt="갓챠사주"
+              width={1000}
+              height={300}
+              priority
+              className="block h-auto w-[220px] sm:w-[260px] [filter:drop-shadow(0_0_16px_rgba(154,112,64,0.4))_drop-shadow(0_0_32px_rgba(154,112,64,0.2))]"
+            />
           </h1>
           <p className="text-lg mb-4 font-[family-name:var(--font-pixel)] text-[#9a7040]">
             네 운명, 한 판 뽑아봐
@@ -76,7 +79,6 @@ export default function LoginPage() {
           다음 캡슐엔 뭐가 들었을까
         </p>
       </div>
-      <Footer />
     </div>
   );
 }

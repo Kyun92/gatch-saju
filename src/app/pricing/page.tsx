@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
 import CoinSvg from "@/components/ui/CoinSvg";
-import Footer from "@/components/layout/Footer";
 import { COIN_PACKAGES, formatWon } from "@/lib/coins/packages";
 
 export const metadata: Metadata = {
@@ -22,13 +22,17 @@ export default async function PricingPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#f5f0e8]">
+    <div className="flex flex-col flex-1 min-h-0 bg-[#f5f0e8]">
       <header className="sticky top-0 z-50 flex items-center justify-between px-4 bg-white border-b-2 border-[#b8944c] h-12">
-        <Link
-          href="/landing"
-          className="font-[family-name:var(--font-pixel)] text-xs text-[#9a7040] no-underline"
-        >
-          ← 홈
+        <Link href="/landing" aria-label="갓챠사주 홈" className="flex items-center no-underline">
+          <Image
+            src="/logo-2x.png"
+            alt="갓챠사주"
+            width={1000}
+            height={300}
+            priority
+            className="block h-7 w-auto"
+          />
         </Link>
         <span className="font-[family-name:var(--font-pixel)] text-sm text-[#2c2418] absolute left-1/2 -translate-x-1/2">
           요금 안내
@@ -121,8 +125,6 @@ export default async function PricingPage() {
           </p>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

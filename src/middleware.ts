@@ -87,5 +87,7 @@ export default auth(async (req) => {
 });
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|fonts|characters).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|_next|favicon.ico|icon.svg|apple-icon.png|manifest.webmanifest|sitemap.xml|robots.txt|fonts|characters|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|avif|woff|woff2|ttf|otf)).*)",
+  ],
 };

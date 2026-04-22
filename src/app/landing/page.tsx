@@ -1,17 +1,16 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import GachaHero from "@/components/landing/GachaHero";
 import InsertCoinCTA from "@/components/landing/InsertCoinCTA";
 import PixelStarfield from "@/components/landing/PixelStarfield";
-import Footer from "@/components/layout/Footer";
 import { motion } from "framer-motion";
 
 export default function LandingPage() {
   return (
-    <div className="bg-[#f5f0e8]">
     <div
-      className="relative min-h-[100svh] overflow-hidden flex flex-col items-center justify-between px-4 py-6 bg-[#f5f0e8]"
+      className="relative flex-1 min-h-[100svh] overflow-hidden flex flex-col items-center justify-between px-4 py-6 bg-[#f5f0e8]"
       style={{
         backgroundImage:
           "radial-gradient(ellipse at 20% 50%, rgba(46,139,78,0.08) 0%, transparent 55%), " +
@@ -28,14 +27,16 @@ export default function LandingPage() {
         transition={{ duration: 0.6 }}
         className="relative z-10 flex flex-col items-center gap-1 pt-2"
       >
-        <h1
-          className="text-4xl sm:text-5xl animate-px-glow inline-block px-6 py-2 font-[family-name:var(--font-pixel)] text-[#9a7040]"
-          style={{
-            textShadow:
-              "0 0 16px rgba(154,112,64,0.4), 0 0 32px rgba(154,112,64,0.2)",
-          }}
-        >
-          갓챠사주
+        <h1 className="animate-px-glow inline-block px-6 py-2 m-0 leading-none">
+          <span className="sr-only">갓챠사주</span>
+          <Image
+            src="/logo-2x.png"
+            alt="갓챠사주"
+            width={1000}
+            height={300}
+            priority
+            className="block h-auto w-[220px] sm:w-[280px] [filter:drop-shadow(0_0_16px_rgba(154,112,64,0.4))_drop-shadow(0_0_32px_rgba(154,112,64,0.2))]"
+          />
         </h1>
         <p className="font-[family-name:var(--font-pixel)] text-[0.625rem] sm:text-xs tracking-[0.3em] text-[#8a8070]">
           ARCADE FORTUNE CABINET
@@ -85,8 +86,6 @@ export default function LandingPage() {
           요금 안내
         </Link>
       </motion.div>
-    </div>
-    <Footer />
     </div>
   );
 }
