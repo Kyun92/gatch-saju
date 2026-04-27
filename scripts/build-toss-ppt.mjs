@@ -407,7 +407,7 @@ addScreenSlide({
   title: "1. 홈 — 비로그인 진입",
   subtitle: "Landing",
   url: "https://gatch-saju.onato.co.kr/landing",
-  shotName: "05-landing",
+  shotName: "01-landing",
   description: [
     "비로그인 방문자가 처음 보는 화면",
     "서비스 소개 + 카카오 로그인 CTA",
@@ -420,7 +420,7 @@ addScreenSlide({
   const s = pres.addSlide();
   addTitle(s, "2. 요금 안내 — 상품·가격 공개", "Pricing");
 
-  addScreenshotPlaceholder(s, 0.6, 1.9, 2.5, 5.2, "https://gatch-saju.onato.co.kr/pricing", "06-pricing");
+  addScreenshotPlaceholder(s, 0.6, 1.9, 2.5, 5.2, "https://gatch-saju.onato.co.kr/pricing", "03-pricing");
 
   // 우측 URL + 패키지 표
   const descX = 3.5;
@@ -484,7 +484,7 @@ addScreenSlide({
   title: "3. 로그인 (카카오)",
   subtitle: "Social Login",
   url: "https://gatch-saju.onato.co.kr/login",
-  shotName: "07-login",
+  shotName: "02-login",
   description: [
     "카카오 계정으로 소셜 로그인",
     "네이버·구글은 현재 \"준비 중\" 상태 (비활성)",
@@ -498,7 +498,7 @@ addScreenSlide({
   title: "4. 허브 — 로그인 후 메인",
   subtitle: "Hub · Balance Badge",
   url: "https://gatch-saju.onato.co.kr/",
-  shotName: "08-hub",
+  shotName: "09-hub",
   description: [
     "상단 헤더에 현재 코인 잔액 배지 (✮ N) 항시 노출",
     "캐릭터 슬롯 리스트 — 본인/가족/지인 구분",
@@ -512,7 +512,7 @@ addScreenSlide({
   title: "5. 지갑 — 패키지 선택 (실결제)",
   subtitle: "Wallet · Purchase",
   url: "https://gatch-saju.onato.co.kr/coins",
-  shotName: "09-coins",
+  shotName: "12-coins",
   description: [
     "4개 코인 패키지 카드 (1·3·5·10)",
     "카드 클릭 즉시 토스페이먼츠 결제창 호출",
@@ -541,7 +541,7 @@ addScreenSlide({
   title: "7. 충전 완료",
   subtitle: "Charge Complete",
   url: "https://gatch-saju.onato.co.kr/coins/success",
-  shotName: "11-coins-success",
+  shotName: "21-coins-success",
   description: [
     "Toss 결제 승인 후 /api/payments/confirm 호출",
     "users.coins 증가 + coin_transactions 이력 기록",
@@ -556,7 +556,7 @@ addScreenSlide({
   title: "8. 결제 실패 화면",
   subtitle: "Payment Failure",
   url: "https://gatch-saju.onato.co.kr/coins/fail",
-  shotName: "12-coins-fail",
+  shotName: "13-coins-fail",
   description: [
     "카드사 거절 · 결제 중단 · 시스템 오류 등 실패 케이스",
     "오류 코드 + 친절한 안내 문구 표시",
@@ -570,7 +570,7 @@ addScreenSlide({
   title: "9. 코인 소비 → 감정 결과",
   subtitle: "Reading Result",
   url: "https://gatch-saju.onato.co.kr/reading/{id}",
-  shotName: "13-reading",
+  shotName: "19-reading-detail",
   description: [
     "충전된 코인으로 감정을 뽑으면 트랜잭션 내 1코인 차감",
     "백그라운드에서 AI 감정 HTML 생성 (종합감정/년운/궁합 등)",
@@ -653,7 +653,7 @@ addScreenSlide({
   title: "환불 요청 경로",
   subtitle: "Refund Flow",
   url: "https://gatch-saju.onato.co.kr/mypage",
-  shotName: "15-mypage",
+  shotName: "11-mypage",
   description: [
     "마이페이지 → 지갑 섹션 내 \"환불 요청\" 링크",
     "클릭 시 프리필된 이메일 양식 자동 작성 (가입 이메일·이름 포함)",
