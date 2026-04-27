@@ -22,7 +22,7 @@ export default async function PricingPage() {
   }
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 bg-[#f5f0e8]">
+    <div className="flex flex-col flex-1 bg-[#f5f0e8]">
       <header className="sticky top-0 z-50 flex items-center justify-between px-4 bg-white border-b-2 border-[#b8944c] h-12">
         <Link href="/landing" aria-label="갓챠사주 홈" className="flex items-center no-underline">
           <Image

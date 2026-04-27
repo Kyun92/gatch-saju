@@ -10,35 +10,46 @@ const LEGAL_LINKS: [string, string][] = [
 
 export default function Footer() {
   return (
-    <footer className="py-6 px-4 text-center border-t border-[#e8e0d0] bg-[#f5f0e8]">
-      <nav className="flex flex-wrap justify-center gap-x-3 gap-y-1 mb-3">
+    <footer className="py-8 px-4 text-center border-t-2 border-[#b8944c] bg-[#ebe3d1]">
+      <nav className="flex flex-wrap justify-center gap-x-4 gap-y-2 mb-5">
         {LEGAL_LINKS.map(([href, label]) => (
           <Link
             key={href}
             href={href}
-            className="font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#9a7040] hover:text-[#4a3e2c] no-underline"
+            className="font-[family-name:var(--font-pixel)] text-xs text-[#4a3e2c] hover:text-[#9a7040] no-underline"
           >
             {label}
           </Link>
         ))}
       </nav>
-      <p className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8a890] mb-1">
-        {BUSINESS_INFO.tradeName} | 대표 {BUSINESS_INFO.representative} | 사업자등록번호{" "}
-        {BUSINESS_INFO.businessRegistrationNumber}
-      </p>
-      <p className="text-[0.5rem] text-[#c8c0b0] mb-1">
-        {BUSINESS_INFO.address}
-      </p>
-      <p className="text-[0.5rem] text-[#c8c0b0]">
-        고객센터{" "}
-        <a href={CUSTOMER_SUPPORT.phoneHref} className="text-[#c8c0b0] no-underline">
-          {CUSTOMER_SUPPORT.phone}
-        </a>
-        {" · "}
-        <a href={CUSTOMER_SUPPORT.emailHref} className="text-[#c8c0b0] no-underline">
-          {CUSTOMER_SUPPORT.email}
-        </a>
-      </p>
+      <div className="font-[family-name:var(--font-body)] text-[#4a3e2c] max-w-md mx-auto space-y-1.5">
+        <p className="text-xs leading-relaxed">
+          <span className="font-medium">{BUSINESS_INFO.tradeName}</span>
+          <span className="text-[#8a7858]"> · </span>
+          대표 {BUSINESS_INFO.representative}
+          <br />
+          사업자등록번호 {BUSINESS_INFO.businessRegistrationNumber}
+        </p>
+        <p className="text-[0.6875rem] text-[#6a5e4c] leading-relaxed">
+          {BUSINESS_INFO.address}
+        </p>
+        <p className="text-[0.6875rem] text-[#6a5e4c] leading-relaxed pt-1">
+          고객센터{" "}
+          <a
+            href={CUSTOMER_SUPPORT.phoneHref}
+            className="text-[#4a3e2c] hover:text-[#9a7040] underline underline-offset-2"
+          >
+            {CUSTOMER_SUPPORT.phone}
+          </a>
+          <span className="text-[#8a7858]"> · </span>
+          <a
+            href={CUSTOMER_SUPPORT.emailHref}
+            className="text-[#4a3e2c] hover:text-[#9a7040] underline underline-offset-2"
+          >
+            {CUSTOMER_SUPPORT.email}
+          </a>
+        </p>
+      </div>
     </footer>
   );
 }

@@ -57,7 +57,7 @@ export default function RootLayout({
       style={{ colorScheme: "light" }}
     >
       <body
-        className="h-screen flex flex-col antialiased overflow-hidden"
+        className="min-h-screen flex flex-col antialiased"
         style={{
           backgroundColor: "#f5f0e8",
           color: "#2c2418",
@@ -65,11 +65,9 @@ export default function RootLayout({
         }}
       >
         <SessionProvider>
-          {/* 내부 스크롤 컨테이너 — SubPageHeader의 sticky top-0은
-              이 컨테이너 기준으로 고정된다 */}
-          <div className="flex-1 min-h-0 overflow-y-auto flex flex-col">
-            {children}
-          </div>
+          {/* flex-1로 짧은 페이지에서도 Footer가 viewport 바닥에 붙도록.
+              스크롤은 window가 받는다 (SubPageHeader sticky top-0 → window 기준). */}
+          <div className="flex-1 flex flex-col">{children}</div>
           <Footer />
         </SessionProvider>
       </body>
