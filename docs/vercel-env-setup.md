@@ -100,3 +100,104 @@ vercel env add NEXTAUTH_SECRET production
 - `/coins` 패키지 클릭 → Toss 결제창 → 테스트 카드 결제 → 잔액 증가 확인
 
 하나라도 실패하면 **Vercel Logs**에서 관련 env 변수 이름이 에러 메시지에 나오는지 확인.
+
+---
+
+## 7. 코드 점검 결과 (2026-04-28)
+
+### 환경변수 매트릭스 (14종)
+
+| 변수 | 노출 범위 | 등록 필수 | 사용처 |
+|------|---------|---------|------|
+| `NEXT_PUBLIC_SUPABASE_URL` | 클라이언트 | ✅ | `lib/supabase/server.ts` |
+| `NEXT_PUBLIC_SITE_URL` | 클라이언트 | ✅ | `app/sitemap.ts` |
+| `NEXT_PUBLIC_TOSS_CLIENT_KEY` | 클라이언트 | ✅ | `coins/CoinsClient.tsx` |
+| `SUPABASE_SERVICE_ROLE_KEY` | **서버 전용** | ✅ | `lib/supabase/server.ts` |
+| `NEXTAUTH_SECRET` | **서버 전용** | ✅ | NextAuth 자동 |
+| `NEXTAUTH_URL` | **서버 전용** | ✅ | NextAuth 자동 |
+| `KAKAO_CLIENT_ID` | **서버 전용** | ✅ | `lib/auth.ts` |
+| `KAKAO_CLIENT_SECRET` | **서버 전용** | ✅ | `lib/auth.ts` |
+| `NAVER_CLIENT_ID` | **서버 전용** | ⚠️ | `lib/auth.ts` (UI 비활성이지만 코드 import — non-null `!` 사용. 더미 값이라도 등록 권장) |
+| `NAVER_CLIENT_SECRET` | **서버 전용** | ⚠️ | 동일 |
+| `GOOGLE_CLIENT_ID` | **서버 전용** | ⚠️ | 동일 |
+| `GOOGLE_CLIENT_SECRET` | **서버 전용** | ⚠️ | 동일 |
+| `GEMINI_API_KEY` | **서버 전용** | ✅ | `lib/ai/gemini.ts`, `stat-scorer.ts`, `free-stat-scorer.ts` |
+| `TOSS_SECRET_KEY` | **서버 전용** | ✅ | `lib/payments/toss.ts` |
+| `USE_MOCK_READINGS` | **dev only** | ❌ | `lib/reading/generate-reading.ts` (production 강제 false 가드) |
+| `NODE_ENV` | (자동) | — | Vercel 자동 |
+
+### 안전 점검 결과
+
+- ✅ `SUPABASE_SERVICE_ROLE_KEY` 사용처: `lib/supabase/server.ts` 1곳 (서버 사이드만, `"use client"` 컴포넌트에서 import 0)
+- ✅ `USE_MOCK_READINGS` production 가드: `process.env.NODE_ENV !== "production" && ...` 이중 방어
+- ✅ `/dev`, `/api/dev` production 리다이렉트 (`middleware.ts:24`)
+- ✅ TypeScript strict 모드 빌드 통과
+- ✅ Production build (`next build`) PASS — 39 페이지 정상
+
+---
+
+## 8. 배포 단계별 실행 체크리스트
+
+### Step 1. 사전 검증 (로컬)
+- [x] `npx tsc --noEmit` PASS
+- [x] `npm run build` PASS
+- [ ] `.env.local` 값들이 모두 채워져 있는지 (로컬 테스트 통과 확인)
+
+### Step 2. Vercel 프로젝트 Import
+- [ ] https://vercel.com/dashboard → Add New Project → `Kyun92/gatch-saju`
+- [ ] Framework: Next.js 자동 감지 확인
+- [ ] Build Command: `next build` (기본값)
+- [ ] Output Directory: `.next` (기본값)
+
+### Step 3. 환경변수 등록 (Step 2 진행 중)
+- [ ] §7 매트릭스 14개 모두 등록 (NAVER/GOOGLE은 더미 값이라도)
+- [ ] `USE_MOCK_READINGS`는 **절대 등록 금지**
+- [ ] 환경 선택: Production / Preview / Development 모두 체크
+
+### Step 4. 첫 배포
+- [ ] Deploy 클릭 → 빌드 로그 확인
+- [ ] Functions 로그에 env 누락 에러 없는지 확인
+- [ ] 임시 도메인(`*.vercel.app`)에서 `/landing` 열림 확인
+
+### Step 5. 커스텀 도메인 연결
+- [ ] Settings → Domains → `gatch-saju.onato.co.kr` 추가
+- [ ] DNS 레코드(Vercel이 안내) 적용
+- [ ] SSL 자동 발급 확인
+- [ ] `NEXTAUTH_URL` + `NEXT_PUBLIC_SITE_URL` 갱신 → Redeploy
+
+### Step 6. 카카오 OAuth Redirect URI 등록
+- [ ] 카카오 콘솔 → 카카오 로그인 → Redirect URI 추가:
+  - `https://gatch-saju.onato.co.kr/api/auth/callback/kakao`
+  - `https://{vercel-default-domain}/api/auth/callback/kakao` (백업)
+
+### Step 7. Toss 결제 환경 점검
+- [ ] Toss 콘솔에서 `successUrl` / `failUrl` 도메인 화이트리스트 확인
+  - `successUrl`: `https://gatch-saju.onato.co.kr/coins/success`
+  - `failUrl`: `https://gatch-saju.onato.co.kr/coins/fail`
+- [ ] 실 라이브 키 발급 전까지는 테스트 키 사용
+
+### Step 8. Smoke Test (프로덕션 도메인)
+- [ ] `/landing` — 비로그인 마케팅 페이지 정상
+- [ ] `/login` → 카카오 로그인 → 콜백 성공 → `/onboarding` 진입
+- [ ] 캐릭터 생성 (본인) → 허브 진입 → 본인 슬롯에 골드 라이닝 + "나" 배지 보이는지
+- [ ] `/mypage` → OAuth 이미지 자리에 본인 캐릭터 아바타가 표시되는지
+- [ ] `/coins` → 패키지 클릭 → Toss 창 → 테스트 카드 결제 → 잔액 증가 확인
+- [ ] `/reading/preview` → 종합감정 캡슐 뽑기 → generating 페이지 → 결과 정상
+- [ ] `/daily` → 일일운세 → 5섹션 분리 + 오늘의 점수 라벨 정상
+
+### Step 9. 사후 점검
+- [ ] Vercel Analytics 활성화 (선택)
+- [ ] Sentry 또는 로그 모니터링 도구 연결 (선택)
+- [ ] `/dev`, `/api/dev` 접근 시 `/`로 리다이렉트 확인 (보안)
+
+---
+
+## 9. 자주 발생하는 배포 에러
+
+| 증상 | 원인 | 조치 |
+|---|---|---|
+| `MissingSecretError` | `NEXTAUTH_SECRET` 미등록 | env에 추가 후 Redeploy |
+| `Failed to fetch dynamic import` (NAVER/GOOGLE) | NAVER/GOOGLE env 누락 | 더미 값이라도 등록 (UI에서 비활성 상태라도 코드 import 시 필요) |
+| 카카오 로그인 후 콜백 실패 | Redirect URI 미등록 | 카카오 콘솔에서 프로덕션 URL 추가 |
+| Toss 결제창 미열림 | `NEXT_PUBLIC_TOSS_CLIENT_KEY` 누락/오타 | env 재확인 + Redeploy |
+| 결제 후 mock 데이터 노출 | `USE_MOCK_READINGS=true` 잘못 등록 | env 삭제 + Redeploy (있으면 절대 금물) |
