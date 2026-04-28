@@ -3,6 +3,14 @@ import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getCharacterPreset } from "@/lib/character/get-preset";
 import { getCharacterLevel } from "@/lib/character/get-level";
+import {
+  formatDayMasterDisplay,
+  getCharacterElement,
+} from "@/lib/copy/day-master";
+import {
+  getHeaderTitle,
+  getPossessive,
+} from "@/lib/copy/character-vocative";
 import CharacterHero from "@/components/character/CharacterHero";
 import ProfileCard from "@/components/reading/ProfileCard";
 import StatGrid from "@/components/reading/StatGrid";
@@ -65,7 +73,7 @@ export default async function ReadingDetailPage({
   // Verify ownership via character
   const { data: character } = await supabase
     .from("characters")
-    .select("id, user_id, name, birth_date, birth_time, gender, mbti")
+    .select("id, user_id, name, birth_date, birth_time, gender, mbti, is_self")
     .eq("id", reading.character_id)
     .single();
 
@@ -95,9 +103,9 @@ export default async function ReadingDetailPage({
   const chartsData = reading.charts_data as {
     saju?: { dayMaster?: string };
   } | null;
-  const dayMaster = chartsData?.saju?.dayMaster ?? "壬";
+  const dayMaster = chartsData?.saju?.dayMaster ?? "";
   const gender = (character.gender as "male" | "female") ?? "male";
-  const preset = getCharacterPreset(dayMaster, gender);
+  const preset = dayMaster ? getCharacterPreset(dayMaster, gender) : null;
   const level = character.birth_date
     ? getCharacterLevel(character.birth_date)
     : 1;
@@ -112,17 +120,27 @@ export default async function ReadingDetailPage({
     title: "운명의 여행자",
   }) as StatScores;
 
-  const avatarUrl = `/characters/${preset?.element ?? "water"}-${gender}.png`;
-  const dayMasterDisplay = `${dayMaster}${preset?.element === "wood" ? "木" : preset?.element === "fire" ? "火" : preset?.element === "earth" ? "土" : preset?.element === "metal" ? "金" : "水"}`;
+  const element = preset?.element ?? getCharacterElement(dayMaster, "water");
+  const avatarUrl = `/characters/${element}-${gender}.png`;
+  // 비유체 메인 + 한자 괄호 보조 (CLAUDE.md "한자 괄호 보조만" 규칙)
+  const dayMasterDisplay =
+    formatDayMasterDisplay(dayMaster, { showHanja: true }) || "운명의 여행자";
   const htmlContent = reading.content ?? "";
   const keywords = extractKeywords(htmlContent);
   const readingType = (reading.type as string) ?? "comprehensive";
   const readingYear = (reading.year as number) ?? new Date().getFullYear();
 
+  // 호칭 분기 — 외곽 헤더만 본인/타인 분기. LLM HTML 본문(reading.content)은 변경하지 않는다.
+  const characterName = character.name ?? "모험자";
+  const isSelf = character.is_self ?? false;
+  const vocative = { name: characterName, is_self: isSelf };
+  const possessive = getPossessive(vocative);
+
   // Compatibility reading layout
   if (readingType === "compatibility") {
     // Fetch second character if available
     let character2Name = "상대방";
+    let character2IsSelf = false;
     let character2Element: string = "water";
     let character2Gender: "male" | "female" = "male";
     let character2Level = 1;
@@ -130,12 +148,13 @@ export default async function ReadingDetailPage({
     if (reading.character_id_2) {
       const { data: char2 } = await supabase
         .from("characters")
-        .select("id, name, birth_date, gender")
+        .select("id, name, birth_date, gender, is_self")
         .eq("id", reading.character_id_2)
         .single();
 
       if (char2) {
         character2Name = char2.name ?? "상대방";
+        character2IsSelf = char2.is_self ?? false;
         character2Gender = (char2.gender as "male" | "female") ?? "male";
         character2Level = char2.birth_date
           ? getCharacterLevel(char2.birth_date)
@@ -152,15 +171,17 @@ export default async function ReadingDetailPage({
         if (chart2) {
           const chart2Data = chart2.data as { dayMaster?: string };
           const dm2 = chart2Data?.dayMaster ?? "";
-          const stemMap: Record<string, string> = {
-            "甲": "wood", "乙": "wood", "丙": "fire", "丁": "fire",
-            "戊": "earth", "己": "earth", "庚": "metal", "辛": "metal",
-            "壬": "water", "癸": "water",
-          };
-          character2Element = stemMap[dm2.charAt(0)] ?? "water";
+          character2Element = getCharacterElement(dm2, "water");
         }
       }
     }
+
+    // 궁합 호칭 — 본인+타인 vs 타인+타인 분기
+    const compatLabel = isSelf
+      ? `당신 & ${character2Name}님`
+      : character2IsSelf
+        ? `당신 & ${characterName}님`
+        : `${characterName}님 & ${character2Name}님`;
 
     return (
       <div className="w-full mx-auto px-4 py-6 max-w-[768px] min-h-screen">
@@ -170,7 +191,7 @@ export default async function ReadingDetailPage({
             궁합 감정서
           </h1>
           <p className="text-sm mt-2 font-[family-name:var(--font-pixel)] text-[#8a8070]">
-            {character.name ?? "모험자"} & {character2Name}
+            {compatLabel}
           </p>
         </div>
 
@@ -179,7 +200,7 @@ export default async function ReadingDetailPage({
           <div className="flex flex-col items-center gap-2">
             <div className="w-16 h-16 border-2 border-[#b8944c] flex items-center justify-center bg-[#faf7f2]">
               <img
-                src={`/characters/${preset?.element ?? "water"}-${gender}.png`}
+                src={`/characters/${element}-${gender}.png`}
                 alt={character.name ?? ""}
                 className="w-14 h-14 object-contain"
                 style={{ imageRendering: "pixelated" }}
@@ -238,7 +259,7 @@ export default async function ReadingDetailPage({
             {readingYear}년 운세 감정서
           </h1>
           <p className="text-sm mt-2 font-[family-name:var(--font-pixel)] text-[#8a8070]">
-            {character.name ?? "모험자"}의 년운 분석
+            {getHeaderTitle(vocative, "년운 분석")}
           </p>
         </div>
 
@@ -249,7 +270,7 @@ export default async function ReadingDetailPage({
           level={level}
           classTitle={preset?.className ?? "운명의 여행자"}
           characterTitle={reading.character_title ?? statScores.title}
-          element={preset?.element ?? "water"}
+          element={element}
           mbti={character.mbti}
         />
 
@@ -302,7 +323,7 @@ export default async function ReadingDetailPage({
             {CATEGORY_TITLES[readingType] ?? "운세 감정서"}
           </h1>
           <p className="text-sm mt-2 font-[family-name:var(--font-pixel)] text-[#8a8070]">
-            {character.name ?? "모험자"}의 특화 분석
+            {`${possessive} 특화 분석`}
           </p>
         </div>
 
@@ -313,7 +334,7 @@ export default async function ReadingDetailPage({
           level={level}
           classTitle={preset?.className ?? "운명의 여행자"}
           characterTitle={reading.character_title ?? statScores.title}
-          element={preset?.element ?? "water"}
+          element={element}
           mbti={character.mbti}
         />
 
@@ -364,7 +385,7 @@ export default async function ReadingDetailPage({
         level={level}
         classTitle={preset?.className ?? "운명의 여행자"}
         characterTitle={reading.character_title ?? statScores.title}
-        element={preset?.element ?? "water"}
+        element={element}
         mbti={character.mbti}
         keywords={keywords}
       />

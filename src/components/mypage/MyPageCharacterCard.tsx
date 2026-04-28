@@ -14,7 +14,8 @@ interface MyPageCharacterCardProps {
   element: ElementType;
   level: number;
   gender: string;
-  dayMaster: string;
+  /** 비유체 라벨 (예: "깊은 바다"). 부모에서 `formatDayMasterDisplay`로 변환하여 전달. */
+  dayMasterLabel: string;
   title: string | null;
 }
 
@@ -31,7 +32,7 @@ export default function MyPageCharacterCard({
   element,
   level,
   gender,
-  dayMaster,
+  dayMasterLabel,
   title,
 }: MyPageCharacterCardProps) {
   const avatarSrc = `/characters/${element}-${gender}.png`;
@@ -69,9 +70,9 @@ export default function MyPageCharacterCard({
               </div>
               <div className="flex items-center gap-1.5">
                 <ElementTag element={element} size="sm" />
-                {dayMaster && (
+                {dayMasterLabel && (
                   <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#8a8070]">
-                    {dayMaster}
+                    {dayMasterLabel}
                   </span>
                 )}
               </div>
@@ -112,9 +113,9 @@ export default function MyPageCharacterCard({
           </div>
           <div className="flex items-center gap-1.5">
             <ElementTag element={element} size="sm" />
-            {dayMaster && (
+            {dayMasterLabel && (
               <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#8a8070]">
-                {dayMaster}
+                {dayMasterLabel}
               </span>
             )}
             {character.mbti && (

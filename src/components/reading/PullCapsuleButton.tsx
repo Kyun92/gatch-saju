@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import CoinSvg from "@/components/ui/CoinSvg";
+import {
+  COIN_PRICE_DISPLAY,
+  PRIMARY_CTA_PULL,
+  formatCoinCount,
+} from "@/lib/copy/gacha-terms";
 
 type ReadingType =
   | "comprehensive"
@@ -28,7 +33,7 @@ export default function PullCapsuleButton({
   type = "comprehensive",
   characterId2,
   targetYear,
-  label = "운명 캡슐 뽑기",
+  label = PRIMARY_CTA_PULL,
   className = "",
 }: PullCapsuleButtonProps) {
   const router = useRouter();
@@ -92,13 +97,13 @@ export default function PullCapsuleButton({
         onClick={pull}
         disabled={loading}
         className="gacha-coin-btn w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-        aria-label={`${label} 코인 1개 사용`}
+        aria-label={`${label} ${COIN_PRICE_DISPLAY} (${formatCoinCount(1)})`}
       >
         <CoinSvg
           size={24}
           className={loading ? undefined : "animate-spin-coin"}
         />
-        <span>{loading ? "뽑는 중..." : `${label} — 코인 1개`}</span>
+        <span>{loading ? "뽑는 중..." : `${label} — ${COIN_PRICE_DISPLAY}`}</span>
       </button>
     </div>
   );

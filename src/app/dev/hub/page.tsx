@@ -27,7 +27,7 @@ export default function DevHubPage() {
           }}
           element="water"
           level={34}
-          dayMaster="壬"
+          dayMasterLabel="깊은 바다"
           statScores={{
             health_score: 72,
             wealth_score: 58,
@@ -50,7 +50,7 @@ export default function DevHubPage() {
           }}
           element="fire"
           level={30}
-          dayMaster="丁"
+          dayMasterLabel="촛불"
           statScores={null}
           characterTitle={null}
         />
@@ -66,7 +66,7 @@ export default function DevHubPage() {
           }}
           element="earth"
           level={28}
-          dayMaster="戊"
+          dayMasterLabel="거대한 산"
           statScores={{
             health_score: 88,
             wealth_score: 74,
@@ -89,7 +89,7 @@ export default function DevHubPage() {
           }}
           element="wood"
           level={26}
-          dayMaster="甲"
+          dayMasterLabel="아름드리 나무"
           statScores={null}
           characterTitle={null}
         />

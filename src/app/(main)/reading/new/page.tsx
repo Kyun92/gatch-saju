@@ -6,6 +6,12 @@ import PixelFrame from "@/components/ui/PixelFrame";
 import GachaCapsuleSvg from "@/components/ui/GachaCapsuleSvg";
 import CoinSvg from "@/components/ui/CoinSvg";
 import { motion } from "framer-motion";
+import {
+  COIN_PRICE_DISPLAY,
+  PRIMARY_CTA_PULL,
+  CAPSULE_LABEL,
+  formatCoinCount,
+} from "@/lib/copy/gacha-terms";
 
 export default function NewReadingPage() {
   return (
@@ -206,12 +212,12 @@ function NewReadingContent() {
       >
         {/* Section 1: 무료 제공 영역 (결제 전 빌드업: 캡슐 프리뷰) */}
         <div className="flex flex-col items-center text-center">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-lg font-[family-name:var(--font-pixel)] text-[#9a7040] mb-6"
           >
-            당신의 운명 캡슐이 도착했습니다!
+            {CAPSULE_LABEL}이 도착했습니다!
           </motion.h2>
 
           <motion.div 
@@ -242,7 +248,7 @@ function NewReadingContent() {
             {/* 모자이크/블러 처리된 텍스트 이미지 */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#f5f0e8] z-10" />
             <div className="text-left font-[family-name:var(--font-body)] text-xs text-[#6a5e4c] blur-sm opacity-50 select-none">
-              <p className="mb-2">당신의 사주 원국에서 돋보이는 가장 강한 기운은...</p>
+              <p className="mb-2">사주 원국에서 돋보이는 가장 강한 기운은...</p>
               <p className="mb-2">MBTI의 특성과 결합되었을 때 이러한 성향은 더욱 구체적으로 발현됩니다. 특히 대운의 흐름 상...</p>
               <p>자미두수 명궁에 위치한 주성의 영향을 받아...</p>
               <p className="mb-2">올해 상반기에는 주의해야 할 점이 몇 가지 존재합니다. 하지만 하반기부터는 재성과 관성이 만나면서...</p>
@@ -261,10 +267,10 @@ function NewReadingContent() {
             <div className="flex flex-col items-center text-center gap-4">
               <div>
                 <p className="text-[#c8a020] font-[family-name:var(--font-pixel)] text-base mb-1">
-                  당신의 갓챠 캡슐을 완전히 열어보시겠어요?
+                  {CAPSULE_LABEL}을 완전히 열어보시겠어요?
                 </p>
                 <p className="text-[#8a8070] text-xs font-[family-name:var(--font-body)]">
-                  4가지 체계로 분석한 내 운명의 SSR 리포트
+                  4가지 체계로 분석한 운명의 SSR 리포트
                 </p>
               </div>
 
@@ -294,14 +300,16 @@ function NewReadingContent() {
                   onClick={handlePull}
                   disabled={loading}
                   className="gacha-coin-btn w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-label="운명 캡슐 뽑기 코인 1개 사용"
+                  aria-label={`${PRIMARY_CTA_PULL} ${COIN_PRICE_DISPLAY} (${formatCoinCount(1)})`}
                 >
                   <CoinSvg
                     size={24}
                     className={loading ? undefined : "animate-spin-coin"}
                   />
                   <span>
-                    {loading ? "뽑는 중..." : "운명 캡슐 뽑기 — 코인 1개"}
+                    {loading
+                      ? "뽑는 중..."
+                      : `${PRIMARY_CTA_PULL} — ${COIN_PRICE_DISPLAY}`}
                   </span>
                 </button>
                 <p className="font-[family-name:var(--font-body)] text-[0.625rem] text-[#8a8070]">

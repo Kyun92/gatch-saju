@@ -1361,6 +1361,52 @@ a:hover .skill-node-coin {
 .mypage-status-badge[data-state="locked"]   { color: #c8a020; border-color: #c8a020; }
 .mypage-status-badge[data-state="unlocked"] { color: #2e8b4e; border-color: #2e8b4e; }
 
+/* 허브 본인 슬롯 — 골드 라이닝 + "나" 배지 (1메인 + N타인 정체성 시각 위계) */
+.character-slot[data-self="true"] {
+  --slot-border: #f4d77b;
+  --slot-shadow: 4px 4px 0 rgba(0, 0, 0, 0.18),
+                 inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+                 inset 0 0 0 3px rgba(244, 215, 123, 0.55);
+}
+
+.self-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  background-color: rgba(244, 215, 123, 0.95);
+  color: #5a4528;
+  border: 1px solid #b8944c;
+  z-index: 2;
+}
+
+/* 마이페이지 본인 통합 카드 — 본인 캐릭터 아바타 + 부가 정보(이메일·가입일) */
+.mypage-self-meta {
+  font-family: var(--font-pixel);
+  font-size: 0.5625rem;
+  color: #b8a890;
+  letter-spacing: 0.04em;
+}
+
+.mypage-self-email {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  color: #8a8070;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 마이페이지 액션 버튼 — 클릭 영역 ≥ 44px (모바일 P1) */
+.gacha-action-btn {
+  min-height: 44px;
+}
+
 /* ---------- Legal documents ---------- */
 .legal-doc {
   color: #2c2418;
@@ -1466,6 +1512,209 @@ a:hover .skill-node-coin {
 }
 
 } /* end @layer components — DAILY CALENDAR */
+
+/* ============================================================
+   PAYMENT TRUST UX — generating / fail / preview / skill-tree
+   (S3~S6 마이그레이션: 인라인 style 제거 + 상태 시각 차별화)
+   ============================================================ */
+
+/* ---- LoadingProgress (S3) ---- */
+.loading-progress-bar {
+  background: linear-gradient(180deg, #fce474 0%, #e8a825 50%, #b57b12 100%);
+}
+
+.loading-step[data-state="done"]    { color: #b8883c; }
+.loading-step[data-state="active"]  { color: #2c2418; }
+.loading-step[data-state="pending"] { color: #b8b0a0; }
+
+.loading-step-marker {
+  color: #ffffff;
+}
+.loading-step-marker[data-state="done"] {
+  border-color: #9a7040;
+  background-color: #9a7040;
+}
+.loading-step-marker[data-state="active"] {
+  border-color: #d04040;
+  background-color: #fff4ed;
+}
+.loading-step-marker[data-state="pending"] {
+  border-color: #d4cfc8;
+  background-color: #faf7f2;
+}
+.loading-step-dot {
+  background-color: #d04040;
+}
+
+/* ---- /coins/fail details toggle (S4) ---- */
+.payment-error-details summary::-webkit-details-marker {
+  display: none;
+}
+.payment-error-details[open] summary {
+  margin-bottom: 0.25rem;
+}
+
+/* ---- /reading/preview lock (S5) ---- */
+.preview-locked-clip {
+  max-height: 280px;
+}
+
+.preview-locked-blur {
+  filter: blur(5px);
+  user-select: none;
+}
+
+.preview-locked-line {
+  border-radius: 2px;
+}
+
+.preview-locked-overlay {
+  background: linear-gradient(
+    180deg,
+    rgba(245, 240, 232, 0) 0%,
+    rgba(245, 240, 232, 0.2) 30%,
+    rgba(245, 240, 232, 0.85) 65%,
+    rgba(245, 240, 232, 1) 100%
+  );
+}
+
+.preview-cta-stack {
+  /* CTA 강조용 — 잠금 그라디언트 위로 떠올라 위계가 분명해진다 */
+  position: relative;
+}
+
+.preview-lock-icon {
+  filter: drop-shadow(2px 2px 0 rgba(154, 112, 64, 0.25));
+}
+
+/* ---- CharacterSlot 잠금 골드 CTA (S6) ---- */
+.character-slot-btn-gold {
+  color: #2c2418;
+  background: linear-gradient(180deg, #fce474 0%, #e8a825 60%, #c8862e 100%);
+  border: 2px solid #9a7040;
+  border-bottom-width: 4px;
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.5),
+    inset -1px -1px 0 rgba(154, 112, 64, 0.4);
+  font-weight: bold;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition:
+    transform 80ms ease,
+    box-shadow 120ms ease;
+}
+
+.character-slot-btn-gold:hover {
+  background: linear-gradient(180deg, #fff0a0 0%, #f0b840 60%, #d89638 100%);
+}
+
+.character-slot-btn-gold:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.character-slot-btn-icon {
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+
+.character-slot-btn-gold .character-slot-btn-price {
+  background-color: rgba(154, 112, 64, 0.15);
+  border: 1px solid rgba(154, 112, 64, 0.5);
+  color: #5a4528;
+}
+
+/* ---- SkillTree 상태별 시각 차별화 (S6) ---- */
+.skill-tree-header-line {
+  background: linear-gradient(90deg, #b8944c 0%, transparent 100%);
+}
+
+.skill-tree-connector[data-state="active"]   { background-color: #b8944c; }
+.skill-tree-connector[data-state="inactive"] { background-color: #d4cfc8; }
+
+.skill-node-root { padding: 14px 16px; }
+.skill-node-leaf { padding: 10px 12px; }
+
+/* 상태별 베이스 — bg/border/shadow/cursor */
+.skill-node[data-state="purchased"] {
+  background-color: rgba(200, 160, 32, 0.12);
+  border: 2px solid #9a7040;
+  border-bottom-width: 4px;
+  box-shadow: 3px 3px 0 rgba(154, 112, 64, 0.15);
+  cursor: pointer;
+}
+
+.skill-node[data-state="available"] {
+  background-color: #ffffff;
+  border: 2px solid #b8944c;
+  border-bottom-width: 4px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+}
+
+.skill-node[data-state="locked"] {
+  background-color: #f5f2ec;
+  border: 2px solid #d4cfc8;
+  opacity: 0.65;
+  cursor: default;
+}
+
+.skill-node[data-state="coming-soon"] {
+  background-color: #f5f2ec;
+  border: 2px solid #d4cfc8;
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* 라벨/설명 색상 */
+.skill-node[data-state="purchased"] .skill-node-label,
+.skill-node[data-state="purchased"] .skill-node-desc { color: #9a7040; }
+
+.skill-node[data-state="available"] .skill-node-label { color: #2c2418; }
+.skill-node[data-state="available"] .skill-node-desc  { color: #8a8070; }
+
+.skill-node[data-state="locked"] .skill-node-label,
+.skill-node[data-state="coming-soon"] .skill-node-label { color: #b8a890; }
+.skill-node[data-state="locked"] .skill-node-desc,
+.skill-node[data-state="coming-soon"] .skill-node-desc  { color: #c8c0b0; }
+
+/* 아이콘 크기 + 그레이스케일 */
+.skill-node-icon-root { font-size: 1.5rem; }
+.skill-node-icon-leaf { font-size: 1.125rem; }
+.skill-node[data-state="locked"] .skill-node-icon,
+.skill-node[data-state="coming-soon"] .skill-node-icon {
+  opacity: 0.5;
+  filter: grayscale(80%);
+}
+
+.skill-node-lock-icon {
+  image-rendering: pixelated;
+}
+
+/* 가용 노드 가격 뱃지 — 검정 아케이드 톤 (기존 인라인을 클래스화) */
+.skill-node-price-badge {
+  background-color: #2b2b36;
+  border: 2px solid #111;
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.18),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.5),
+    0 2px 0 #0a0a0f;
+}
+
+/* ENTER 노드 펄스 (CLEAR/locked과 시각 차별화) */
+@keyframes skill-node-pulse {
+  0%, 100% {
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.06);
+  }
+  50% {
+    box-shadow:
+      3px 3px 0 rgba(0, 0, 0, 0.06),
+      0 0 0 2px rgba(184, 148, 76, 0.35);
+  }
+}
+
+.animate-skill-node-pulse {
+  animation: skill-node-pulse 2.4s ease-in-out infinite;
+}
 
 /* ============================================================
    PRINT STYLES

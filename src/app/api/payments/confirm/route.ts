@@ -113,9 +113,13 @@ export async function POST(request: NextRequest) {
       quantity: pkg.quantity,
     });
   } catch (e) {
-    console.error("Payment confirm error:", e);
-    const message =
-      e instanceof Error ? e.message : "결제 확인 중 오류가 발생했습니다";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[payments/confirm] error:", e);
+    return NextResponse.json(
+      {
+        error: "결제 처리 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.",
+        code: "payment_confirm_failed",
+      },
+      { status: 500 },
+    );
   }
 }

@@ -11,6 +11,7 @@ import {
   type CharacterData,
 } from "@/lib/reading/generate-reading";
 import type { BirthInfo, AllCharts } from "@/lib/charts/types";
+import { INSUFFICIENT_BALANCE_MESSAGE } from "@/lib/copy/gacha-terms";
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: NextRequest) {
@@ -112,7 +113,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: isInsufficient
-            ? "코인이 부족합니다. 지갑에서 충전해주세요."
+            ? INSUFFICIENT_BALANCE_MESSAGE
             : "코인 차감 중 오류가 발생했습니다",
           code: isInsufficient ? "insufficient_balance" : "spend_failed",
         },

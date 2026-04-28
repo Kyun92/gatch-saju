@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import CoinSvg from "@/components/ui/CoinSvg";
+import { formatCoinCount } from "@/lib/copy/gacha-terms";
 
 interface HubHeaderProps {
   userName: string;
@@ -24,7 +25,7 @@ export default function HubHeader({ userName, balance = 0 }: HubHeaderProps) {
       <div className="flex items-center gap-2">
         <Link
           href="/coins"
-          aria-label={`코인 잔액 ${balance}개 · 충전하기`}
+          aria-label={`${formatCoinCount(balance)} 잔액 · 충전하기`}
           className="flex items-center gap-1.5 px-2 py-1 bg-white border border-[#b8944c] no-underline hover:bg-[#faf7f2] transition-colors"
         >
           <CoinSvg size={14} />

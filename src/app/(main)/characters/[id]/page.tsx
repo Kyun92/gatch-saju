@@ -4,16 +4,19 @@ import { redirect } from "next/navigation";
 import CharacterHero from "@/components/character/CharacterHero";
 import CharacterActions from "@/components/character/CharacterActions";
 import SkillTree from "@/components/hub/SkillTree";
+import {
+  formatDayMasterDisplay,
+  getCharacterElement,
+  type Element as ElementType,
+} from "@/lib/copy/day-master";
 
-type ElementType = "wood" | "fire" | "earth" | "metal" | "water";
-
-const ELEMENT_MAP: Record<string, ElementType> = {
-  "木": "wood", "火": "fire", "土": "earth", "金": "metal", "水": "water",
-};
-
-const ELEMENT_LABEL: Record<ElementType, string> = {
-  wood: "목(木)의 용사", fire: "화(火)의 전사", earth: "토(土)의 현자",
-  metal: "금(金)의 기사", water: "수(水)의 술사",
+/** 오행별 RPG 클래스 라벨 (한자 노출 없는 비유체 칭호). */
+const ELEMENT_CLASS_LABEL: Record<ElementType, string> = {
+  wood: "나무 기운의 용사",
+  fire: "불꽃 기운의 전사",
+  earth: "흙 기운의 현자",
+  metal: "쇠 기운의 기사",
+  water: "물 기운의 술사",
 };
 
 interface CharacterDetailPageProps {
@@ -46,17 +49,18 @@ export default async function CharacterDetailPage({ params }: CharacterDetailPag
 
   const sajuData = sajuChart?.data as Record<string, unknown> | null;
   const dayMaster = (sajuData?.dayMaster as string) ?? "";
-  const fiveElements = sajuData?.fiveElements as Record<string, number> | null;
 
-  let element: ElementType = "water";
-  if (fiveElements) {
-    const maxEntry = Object.entries(fiveElements).reduce((a, b) => a[1] >= b[1] ? a : b);
-    element = ELEMENT_MAP[maxEntry[0]] ?? "water";
-  }
+  // element는 dayMaster 결정론 매핑 (fiveElements maxEntry 금지)
+  const element: ElementType = getCharacterElement(dayMaster, "water");
 
   const birthYear = character.birth_date ? new Date(character.birth_date).getFullYear() : 2000;
   const level = new Date().getFullYear() - birthYear;
-  const classTitle = dayMaster ? `${dayMaster} · ${ELEMENT_LABEL[element]}` : ELEMENT_LABEL[element];
+
+  // 비유체 메인 + 클래스 칭호 (예: "깊은 바다 타입 · 물 기운의 술사")
+  const dayMasterDisplay = formatDayMasterDisplay(dayMaster) || "";
+  const classTitle = dayMasterDisplay
+    ? `${dayMasterDisplay} · ${ELEMENT_CLASS_LABEL[element]}`
+    : ELEMENT_CLASS_LABEL[element];
 
   // 구매한 reading 타입 목록 + 최신 reading ID
   const { data: readings } = await supabase
@@ -96,7 +100,7 @@ export default async function CharacterDetailPage({ params }: CharacterDetailPag
       >
         <CharacterHero
           avatarUrl={`/characters/${element}-${character.gender}.png`}
-          dayMaster={dayMaster}
+          dayMaster={dayMasterDisplay || character.name}
           level={level}
           classTitle={classTitle}
           characterTitle={latestReading?.character_title ?? character.name}

@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
 import type { CharacterOption } from "./page";
+import { COIN_PRICE_DISPLAY } from "@/lib/copy/gacha-terms";
 
 interface CompatibilitySelectorProps {
   characters: CharacterOption[];
@@ -248,7 +249,7 @@ export default function CompatibilitySelector({
       >
         {loading
           ? "궁합 분석 중..."
-          : "궁합 분석하기 — 코인 1개"}
+          : `궁합 분석하기 — ${COIN_PRICE_DISPLAY}`}
       </PixelButton>
 
       <p className="text-xs text-center text-[#8a8070]">

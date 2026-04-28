@@ -5,6 +5,8 @@ import PixelFrame from "@/components/ui/PixelFrame";
 import DailyFortuneClient from "./DailyFortuneClient";
 import UpsellBanner from "@/components/daily/UpsellBanner";
 import DailyCalendar from "@/components/daily/DailyCalendar";
+import DailyFortuneSections from "@/components/daily/DailyFortuneSections";
+import { labelForStatKey } from "@/lib/copy/daily-labels";
 
 interface DailyPageProps {
   searchParams: Promise<{ characterId?: string }>;
@@ -96,29 +98,24 @@ export default async function DailyPage({ searchParams }: DailyPageProps) {
             <h2 className="text-lg mb-3 font-[family-name:var(--font-pixel)] text-[#9a7040]">
               {todayReading.character_title ?? "오늘의 운세"}
             </h2>
-            <div className="daily-fortune-content whitespace-pre-wrap text-[#2c2418]">
-              {todayReading.content}
-            </div>
+            <DailyFortuneSections content={todayReading.content ?? ""} />
           </div>
 
-          {/* Lucky Items */}
+          {/* Stat scores */}
           {todayReading.stat_scores && (
             <div className="mt-4 pt-4 border-t border-[#b8944c]">
-              <p className="text-xs mb-2 font-[family-name:var(--font-pixel)] text-[#9a7040]">
-                행운 아이템
-              </p>
               <div className="flex gap-3 flex-wrap">
                 {Object.entries(
                   todayReading.stat_scores as Record<string, unknown>,
                 ).map(([key, value]) => (
                   <div
                     key={key}
-                    className="pixel-frame-simple px-3 py-2 text-center"
+                    className="pixel-frame-simple px-4 py-3 text-center min-w-[120px]"
                   >
                     <div className="text-xs font-[family-name:var(--font-pixel)] text-[#8a8070]">
-                      {key}
+                      {labelForStatKey(key)}
                     </div>
-                    <div className="text-sm mt-1 font-[family-name:var(--font-pixel)] text-[#b8883c]">
+                    <div className="text-2xl mt-1 font-[family-name:var(--font-pixel)] text-[#b8883c]">
                       {String(value)}
                     </div>
                   </div>

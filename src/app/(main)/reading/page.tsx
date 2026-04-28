@@ -5,6 +5,7 @@ import Link from "next/link";
 import PixelFrame from "@/components/ui/PixelFrame";
 import PixelButton from "@/components/ui/PixelButton";
 import SamplePreview from "@/components/reading/SamplePreview";
+import { COIN_PRICE_DISPLAY } from "@/lib/copy/gacha-terms";
 
 interface ReadingPageProps {
   searchParams: Promise<{ characterId?: string }>;
@@ -51,7 +52,7 @@ export default async function ReadingPage({ searchParams }: ReadingPageProps) {
         </p>
         <Link href={`/reading/new?characterId=${characterId}`}>
           <PixelButton size="lg">
-            종합 사주 감정받기 — 코인 1개
+            종합 사주 감정받기 — {COIN_PRICE_DISPLAY}
           </PixelButton>
         </Link>
       </PixelFrame>

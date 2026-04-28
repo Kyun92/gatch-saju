@@ -1,4 +1,9 @@
-export type ElementType = "wood" | "fire" | "earth" | "metal" | "water";
+import {
+  HEAVENLY_STEM_TO_ELEMENT,
+  type Element as DayMasterElement,
+} from "@/lib/copy/day-master";
+
+export type ElementType = DayMasterElement;
 
 export type GenderType = "male" | "female";
 
@@ -11,13 +16,11 @@ export interface CharacterPreset {
   avatarUrl: string;
 }
 
-const HEAVENLY_STEM_ELEMENT: Record<string, ElementType> = {
-  '甲': 'wood',  '乙': 'wood',
-  '丙': 'fire',  '丁': 'fire',
-  '戊': 'earth', '己': 'earth',
-  '庚': 'metal', '辛': 'metal',
-  '壬': 'water', '癸': 'water',
-};
+/**
+ * 천간 → 오행 매핑 (`@/lib/copy/day-master`의 단일 소스에서 재export).
+ * 기존 사용처 호환을 위해 동일한 이름으로 노출.
+ */
+const HEAVENLY_STEM_ELEMENT: Record<string, ElementType> = HEAVENLY_STEM_TO_ELEMENT;
 
 const ELEMENT_CLASS_NAMES: Record<ElementType, string> = {
   wood:  '숲의 현자',

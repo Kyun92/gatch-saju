@@ -3,14 +3,7 @@ import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import CompatibilitySelector from "./CompatibilitySelector";
 import type { ElementType } from "@/lib/character/get-preset";
-
-const HEAVENLY_STEM_ELEMENT: Record<string, ElementType> = {
-  "\u7532": "wood", "\u4E59": "wood",
-  "\u4E19": "fire", "\u4E01": "fire",
-  "\u620A": "earth", "\u5DF1": "earth",
-  "\u5E9A": "metal", "\u8F9B": "metal",
-  "\u58EC": "water", "\u7678": "water",
-};
+import { getCharacterElement } from "@/lib/copy/day-master";
 
 export interface CharacterOption {
   id: string;
@@ -58,11 +51,7 @@ export default async function CompatibilityPage() {
   const characterOptions: CharacterOption[] = characters.map((char) => {
     const sajuData = chartMap.get(char.id);
     const dayMaster = (sajuData?.dayMaster as string) ?? "";
-    let element: ElementType = "water";
-    if (dayMaster) {
-      const stem = dayMaster.charAt(0);
-      element = HEAVENLY_STEM_ELEMENT[stem] ?? "water";
-    }
+    const element: ElementType = getCharacterElement(dayMaster, "water");
 
     const birthYear = char.birth_date
       ? new Date(char.birth_date).getFullYear()

@@ -4,6 +4,10 @@ import { useState } from "react";
 import CoinSvg from "@/components/ui/CoinSvg";
 import { LoginModal } from "@/components/login/LoginModal";
 import { motion } from "framer-motion";
+import {
+  LANDING_HOOK_LABEL,
+  PRIMARY_CTA_PULL,
+} from "@/lib/copy/gacha-terms";
 
 export default function InsertCoinCTA() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,7 +20,7 @@ export default function InsertCoinCTA() {
           whileHover={{ scale: 0.98, y: 2 }}
           whileTap={{ scale: 0.95, y: 4 }}
           className="gacha-coin-btn"
-          aria-label="운명 캡슐 뽑기 — 로그인으로 이동"
+          aria-label={`${PRIMARY_CTA_PULL} — 로그인으로 이동`}
         >
           <CoinSvg size={32} className="animate-spin-coin" />
           <span className="transition-colors duration-200">
@@ -24,7 +28,7 @@ export default function InsertCoinCTA() {
           </span>
         </motion.button>
         <p className="font-[family-name:var(--font-pixel)] text-xs text-[#5a4e3c] tracking-wider">
-          한 판 990원부터 · 묶음 살수록 할인
+          {LANDING_HOOK_LABEL}
         </p>
       </div>
 

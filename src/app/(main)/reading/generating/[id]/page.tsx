@@ -9,24 +9,17 @@ import GachaMachine from "@/components/loading/GachaMachine";
 import GachaCapsuleOpen from "@/components/loading/GachaCapsuleOpen";
 import LoadingProgress from "@/components/loading/LoadingProgress";
 import FortuneTipCard from "@/components/loading/FortuneTipCard";
+import {
+  GENERATING_ROTATION_MESSAGES,
+  getLoadingStepLabel,
+} from "@/lib/copy/loading-steps";
+import { READING_GENERATION_ERROR_MESSAGE } from "@/lib/copy/gacha-terms";
 
 /**
- * 현재 단계(0~3)에 따라 머신 위에 표시할 1줄 상태 메시지.
- * 깜빡임 없이 부드럽게 페이드 전환된다.
+ * 회전 메시지 인터벌 (8~12초 사이 권장).
+ * 진행도와 별개로 시간 기반으로 순환하여 살아있는 인상을 준다.
  */
-const STATUS_MESSAGES = [
-  "사주팔자의 기둥을 세우는 중...",
-  "자미두수 12궁에 별을 배치하는 중...",
-  "서양 점성술 차트를 계산하는 중...",
-  "세 체계를 교차 해석하는 중...",
-];
-
-function statusMessageByProgress(progress: number): string {
-  if (progress < 20) return STATUS_MESSAGES[0];
-  if (progress < 45) return STATUS_MESSAGES[1];
-  if (progress < 70) return STATUS_MESSAGES[2];
-  return STATUS_MESSAGES[3];
-}
+const ROTATION_INTERVAL_MS = 9_000;
 
 type CharacterSummary = {
   name: string;
@@ -45,6 +38,16 @@ export default function GeneratingPage() {
 
   // 진행 메시지를 progress와 동기화하기 위해 로컬 progress 추적 (UI용 근사값)
   const [uiProgress, setUiProgress] = useState(0);
+
+  // 시간 기반 회전 메시지 (8~12초 주기로 GENERATING_ROTATION_MESSAGES 순환)
+  const [rotationIdx, setRotationIdx] = useState(0);
+  useEffect(() => {
+    if (status !== "generating") return;
+    const interval = setInterval(() => {
+      setRotationIdx((i) => (i + 1) % GENERATING_ROTATION_MESSAGES.length);
+    }, ROTATION_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [status]);
   useEffect(() => {
     const started = Date.now();
     const interval = setInterval(() => {
@@ -85,7 +88,7 @@ export default function GeneratingPage() {
       } else if (data.reading?.status === "error") {
         setStatus("error");
         setErrorMessage(
-          data.reading.error_message ?? "알 수 없는 오류가 발생했습니다",
+          data.reading.error_message ?? READING_GENERATION_ERROR_MESSAGE,
         );
       }
     } catch {
@@ -134,26 +137,28 @@ export default function GeneratingPage() {
     );
   }
 
-  const currentMessage = statusMessageByProgress(uiProgress);
+  // 머신 위 헤드라인은 진행도 기반의 단계 라벨, 부 메시지는 시간 기반 회전
+  const stepLabel = getLoadingStepLabel(uiProgress);
+  const rotationMessage = GENERATING_ROTATION_MESSAGES[rotationIdx];
 
   // 생성 중 → 머신 + 진행도 + 체크리스트 + 팁카드
   return (
     <div className="w-full mx-auto flex flex-col items-center min-h-screen bg-[#f5f0e8] px-4 py-6 gap-5">
       {/* 가챠 머신 (흔들림 + 캡슐 바운스) */}
-      <GachaMachine message={currentMessage} />
+      <GachaMachine message={stepLabel} />
 
-      {/* 현재 단계 메시지 페이드 전환 (머신 자체 message prop은 정적으로 두고, 시각적으로 한 번 더 강조) */}
+      {/* 회전 메시지 (8~12초 간격) — 머신 헤드라인과 별개로 다채로운 인상을 준다 */}
       <div className="w-full max-w-sm min-h-[1.5rem] text-center">
         <AnimatePresence mode="wait">
           <motion.p
-            key={currentMessage}
+            key={rotationMessage}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.35 }}
             className="font-[family-name:var(--font-body)] text-xs text-[#6a5e4c]"
           >
-            {currentMessage}
+            {rotationMessage}
           </motion.p>
         </AnimatePresence>
       </div>

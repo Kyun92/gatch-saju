@@ -1,7 +1,12 @@
 import Link from "next/link";
 import CoinSvg from "@/components/ui/CoinSvg";
+import {
+  COIN_PRICE_DISPLAY,
+  formatCoinCount,
+} from "@/lib/copy/gacha-terms";
 
 export default function SamplePreview() {
+  const ctaLabel = "내 스탯 확인하기";
   return (
     <div className="pixel-frame-accent p-5 mt-6">
       <p className="text-center mb-3 font-[family-name:var(--font-pixel)] text-xs text-[#9a7040]">
@@ -42,10 +47,10 @@ export default function SamplePreview() {
       <Link
         href="/reading/new"
         className="gacha-coin-btn w-full justify-center"
-        aria-label="내 스탯 확인하기 코인 1개 사용"
+        aria-label={`${ctaLabel} ${COIN_PRICE_DISPLAY} (${formatCoinCount(1)})`}
       >
         <CoinSvg size={24} className="animate-spin-coin" />
-        <span>내 스탯 확인하기 — 코인 1개</span>
+        <span>{`${ctaLabel} — ${COIN_PRICE_DISPLAY}`}</span>
       </Link>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import PixelFrame from "@/components/ui/PixelFrame";
+import DailyFortuneSections from "@/components/daily/DailyFortuneSections";
 
 interface DailyFortuneDetailProps {
   date: string; // "2026-04-14"
@@ -42,9 +43,7 @@ export default function DailyFortuneDetail({
       )}
 
       {/* Content */}
-      <div className="daily-fortune-content whitespace-pre-wrap text-[#2c2418]">
-        {content}
-      </div>
+      <DailyFortuneSections content={content} />
     </PixelFrame>
   );
 }

@@ -8,14 +8,10 @@ import TrustBadge from "@/components/hub/TrustBadge";
 import CollectionCounter from "@/components/hub/CollectionCounter";
 import { COPY } from "@/lib/copy/gacha-terms";
 import type { ElementType } from "@/lib/character/get-preset";
-
-const HEAVENLY_STEM_ELEMENT: Record<string, ElementType> = {
-  "甲": "wood", "乙": "wood",
-  "丙": "fire", "丁": "fire",
-  "戊": "earth", "己": "earth",
-  "庚": "metal", "辛": "metal",
-  "壬": "water", "癸": "water",
-};
+import {
+  formatDayMasterDisplay,
+  getCharacterElement,
+} from "@/lib/copy/day-master";
 
 export default async function HubPage() {
   const session = await auth();
@@ -90,22 +86,12 @@ export default async function HubPage() {
   const characterSlots = characters.map((char) => {
     const sajuData = chartMap.get(char.id);
     const dayMaster = (sajuData?.dayMaster as string) ?? "";
-    const fiveElements = sajuData?.fiveElements as Record<string, number> | null;
 
-    // Determine element from day master stem
-    let element: ElementType = "water";
-    if (dayMaster) {
-      const stem = dayMaster.charAt(0);
-      element = HEAVENLY_STEM_ELEMENT[stem] ?? "water";
-    } else if (fiveElements) {
-      const maxEntry = Object.entries(fiveElements).reduce((a, b) =>
-        a[1] >= b[1] ? a : b
-      );
-      const elementMap: Record<string, ElementType> = {
-        "木": "wood", "火": "fire", "土": "earth", "金": "metal", "水": "water",
-      };
-      element = elementMap[maxEntry[0]] ?? "water";
-    }
+    // Determine element from day master (결정론) — fallback "water"
+    const element: ElementType = getCharacterElement(dayMaster, "water");
+    const dayMasterLabel = formatDayMasterDisplay(dayMaster, {
+      useShortLabel: true,
+    });
 
     // Calculate level (age)
     const birthYear = char.birth_date
@@ -149,9 +135,10 @@ export default async function HubPage() {
       },
       element,
       level,
-      dayMaster,
+      dayMasterLabel,
       statScores,
       characterTitle: readingData?.character_title ?? (freeStats?.title as string | null) ?? null,
+      isSelf: char.is_self ?? false,
     };
   });
 
@@ -175,9 +162,10 @@ export default async function HubPage() {
             character={slot.character}
             element={slot.element}
             level={slot.level}
-            dayMaster={slot.dayMaster}
+            dayMasterLabel={slot.dayMasterLabel}
             statScores={slot.statScores}
             characterTitle={slot.characterTitle}
+            isSelf={slot.isSelf}
           />
         ))}
 

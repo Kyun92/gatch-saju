@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import CoinSvg from "@/components/ui/CoinSvg";
+import {
+  COIN_PRICE_DISPLAY,
+  formatCoinCount,
+} from "@/lib/copy/gacha-terms";
 
 type SkillNodeType =
   | "comprehensive"
@@ -102,7 +106,7 @@ function getNodeState(
     // comprehensive — purchased if unlocked
     return unlocked ? "purchased" : "available";
   }
-  // Requires prerequisite
+  // Requires prerequisite (comprehensive 미해금이면 모두 locked, compatibility 포함)
   if (!unlocked) return "locked";
   if (
     node.prerequisite &&
@@ -140,13 +144,7 @@ export default function SkillTree({
         <span className="font-[family-name:var(--font-pixel)] text-[0.75rem] text-[#9a7040] tracking-[0.06em]">
           {"심화 특성"}
         </span>
-        <span
-          className="flex-1 h-px opacity-40"
-          style={{
-            background:
-              "linear-gradient(90deg, #b8944c 0%, transparent 100%)",
-          }}
-        />
+        <span className="skill-tree-header-line flex-1 h-px opacity-40" />
         <span className="font-[family-name:var(--font-pixel)] text-[0.5625rem] text-[#b8944c] opacity-70">
           {characterName}
         </span>
@@ -164,10 +162,8 @@ export default function SkillTree({
       {/* Connector line from root to grid */}
       <div className="flex justify-center h-4">
         <div
-          className="w-0.5 h-full opacity-50"
-          style={{
-            backgroundColor: unlocked ? "#b8944c" : "#d4cfc8",
-          }}
+          className="skill-tree-connector w-0.5 h-full opacity-50"
+          data-state={unlocked ? "active" : "inactive"}
         />
       </div>
 
@@ -205,33 +201,6 @@ function SkillNodeCard({
   const isLocked = state === "locked";
   const isComingSoon = state === "coming-soon";
 
-  // Dynamic styles per state — keep inline
-  const bgColor = isPurchased
-    ? "rgba(200, 160, 32, 0.12)"
-    : isAvailable
-      ? "#ffffff"
-      : "#f5f2ec";
-
-  const borderColor = isPurchased
-    ? "#9a7040"
-    : isAvailable
-      ? "#b8944c"
-      : "#d4cfc8";
-
-  const textColor = isPurchased
-    ? "#9a7040"
-    : isAvailable
-      ? "#2c2418"
-      : "#b8a890";
-
-  const descColor = isPurchased
-    ? "#9a7040"
-    : isAvailable
-      ? "#8a8070"
-      : "#c8c0b0";
-
-  const iconOpacity = isLocked || isComingSoon ? 0.4 : 1;
-
   // Determine link target
   let href: string | null = null;
   if (node.type === "compatibility" && (isAvailable || isPurchased)) {
@@ -246,33 +215,24 @@ function SkillNodeCard({
     href = `/reading/new?characterId=${characterId}&type=${node.type}`;
   }
 
+  const ariaLabel = `${node.label}: ${
+    isPurchased
+      ? "해금됨"
+      : isAvailable
+        ? "구매 가능"
+        : isComingSoon
+          ? "준비 중"
+          : "잠김"
+  }`;
+
   const cardContent = (
     <div
-      className="skill-node relative overflow-hidden transition-[border-color,box-shadow] duration-150 ease-in-out"
-      style={{
-        backgroundColor: bgColor,
-        border: `2px solid ${borderColor}`,
-        borderBottomWidth: isPurchased ? "4px" : isAvailable ? "4px" : "2px",
-        boxShadow:
-          isPurchased
-            ? "3px 3px 0px rgba(154, 112, 64, 0.15)"
-            : isAvailable
-              ? "3px 3px 0px rgba(0, 0, 0, 0.06)"
-              : "none",
-        padding: isRoot ? "14px 16px" : "10px 12px",
-        opacity: isLocked || isComingSoon ? 0.6 : 1,
-        cursor: href ? "pointer" : "default",
-      }}
+      className={`skill-node relative overflow-hidden transition-[border-color,box-shadow] duration-150 ease-in-out ${
+        isAvailable ? "animate-skill-node-pulse" : ""
+      } ${isRoot ? "skill-node-root" : "skill-node-leaf"}`}
+      data-state={state}
       role="listitem"
-      aria-label={`${node.label}: ${
-        isPurchased
-          ? "해금됨"
-          : isAvailable
-            ? "구매 가능"
-            : isComingSoon
-              ? "준비 중"
-              : "잠김"
-      }`}
+      aria-label={ariaLabel}
     >
       {/* Status badge — top right */}
       {isComingSoon && (
@@ -288,55 +248,59 @@ function SkillNodeCard({
       )}
 
       {/* Main content row */}
-      <div
-        className="flex items-center"
-        style={{ gap: isRoot ? "12px" : "8px" }}
-      >
-        {/* Icon */}
+      <div className={`flex items-center ${isRoot ? "gap-3" : "gap-2"}`}>
+        {/* Icon — locked일 때 자물쇠 픽셀 SVG, 그 외엔 node.icon */}
         <span
-          className="shrink-0"
-          style={{
-            fontSize: isRoot ? "1.5rem" : "1.125rem",
-            opacity: iconOpacity,
-            filter: isLocked || isComingSoon ? "grayscale(80%)" : "none",
-          }}
+          className={`shrink-0 skill-node-icon ${
+            isRoot ? "skill-node-icon-root" : "skill-node-icon-leaf"
+          }`}
         >
-          {isLocked ? "" : node.icon}
+          {isLocked ? (
+            <svg
+              width="14"
+              height="16"
+              viewBox="0 0 14 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              className="skill-node-lock-icon"
+            >
+              {/* 자물쇠 픽셀 SVG */}
+              <rect x="3" y="1" width="8" height="2" fill="#a89878" />
+              <rect x="2" y="3" width="2" height="4" fill="#a89878" />
+              <rect x="10" y="3" width="2" height="4" fill="#a89878" />
+              <rect x="1" y="6" width="12" height="9" fill="#c8c0b0" />
+              <rect x="2" y="7" width="10" height="7" fill="#d8d0c0" />
+              <rect x="6" y="9" width="2" height="3" fill="#5a4e3c" />
+              <rect x="6" y="11" width="2" height="2" fill="#5a4e3c" />
+            </svg>
+          ) : (
+            node.icon
+          )}
         </span>
 
         {/* Label + description */}
         <div className="flex-1 min-w-0">
           <div
-            className="font-[family-name:var(--font-pixel)] leading-[1.2] mb-0.5"
-            style={{
-              fontSize: isRoot ? "0.875rem" : "0.75rem",
-              color: textColor,
-            }}
+            className={`skill-node-label font-[family-name:var(--font-pixel)] leading-[1.2] mb-0.5 ${
+              isRoot ? "text-sm" : "text-xs"
+            }`}
           >
             {node.label}
           </div>
-          <div
-            className="font-[family-name:var(--font-body)] text-[0.625rem] leading-[1.3]"
-            style={{ color: descColor }}
-          >
+          <div className="skill-node-desc font-[family-name:var(--font-body)] text-[0.625rem] leading-[1.3]">
             {node.description}
           </div>
         </div>
 
-        {/* 가용 노드: 코인 1개 뱃지 (아케이드 코인 스타일) */}
+        {/* 가용 노드: 가격 뱃지 (990원 1차, 코인 보조) */}
         {isAvailable && (
           <span
-            className="inline-flex items-center gap-1.5 font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#fce474] px-2 py-[3px] shrink-0 tracking-wider whitespace-nowrap"
-            style={{
-              backgroundColor: "#2b2b36",
-              border: "2px solid #111",
-              boxShadow:
-                "inset 1px 1px 0 rgba(255,255,255,0.18), inset -1px -1px 0 rgba(0,0,0,0.5), 0 2px 0 #0a0a0f",
-            }}
-            aria-label="코인 1개 사용"
+            className="skill-node-price-badge inline-flex items-center gap-1.5 font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#fce474] px-2 py-[3px] shrink-0 tracking-wider whitespace-nowrap"
+            aria-label={`${COIN_PRICE_DISPLAY} (${formatCoinCount(1)}) 사용`}
           >
             <CoinSvg size={12} className="skill-node-coin" />
-            1
+            {COIN_PRICE_DISPLAY}
           </span>
         )}
 

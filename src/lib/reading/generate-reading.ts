@@ -3,6 +3,7 @@ import { generateAllCharts } from "@/lib/charts";
 import { generateStatScores } from "@/lib/ai/stat-scorer";
 import { sanitizeReadingHtml } from "@/lib/ai/sanitize-html";
 import { MOCK_READINGS, MOCK_STAT_SCORES } from "@/lib/reading/mock-data";
+import { READING_GENERATION_ERROR_MESSAGE } from "@/lib/copy/gacha-terms";
 import type { BirthInfo, AllCharts } from "@/lib/charts/types";
 
 /**
@@ -164,8 +165,7 @@ export async function executeReadingGeneration(
         .from("readings")
         .update({
           status: "error",
-          error_message:
-            "감정 생성 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
+          error_message: READING_GENERATION_ERROR_MESSAGE,
         })
         .eq("id", readingId);
     }

@@ -42,6 +42,27 @@ export async function createCharacter(data: OnboardingData) {
       ? data.mbti
       : null;
 
+  // 가드: user당 본인 캐릭터(is_self=true)는 1명만.
+  // 호출자가 isSelf=true로 보냈어도, 이미 본인 캐릭터가 존재하면 silent false 변환.
+  // 정상 흐름:
+  //   - onboarding (첫 캐릭터): isSelf=true, count=0 → isSelfFinal=true 유지
+  //   - /characters/new (추가 캐릭터): isSelf=false → 가드 통과 (count 조회 생략)
+  //   - 비정상 호출(추가 캐릭터에 isSelf=true): count>=1 → isSelfFinal=false로 차단
+  let isSelfFinal = data.isSelf ?? true;
+  if (isSelfFinal) {
+    const { count } = await supabase
+      .from("characters")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .eq("is_self", true);
+    if ((count ?? 0) > 0) {
+      console.warn(
+        `[onboarding] guard: isSelf=true requested but user(${userId}) already has a self character. Coercing to false.`
+      );
+      isSelfFinal = false;
+    }
+  }
+
   // Insert character
   const { data: character, error: charError } = await supabase
     .from("characters")
@@ -56,7 +77,7 @@ export async function createCharacter(data: OnboardingData) {
       gender: data.gender,
       timezone: cityInfo.timezone,
       mbti: mbtiValue,
-      is_self: data.isSelf ?? true,
+      is_self: isSelfFinal,
       unlocked: false,
     })
     .select("id")

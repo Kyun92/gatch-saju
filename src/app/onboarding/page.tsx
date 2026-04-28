@@ -39,30 +39,15 @@ const MBTI_OPTIONS = [
   ...MBTI_TYPES.map((m) => ({ value: m, label: m })),
 ];
 
-type ElementType = "wood" | "fire" | "earth" | "metal" | "water";
+import { ELEMENT_LABEL, type Element as ElementType } from "@/lib/copy/day-master";
 
+/** 월(생월)로 element를 간이 추정. dayMaster 미생성 단계의 미리보기용. */
 function getElementFromMonth(month: number): ElementType {
   if (month >= 2 && month <= 4) return "wood";
   if (month >= 5 && month <= 7) return "fire";
   if (month >= 8 && month <= 10) return "metal";
   return "water";
 }
-
-const ELEMENT_LABEL: Record<ElementType, string> = {
-  wood: "목(木)",
-  fire: "화(火)",
-  earth: "토(土)",
-  metal: "금(金)",
-  water: "수(水)",
-};
-
-const ELEMENT_COLOR: Record<ElementType, string> = {
-  wood: "#2e8b4e",
-  fire: "#d04040",
-  earth: "#c09050",
-  metal: "#b0b8c8",
-  water: "#3070c0",
-};
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(1);

@@ -9,7 +9,7 @@ export default function UpsellBanner() {
             다음 캡슐도 뽑아볼까?
           </p>
           <p className="text-xs text-[#5a4e3c]">
-            3체계 교차분석 캡슐 · 코인 1개
+            이 캐릭터의 종합 감정도 보러가기
           </p>
         </div>
         <span className="font-[family-name:var(--font-pixel)] text-xs text-[#9a7040] shrink-0">

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { REFUND_WINDOW_DAYS } from "@/lib/coins/packages";
+import { COIN_LABEL } from "@/lib/copy/gacha-terms";
 
 export const metadata: Metadata = {
   title: "이용약관 | 갓챠사주",
@@ -59,23 +61,23 @@ export default function TermsPage() {
       </section>
 
       <section className="legal-section">
-        <h2 className="legal-h2">제6조 (유료 서비스 및 코인 결제)</h2>
+        <h2 className="legal-h2">제6조 (유료 서비스 및 {COIN_LABEL} 결제)</h2>
         <ol className="legal-ol">
-          <li>유료 콘텐츠는 &ldquo;코인&rdquo;을 소비하는 방식으로 제공됩니다. 이용자는 회사가 제공하는 코인 패키지(1코인·3코인·5코인·10코인) 중 하나를 선택하여 결제한 뒤, 충전된 코인으로 유료 감정을 이용할 수 있습니다.</li>
-          <li>코인 패키지는 수량이 커질수록 개당 단가가 낮아지는 차등 구조로 제공되며, 각 패키지의 금액과 할인율은 결제 화면에 표시됩니다.</li>
+          <li>유료 콘텐츠는 &ldquo;{COIN_LABEL}&rdquo;을 소비하는 방식으로 제공됩니다. 이용자는 회사가 제공하는 {COIN_LABEL} 패키지(1{COIN_LABEL}·3{COIN_LABEL}·5{COIN_LABEL}·10{COIN_LABEL}) 중 하나를 선택하여 결제한 뒤, 충전된 {COIN_LABEL}으로 유료 감정을 이용할 수 있습니다.</li>
+          <li>{COIN_LABEL} 패키지는 수량이 커질수록 개당 단가가 낮아지는 차등 구조로 제공되며, 각 패키지의 금액과 할인율은 결제 화면에 표시됩니다.</li>
           <li>결제는 토스페이먼츠(Toss Payments)를 통해 처리되며, 신용카드·체크카드·간편결제 등 토스페이먼츠가 지원하는 수단을 이용할 수 있습니다.</li>
-          <li>결제 완료 즉시 해당 수량의 코인이 이용자의 계정 잔액에 추가되며, 유료 감정 1건 생성 시 1코인이 차감됩니다. 일일운세 등 무료 서비스는 코인을 소비하지 않습니다.</li>
-          <li>충전된 코인에는 유효기간이 없으며, 회원 탈퇴 시 잔여 코인은 소멸됩니다.</li>
+          <li>결제 완료 즉시 해당 수량의 {COIN_LABEL}이 이용자의 계정 잔액에 추가되며, 유료 감정 1건 생성 시 1{COIN_LABEL}이 차감됩니다. 일일운세 등 무료 서비스는 {COIN_LABEL}을 소비하지 않습니다.</li>
+          <li>충전된 {COIN_LABEL}에는 유효기간이 없으며, 회원 탈퇴 시 잔여 {COIN_LABEL}은 소멸됩니다.</li>
         </ol>
       </section>
 
       <section className="legal-section">
         <h2 className="legal-h2">제7조 (청약철회 및 환불)</h2>
         <ol className="legal-ol">
-          <li>결제일로부터 7일 이내에 사용되지 않은 코인에 한해 전액 환불이 가능합니다.</li>
-          <li>이미 사용된 코인에 대해서는 디지털 콘텐츠 제공이 개시된 것으로 보아 「전자상거래 등에서의 소비자보호에 관한 법률」 제17조 제2항 제5호에 따라 청약철회 및 환불이 제한됩니다.</li>
-          <li>하나의 결제 건에서 일부 코인만 사용된 경우, 남은 코인 비율만큼 부분 환불이 가능합니다.</li>
-          <li>서비스 오류로 인해 감정이 정상 제공되지 않은 경우 해당 감정에 사용된 코인을 복구하거나 그에 상응하는 금액을 환불합니다.</li>
+          <li>결제일로부터 {REFUND_WINDOW_DAYS}일 이내에 사용되지 않은 {COIN_LABEL}에 한해 전액 환불이 가능합니다.</li>
+          <li>이미 사용된 {COIN_LABEL}에 대해서는 디지털 콘텐츠 제공이 개시된 것으로 보아 「전자상거래 등에서의 소비자보호에 관한 법률」 제17조 제2항 제5호에 따라 청약철회 및 환불이 제한됩니다.</li>
+          <li>하나의 결제 건에서 일부 {COIN_LABEL}만 사용된 경우, 남은 {COIN_LABEL} 비율만큼 부분 환불이 가능합니다.</li>
+          <li>서비스 오류로 인해 감정이 정상 제공되지 않은 경우 해당 감정에 사용된 {COIN_LABEL}을 복구하거나 그에 상응하는 금액을 환불합니다.</li>
           <li>구체적인 환불 기준·절차·계산식은 별도의 <a href="/refund" className="legal-link">환불정책</a>에서 정합니다.</li>
         </ol>
       </section>

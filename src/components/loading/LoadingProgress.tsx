@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LOADING_STEPS } from "@/lib/copy/loading-steps";
 
 /**
  * 예상 2분 기준 fake progress + 순차 체크리스트
@@ -9,19 +10,11 @@ import { useEffect, useState } from "react";
  * - 95% 도달 후엔 매우 천천히 99%까지 (실 완료 전 대기)
  * - `complete = true` 신호 오면 100%로 스냅
  *
- * 단계(진행률 기준):
- *   0~20%   사주팔자 명식 작성
- *   20~45%  자미두수 12궁 배치
- *   45~70%  서양 점성술 차트 계산
- *   70~95%  3체계 교차 해석
+ * 단계 라벨/구간은 `@/lib/copy/loading-steps`의 `LOADING_STEPS` 단일 소스를 사용한다.
+ * (generating 페이지와 동일 소스를 공유 — 마이크로카피 일관성)
  */
 
-const STEPS = [
-  { label: "사주팔자 명식 작성", from: 0, to: 20 },
-  { label: "자미두수 12궁 배치", from: 20, to: 45 },
-  { label: "서양 점성술 차트 계산", from: 45, to: 70 },
-  { label: "3체계 교차 해석", from: 70, to: 95 },
-] as const;
+const STEPS = LOADING_STEPS;
 
 const EXPECTED_DURATION_MS = 120_000; // 2분
 const TICK_MS = 250;
@@ -82,12 +75,9 @@ export default function LoadingProgress({ complete }: LoadingProgressProps) {
       {/* 프로그레스 바 */}
       <div className="relative w-full h-3 bg-[#e8dfc8] border-2 border-[#9a7040] overflow-hidden">
         <div
-          className="absolute top-0 left-0 h-full transition-[width] duration-300 ease-out"
-          style={{
-            width: `${progress}%`,
-            background:
-              "linear-gradient(180deg, #fce474 0%, #e8a825 50%, #b57b12 100%)",
-          }}
+          className="loading-progress-bar absolute top-0 left-0 h-full transition-[width] duration-300 ease-out"
+          // 동적 props 예외: width %는 progress 상태에서만 결정됨
+          style={{ width: `${progress}%` }}
         />
         {/* 퍼센트 텍스트 */}
         <span className="absolute inset-0 flex items-center justify-center font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#2c2418] mix-blend-multiply">
@@ -100,39 +90,23 @@ export default function LoadingProgress({ complete }: LoadingProgressProps) {
         {STEPS.map((step, i) => {
           const done = i < activeIdx || complete;
           const active = i === activeIdx && !complete;
+          const state = done ? "done" : active ? "active" : "pending";
           return (
             <li
               key={step.label}
-              className="flex items-center gap-2 font-[family-name:var(--font-pixel)] text-xs"
-              style={{
-                color: done ? "#b8883c" : active ? "#2c2418" : "#b8b0a0",
-              }}
+              data-state={state}
+              className="loading-step flex items-center gap-2 font-[family-name:var(--font-pixel)] text-xs"
             >
               <span
-                className={`inline-flex items-center justify-center w-4 h-4 border-2 ${
+                data-state={state}
+                className={`loading-step-marker inline-flex items-center justify-center w-4 h-4 border-2 ${
                   active ? "animate-px-glow" : ""
                 }`}
-                style={{
-                  borderColor: done
-                    ? "#9a7040"
-                    : active
-                      ? "#d04040"
-                      : "#d4cfc8",
-                  backgroundColor: done
-                    ? "#9a7040"
-                    : active
-                      ? "#fff4ed"
-                      : "#faf7f2",
-                  color: "#ffffff",
-                }}
               >
                 {done ? (
                   <span className="text-[0.625rem] leading-none">✓</span>
                 ) : active ? (
-                  <span
-                    className="block w-1.5 h-1.5"
-                    style={{ backgroundColor: "#d04040" }}
-                  />
+                  <span className="loading-step-dot block w-1.5 h-1.5" />
                 ) : null}
               </span>
               {step.label}

@@ -1,5 +1,10 @@
 import Link from "next/link";
 import CapsuleFrame, { type Element as ElementType } from "./CapsuleFrame";
+import {
+  COIN_PRICE_DISPLAY,
+  formatCoinCount,
+} from "@/lib/copy/gacha-terms";
+import { ELEMENT_LABEL } from "@/lib/copy/day-master";
 
 interface StatScores {
   health_score: number;
@@ -21,18 +26,13 @@ interface CharacterSlotProps {
   };
   element: ElementType;
   level: number;
-  dayMaster: string;
+  /** 비유체 라벨 (예: "깊은 바다"). 부모에서 `formatDayMasterDisplay`로 변환하여 전달. 없으면 표시 생략. */
+  dayMasterLabel?: string;
   statScores?: StatScores | null;
   characterTitle?: string | null;
+  /** 본인(메인) 캐릭터 — 골드 라이닝 + "나" 배지로 시각 위계 강조 */
+  isSelf?: boolean;
 }
-
-const ELEMENT_LABEL: Record<ElementType, string> = {
-  wood: "목(木)",
-  fire: "화(火)",
-  earth: "토(土)",
-  metal: "금(金)",
-  water: "수(水)",
-};
 
 const STAT_CONFIG = [
   { key: "health_score" as const, label: "체력", icon: "HP", color: "#d04040" },
@@ -79,9 +79,10 @@ export default function CharacterSlot({
   character,
   element,
   level,
-  dayMaster,
+  dayMasterLabel,
   statScores,
   characterTitle,
+  isSelf = false,
 }: CharacterSlotProps) {
   const isUnlocked = character.unlocked;
   const hasStats = !!statScores;
@@ -90,20 +91,28 @@ export default function CharacterSlot({
 
   // Title: from prop -> from statScores -> from element
   const displayTitle =
-    characterTitle ?? statScores?.title ?? `${ELEMENT_LABEL[element]}의 모험가`;
+    characterTitle ?? statScores?.title ?? `${ELEMENT_LABEL[element]} 기운의 모험가`;
 
   return (
     <div
       className="character-slot"
       data-element={showColor ? element : undefined}
       data-unlocked={showColor ? "true" : "false"}
+      data-self={isSelf ? "true" : undefined}
     >
+      {/* "나" 배지 — 본인 캐릭터 시각 위계 강조 */}
+      {isSelf && (
+        <span className="self-badge" aria-label="본인 캐릭터">
+          나
+        </span>
+      )}
+
       {/* Element badge - top right */}
       {showColor && (
         <span
           className="absolute top-2 right-2 font-[family-name:var(--font-pixel)] text-[0.5625rem] tracking-[0.06em] text-white/60"
         >
-          {ELEMENT_LABEL[element]}
+          {ELEMENT_LABEL[element]} 기운
         </span>
       )}
 
@@ -140,14 +149,14 @@ export default function CharacterSlot({
             {character.name}
           </div>
 
-          {/* Day master + Element */}
-          {dayMaster && (
+          {/* Day master metaphor + Element */}
+          {dayMasterLabel && (
             <div
               className={`font-[family-name:var(--font-pixel)] text-[0.625rem] mb-0.5 ${
                 showColor ? "text-white/70" : "text-[#8a8070]"
               }`}
             >
-              {dayMaster} · {ELEMENT_LABEL[element]}
+              {dayMasterLabel} · {ELEMENT_LABEL[element]}
             </div>
           )}
 
@@ -209,11 +218,26 @@ export default function CharacterSlot({
         ) : (
           <Link
             href={`/reading/preview?characterId=${character.id}`}
-            className="character-slot-btn character-slot-btn-ghost w-full"
-            aria-label="운명 열기 코인 1개 사용"
+            className="character-slot-btn character-slot-btn-gold w-full"
+            aria-label={`운명 열기 ${COIN_PRICE_DISPLAY} (${formatCoinCount(1)})`}
           >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 12 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              className="character-slot-btn-icon"
+            >
+              {/* 픽셀 캡슐 아이콘 (16비트 단순화) */}
+              <rect x="3" y="1" width="6" height="3" fill="#fff4ed" />
+              <rect x="3" y="4" width="6" height="4" fill="#d04040" />
+              <rect x="3" y="8" width="6" height="3" fill="#9a3030" />
+              <rect x="4" y="2" width="2" height="1" fill="#ffffff" />
+            </svg>
             <span>운명 열기</span>
-            <span className="character-slot-btn-price">코인 1</span>
+            <span className="character-slot-btn-price">{COIN_PRICE_DISPLAY}</span>
           </Link>
         )}
       </div>

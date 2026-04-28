@@ -3,7 +3,13 @@
 import { useRef, useState } from "react";
 import PixelFrame from "@/components/ui/PixelFrame";
 import CoinSvg from "@/components/ui/CoinSvg";
-import { formatWon, type CoinPackage } from "@/lib/coins/packages";
+import { formatWon, REFUND_WINDOW_DAYS, type CoinPackage } from "@/lib/coins/packages";
+import {
+  WALLET_LABEL,
+  BALANCE_LABEL,
+  COIN_LABEL,
+  formatCapsuleCount,
+} from "@/lib/copy/gacha-terms";
 
 interface CoinsClientProps {
   packages: CoinPackage[];
@@ -76,7 +82,7 @@ export default function CoinsClient({
         {/* 잔액 카드 */}
         <PixelFrame variant="accent" className="p-5 text-center">
           <p className="font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#8a8070] tracking-[0.25em] mb-2">
-            WALLET
+            {WALLET_LABEL}
           </p>
           <div className="flex items-center justify-center gap-2">
             <CoinSvg size={28} />
@@ -85,13 +91,13 @@ export default function CoinsClient({
             </span>
           </div>
           <p className="font-[family-name:var(--font-pixel)] text-[0.6875rem] text-[#9a7040] mt-2">
-            보유 코인
+            {BALANCE_LABEL}
           </p>
         </PixelFrame>
 
         <div className="text-center">
           <h1 className="font-[family-name:var(--font-pixel)] text-lg text-[#9a7040] mb-1">
-            코인 충전
+            {COIN_LABEL} 충전
           </h1>
           <p className="font-[family-name:var(--font-body)] text-xs text-[#6a5e4c]">
             많이 담을수록 개당 단가가 내려갑니다
@@ -142,7 +148,7 @@ export default function CoinsClient({
                       {pkg.label}
                     </span>
                     <span className="font-[family-name:var(--font-body)] text-[0.625rem] text-[#8a8070]">
-                      개당 {formatWon(pkg.perCoin)}
+                      {pkg.capsuleLabel} · 개당 {formatWon(pkg.perCoin)}
                     </span>
                   </div>
                 </div>
@@ -164,8 +170,8 @@ export default function CoinsClient({
 
         <p className="font-[family-name:var(--font-body)] text-[0.625rem] text-[#8a8070] text-center leading-relaxed">
           · 결제 후 즉시 잔액에 반영됩니다
-          <br />· 미사용 코인은 결제일 기준 7일 내 전액 환불 가능
-          <br />· 유효기간 없음 · 코인은 모든 유료 감정에 사용됩니다
+          <br />· 미사용 {COIN_LABEL}은 결제일 기준 {REFUND_WINDOW_DAYS}일 내 전액 환불 가능
+          <br />· 유효기간 없음 · {formatCapsuleCount(1)} = 유료 감정 1건
         </p>
       </div>
     </div>

@@ -39,22 +39,15 @@ const MBTI_OPTIONS = [
   ...MBTI_TYPES.map((m) => ({ value: m, label: m })),
 ];
 
-type ElementType = "wood" | "fire" | "earth" | "metal" | "water";
+import { ELEMENT_LABEL, type Element as ElementType } from "@/lib/copy/day-master";
 
+/** 월(생월)로 element를 간이 추정. dayMaster 미생성 단계의 미리보기용. */
 function getElementFromMonth(month: number): ElementType {
   if (month >= 2 && month <= 4) return "wood";
   if (month >= 5 && month <= 7) return "fire";
   if (month >= 8 && month <= 10) return "metal";
   return "water";
 }
-
-const ELEMENT_LABEL: Record<ElementType, string> = {
-  wood: "목(木)",
-  fire: "화(火)",
-  earth: "토(土)",
-  metal: "금(金)",
-  water: "수(水)",
-};
 
 export default function NewCharacterPage() {
   const [step, setStep] = useState(1);
@@ -108,9 +101,12 @@ export default function NewCharacterPage() {
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-8 bg-[#f5f0e8]">
       {/* Header */}
-      <h1 className="text-2xl mb-6 font-[family-name:var(--font-pixel)] text-[#b8883c]">
-        캐릭터 추가
+      <h1 className="text-2xl mb-2 font-[family-name:var(--font-pixel)] text-[#b8883c]">
+        가족·친구 추가
       </h1>
+      <p className="text-xs mb-6 font-[family-name:var(--font-body)] text-[#8a8070] text-center max-w-xs">
+        본인 외 인물의 사주를 새 캡슐로 등록합니다
+      </p>
 
       {/* Progress Dots */}
       <div className="flex gap-3 mb-8">
@@ -127,7 +123,7 @@ export default function NewCharacterPage() {
         {step === 1 && (
           <div className="flex flex-col gap-4">
             <label className="text-sm font-[family-name:var(--font-pixel)] text-[#9a7040]">
-              이름을 입력하세요
+              가족·친구의 이름을 입력하세요
             </label>
             <input
               type="text"
@@ -277,7 +273,7 @@ export default function NewCharacterPage() {
         {step === 3 && (
           <div className="flex flex-col gap-5 items-center">
             <p className="text-sm text-center font-[family-name:var(--font-pixel)] text-[#4a3e2c]">
-              캐릭터를 확인하세요
+              {name ? `${name}님 정보를 확인하세요` : "정보를 확인하세요"}
             </p>
 
             {/* Character Preview */}
@@ -327,7 +323,7 @@ export default function NewCharacterPage() {
                 className="flex-1"
                 disabled={loading}
               >
-                {loading ? "생성 중..." : "캐릭터 추가 "}
+                {loading ? "생성 중..." : "가족·친구 추가"}
               </PixelButton>
             </div>
           </div>

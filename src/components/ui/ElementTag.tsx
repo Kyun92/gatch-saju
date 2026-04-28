@@ -1,4 +1,5 @@
-type ElementType = "wood" | "fire" | "earth" | "metal" | "water";
+import { ELEMENT_LABEL, type Element as ElementType } from "@/lib/copy/day-master";
+
 type TagSize = "sm" | "md";
 
 interface ElementTagProps {
@@ -7,20 +8,13 @@ interface ElementTagProps {
   className?: string;
 }
 
-const ELEMENT_CHAR: Record<ElementType, string> = {
-  wood:  "木",
-  fire:  "火",
-  earth: "土",
-  metal: "金",
-  water: "水",
-};
-
-const ELEMENT_LABEL: Record<ElementType, string> = {
-  wood:  "목",
-  fire:  "화",
-  earth: "토",
-  metal: "금",
-  water: "수",
+/** 좁은 배지용 1글자 한글 라벨 (디자인 토큰). 풀 이름은 aria-label/title로 노출. */
+const ELEMENT_BADGE_CHAR: Record<ElementType, string> = {
+  wood: "나",   // 나무
+  fire: "불",
+  earth: "흙",
+  metal: "쇠",
+  water: "물",
 };
 
 const sizeStyle: Record<TagSize, { padding: string; fontSize: string }> = {
@@ -34,6 +28,7 @@ export default function ElementTag({
   className = "",
 }: ElementTagProps) {
   const { padding, fontSize } = sizeStyle[size];
+  const label = ELEMENT_LABEL[element];
 
   return (
     <span
@@ -43,9 +38,10 @@ export default function ElementTag({
         fontSize,
         fontFamily: "var(--font-pixel)",
       }}
-      title={ELEMENT_LABEL[element]}
+      title={label}
+      aria-label={`오행 - ${label}`}
     >
-      {ELEMENT_CHAR[element]}
+      {ELEMENT_BADGE_CHAR[element]}
     </span>
   );
 }

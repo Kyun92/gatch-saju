@@ -1,3 +1,5 @@
+import { formatCapsuleCount } from "@/lib/copy/gacha-terms";
+
 export type CoinPackageId = "coin_1" | "coin_3" | "coin_5" | "coin_10";
 
 export interface CoinPackage {
@@ -7,6 +9,8 @@ export interface CoinPackage {
   perCoin: number;
   discountPct: number;
   label: string;
+  /** 보조 캡슐 라벨 (UI에서 코인 라벨과 함께 노출 가능) */
+  capsuleLabel: string;
   orderName: string;
 }
 
@@ -18,6 +22,7 @@ export const COIN_PACKAGES: readonly CoinPackage[] = [
     perCoin: 990,
     discountPct: 0,
     label: "1코인",
+    capsuleLabel: formatCapsuleCount(1),
     orderName: "갓챠사주 코인 1개",
   },
   {
@@ -27,6 +32,7 @@ export const COIN_PACKAGES: readonly CoinPackage[] = [
     perCoin: 900,
     discountPct: 9,
     label: "3코인",
+    capsuleLabel: formatCapsuleCount(3),
     orderName: "갓챠사주 코인 3개",
   },
   {
@@ -36,6 +42,7 @@ export const COIN_PACKAGES: readonly CoinPackage[] = [
     perCoin: 840,
     discountPct: 15,
     label: "5코인",
+    capsuleLabel: formatCapsuleCount(5),
     orderName: "갓챠사주 코인 5개",
   },
   {
@@ -45,6 +52,7 @@ export const COIN_PACKAGES: readonly CoinPackage[] = [
     perCoin: 790,
     discountPct: 20,
     label: "10코인",
+    capsuleLabel: formatCapsuleCount(10),
     orderName: "갓챠사주 코인 10개",
   },
 ] as const;
