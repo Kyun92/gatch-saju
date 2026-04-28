@@ -338,3 +338,4 @@ TOSS_CLIENT_KEY=
 | 2026-04-28 | 일일운세 5섹션 분리 + 행운 라벨 매핑 | ui + ai/prompts.ts (DAILY_SYSTEM) + lib/copy/daily-labels.ts | P0 stat_scores 내부 키(`daily_score/70`) 노출 제거, 본문 1덩어리 → 5섹션 픽셀 카드, UpsellBanner 가격 직노출 제거 |
 | 2026-04-28 | 결제 전후 UX 신뢰 강화 | ui (6) + lib/copy/payment-errors.ts + lib/copy/loading-steps.ts + gacha-terms.ts (+6 토큰) + generate-reading.ts | Toss 친화 메시지 매핑 + 토글, generating 마이크로카피 통일, preview freeSummary 폴백 + 잠금 강화, CharacterSlot/SkillTree CTA 위계 (라이트 골드 통일), 인라인 style -17곳 |
 | 2026-04-28 | 본인=메인 프로필 정체성 재정렬 | mypage/허브/결과 (9) + lib/copy/character-vocative.ts + onboarding/actions.ts + CLAUDE.md | OAuth user.image 카드 → 본인 캐릭터 카드 통합, 허브 본인 슬롯 골드 라이닝 + "나" 배지, 결과 호칭 분기, "1계정 N캐릭터" → "1메인(본인) + N타인" 정밀화, characters/new "가족·친구 추가" 톤 |
+| 2026-04-28 | 정체성 마무리 (HubHeader + DB unique) | app/page.tsx + supabase/schema.sql + migrations | HubHeader userName 출처 → 본인 캐릭터 이름 우선, characters.is_self partial unique index로 이중 방어 (onboarding 가드 + DB 제약) |

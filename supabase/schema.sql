@@ -130,6 +130,12 @@ CREATE INDEX IF NOT EXISTS idx_payment_log_user_id ON payment_log(user_id);
 CREATE INDEX IF NOT EXISTS idx_payment_log_character_id ON payment_log(character_id);
 CREATE INDEX IF NOT EXISTS idx_payment_log_reading_id ON payment_log(reading_id);
 
+-- "1메인(본인) + N타인" 정체성: user당 본인 캐릭터(is_self=true)는 1명만.
+-- onboarding/actions.ts의 silent 가드와 함께 이중 방어.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_characters_user_self_unique
+  ON characters(user_id)
+  WHERE is_self = TRUE;
+
 -- ============================================================
 -- Credit Wallet (Coins) — 2026-04 추가
 -- Credit Wallet 모델: users.coins 잔액 + coin_transactions 이력

@@ -145,7 +145,12 @@ export default async function HubPage() {
   return (
     <div className="hub-bg min-h-screen flex flex-col">
       {/* Header */}
-      <HubHeader userName={user?.name ?? "플레이어"} balance={user?.coins ?? 0} />
+      <HubHeader
+        userName={
+          characters.find((c) => c.is_self)?.name ?? user?.name ?? "플레이어"
+        }
+        balance={user?.coins ?? 0}
+      />
 
       {/* Main content */}
       <div className="flex-1 w-full mx-auto px-4 py-5 flex flex-col gap-3 max-w-[480px]">
