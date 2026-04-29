@@ -46,22 +46,22 @@ export default function LoginPage() {
               카카오로 시작하기
             </button>
 
-            {/* Naver — 준비 중 */}
+            {/* Naver */}
             <button
-              disabled
-              aria-label="네이버 로그인 준비 중"
-              className="pixel-btn w-full px-5 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#03C75A]/40 text-white/70 border-2 border-[#02A84C]/40 border-b-4 shadow-[0_2px_0_#018A3E]/30 cursor-not-allowed"
+              onClick={() => signIn("naver", { callbackUrl: "/daily" })}
+              aria-label="네이버로 시작하기"
+              className="pixel-btn w-full px-5 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#03C75A] text-white border-2 border-[#02A84C] border-b-4 shadow-[0_2px_0_#018A3E]"
             >
-              네이버 · 준비 중
+              네이버로 시작하기
             </button>
 
-            {/* Google — 준비 중 */}
+            {/* Google */}
             <button
-              disabled
-              aria-label="구글 로그인 준비 중"
-              className="pixel-btn w-full px-5 py-3 text-sm font-[family-name:var(--font-pixel)] bg-white/60 text-[#333333]/50 border-2 border-[#DDDDDD] border-b-4 shadow-[0_2px_0_#BBBBBB] cursor-not-allowed"
+              onClick={() => signIn("google", { callbackUrl: "/daily" })}
+              aria-label="구글로 시작하기"
+              className="pixel-btn w-full px-5 py-3 text-sm font-[family-name:var(--font-pixel)] bg-white text-[#333333] border-2 border-[#DDDDDD] border-b-4 shadow-[0_2px_0_#BBBBBB]"
             >
-              Google · 준비 중
+              Google로 시작하기
             </button>
           </div>
         </PixelFrame>

@@ -39,6 +39,10 @@ vercel env add NEXTAUTH_SECRET production
 | `NEXT_PUBLIC_SITE_URL` | 배포 도메인 | `NEXTAUTH_URL`과 동일 값 |
 | `KAKAO_CLIENT_ID` | [카카오 개발자](https://developers.kakao.com) → 내 애플리케이션 → 앱 설정 → **REST API 키** | |
 | `KAKAO_CLIENT_SECRET` | 동일 콘솔 → 제품 설정 → **카카오 로그인** → Client Secret 코드 | 미발급 상태면 '설정' → 코드 생성 + '사용함' 체크 |
+| `NAVER_CLIENT_ID` | [네이버 개발자센터](https://developers.naver.com/apps) → 애플리케이션 등록 → **Client ID** | API 권한: '네이버 로그인' 추가 |
+| `NAVER_CLIENT_SECRET` | 동일 콘솔 → **Client Secret** | |
+| `GOOGLE_CLIENT_ID` | [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → 사용자 인증 정보 만들기 → **OAuth 2.0 클라이언트 ID** | 애플리케이션 유형: 웹 |
+| `GOOGLE_CLIENT_SECRET` | 동일 콘솔 → 클라이언트 시크릿 | |
 | `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/app/apikey) → Create API Key | |
 | `TOSS_SECRET_KEY` | [토스페이먼츠 개발자센터](https://developers.tosspayments.com) → 내 개발 → **시크릿 키** | 라이브 키 발급까지 심사 통과 후 가능, 초기는 테스트 키로 |
 | `NEXT_PUBLIC_TOSS_CLIENT_KEY` | 동일 콘솔 → **클라이언트 키** | |
@@ -60,16 +64,31 @@ vercel env add NEXTAUTH_SECRET production
 
 ---
 
-## 4. 카카오 OAuth 후속 작업
+## 4. OAuth 후속 작업 (3개 Provider)
 
-환경변수 등록과 별개로 **카카오 개발자 콘솔**에서 Redirect URI 허용 목록에 프로덕션 URL을 추가해야 로그인이 동작한다.
+환경변수 등록과 별개로 **각 Provider 콘솔**에서 Redirect URI 허용 목록에 프로덕션 URL을 추가해야 로그인이 동작한다.
 
-- 카카오 콘솔 → 내 애플리케이션 → 제품 설정 → **카카오 로그인** → 활성화 ON
-- Redirect URI에 다음 추가:
-  ```
-  https://{배포도메인}/api/auth/callback/kakao
-  ```
-- 커스텀 도메인 사용 시 **두 개 모두** 등록 (vercel.app + 커스텀) 해두면 안전
+### 카카오
+- 콘솔 → 내 애플리케이션 → 제품 설정 → **카카오 로그인** → 활성화 ON
+- Redirect URI: `https://{배포도메인}/api/auth/callback/kakao`
+
+### 네이버
+- [네이버 개발자센터](https://developers.naver.com/apps) → 애플리케이션 등록
+- 사용 API: '네이버 로그인' 체크
+- 서비스 환경: PC 웹
+- 서비스 URL: `https://{배포도메인}`
+- Callback URL: `https://{배포도메인}/api/auth/callback/naver`
+
+### 구글
+- [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → 사용자 인증 정보 만들기 → OAuth 2.0 클라이언트 ID
+- 애플리케이션 유형: 웹
+- 승인된 리디렉션 URI: `https://{배포도메인}/api/auth/callback/google`
+- (선택) 승인된 자바스크립트 출처: `https://{배포도메인}`
+
+> 커스텀 도메인 사용 시 **두 개 모두** 등록 (vercel.app + 커스텀) 해두면 안전.
+
+### Provider 가드 (코드)
+`lib/auth.ts`는 env가 누락된 Provider를 자동으로 등록하지 않는다. NAVER/GOOGLE env가 비어 있으면 해당 버튼은 클릭 시 NextAuth 에러가 나므로, Provider 활성화 전엔 외부 콘솔 등록 + env 주입을 먼저 끝내야 한다.
 
 ---
 
@@ -80,9 +99,9 @@ vercel env add NEXTAUTH_SECRET production
 - 코드상 `NODE_ENV === "production"`일 때 강제 false safeguard가 있지만 **이중 방어**.
 - 실수로 등록될 경우 결제는 정상이나 감정 생성이 mock 데이터로 돌아가 참사.
 
-### ❌ `NAVER_*`, `GOOGLE_*`
-- 현재 네이버/구글 로그인은 UI에서 "준비 중"으로 비활성화됨.
-- 해당 키 등록 불필요. 나중에 활성화 시 카카오와 동일 절차로 추가.
+### ✅ `NAVER_*`, `GOOGLE_*` (활성화됨 — 2026-04-29)
+- UI 활성화 완료. env 누락 시 코드 측에서 Provider 미등록 (런타임 에러 X).
+- env 주입 + 외부 콘솔 Redirect URI 등록 후 정상 동작.
 
 ---
 
@@ -117,10 +136,10 @@ vercel env add NEXTAUTH_SECRET production
 | `NEXTAUTH_URL` | **서버 전용** | ✅ | NextAuth 자동 |
 | `KAKAO_CLIENT_ID` | **서버 전용** | ✅ | `lib/auth.ts` |
 | `KAKAO_CLIENT_SECRET` | **서버 전용** | ✅ | `lib/auth.ts` |
-| `NAVER_CLIENT_ID` | **서버 전용** | ⚠️ | `lib/auth.ts` (UI 비활성이지만 코드 import — non-null `!` 사용. 더미 값이라도 등록 권장) |
-| `NAVER_CLIENT_SECRET` | **서버 전용** | ⚠️ | 동일 |
-| `GOOGLE_CLIENT_ID` | **서버 전용** | ⚠️ | 동일 |
-| `GOOGLE_CLIENT_SECRET` | **서버 전용** | ⚠️ | 동일 |
+| `NAVER_CLIENT_ID` | **서버 전용** | ✅ | `lib/auth.ts` (조건부 Provider 등록 — env 누락 시 미등록) |
+| `NAVER_CLIENT_SECRET` | **서버 전용** | ✅ | 동일 |
+| `GOOGLE_CLIENT_ID` | **서버 전용** | ✅ | `lib/auth.ts` (조건부 Provider 등록 — env 누락 시 미등록) |
+| `GOOGLE_CLIENT_SECRET` | **서버 전용** | ✅ | 동일 |
 | `GEMINI_API_KEY` | **서버 전용** | ✅ | `lib/ai/gemini.ts`, `stat-scorer.ts`, `free-stat-scorer.ts` |
 | `TOSS_SECRET_KEY` | **서버 전용** | ✅ | `lib/payments/toss.ts` |
 | `USE_MOCK_READINGS` | **dev only** | ❌ | `lib/reading/generate-reading.ts` (production 강제 false 가드) |
