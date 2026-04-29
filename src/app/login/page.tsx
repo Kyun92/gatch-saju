@@ -8,15 +8,7 @@ import TriSystemSymbol from "@/components/hub/TriSystemSymbol";
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f0e8]">
-      <div
-        className="flex-1 flex flex-col items-center justify-center px-4 py-8"
-        style={{
-          backgroundImage:
-            "radial-gradient(ellipse at 20% 50%, rgba(46,139,78,0.06) 0%, transparent 50%), " +
-            "radial-gradient(ellipse at 80% 30%, rgba(48,112,192,0.06) 0%, transparent 50%), " +
-            "radial-gradient(ellipse at 50% 80%, rgba(208,64,64,0.05) 0%, transparent 50%)",
-        }}
-      >
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 login-backdrop">
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="mb-3 animate-px-glow inline-block px-6 py-2 m-0 leading-none">

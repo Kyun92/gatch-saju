@@ -1716,6 +1716,262 @@ a:hover .skill-node-coin {
   animation: skill-node-pulse 2.4s ease-in-out infinite;
 }
 
+/* ---- ShareButtons (SNS 공유 — 결과 페이지 보조 CTA) ---- */
+.share-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-family: var(--font-pixel);
+  font-size: 0.875rem;
+  color: #9a7040;
+  background: transparent;
+  border: 2px solid #b8944c;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.share-button:hover {
+  background-color: rgba(154, 112, 64, 0.08);
+}
+
+.share-button:active {
+  background-color: rgba(154, 112, 64, 0.16);
+}
+
+.share-button-icon {
+  font-size: 0.875rem;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* ============================================================
+   LANE A — UI 코어 / 레이아웃 / 랜딩·로딩 / 궁합 인라인 마이그레이션
+   (Tailwind v4 utilities 레이어 우선순위 충돌 회피용 컴포넌트 클래스)
+   ============================================================ */
+
+/* ---- App body / html ---- */
+.app-body {
+  background-color: #f5f0e8;
+  color: #2c2418;
+  font-family: var(--font-body);
+}
+
+/* ---- Pixel font helper (var(--font-pixel) shorthand) ---- */
+.font-pixel {
+  font-family: var(--font-pixel);
+}
+
+/* ---- PixelDivider ---- */
+.px-divider {
+  border: none;
+  border-top: 1px dashed #b8944c;
+}
+
+.px-divider-line {
+  border-top: 1px dashed #b8944c;
+}
+
+.px-divider-label {
+  font-family: var(--font-pixel);
+  color: #b8944c;
+}
+
+/* ---- PixelSelect ---- */
+.px-select-trigger {
+  font-family: var(--font-pixel);
+  background-color: #faf7f2;
+  color: #2c2418;
+  border: 2px solid #b8944c;
+  border-radius: 0;
+  outline: none;
+  cursor: pointer;
+}
+
+.px-select-trigger:disabled {
+  background-color: #eee8dc;
+  color: #a09888;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.px-select-caret {
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  color: #9a7040;
+  margin-left: 8px;
+  flex-shrink: 0;
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.px-select-list {
+  z-index: 50;
+  max-height: 200px;
+  background-color: #faf7f2;
+  border: 2px solid #b8944c;
+  border-top: none;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+}
+
+.px-select-option {
+  font-family: var(--font-pixel);
+  background-color: transparent;
+  color: #2c2418;
+}
+
+.px-select-option:hover {
+  background-color: #f0ebe0;
+}
+
+.px-select-option[data-selected="true"] {
+  background-color: #c8a020;
+  color: #ffffff;
+}
+
+.px-select-option[data-selected="true"]:hover {
+  background-color: #c8a020;
+  color: #ffffff;
+}
+
+/* ---- Global error fallback (server-rendered, no Tailwind on html/body) ---- */
+.global-error-body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #f5f0e8;
+  color: #2c2418;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Sans KR', system-ui, -apple-system, sans-serif;
+  padding: 1rem;
+}
+
+.global-error-card {
+  background-color: #ffffff;
+  border: 2px solid #b8944c;
+  padding: 1.5rem;
+  max-width: 360px;
+  text-align: center;
+}
+
+.global-error-icon {
+  font-size: 2.25rem;
+  color: #d04040;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.global-error-title {
+  font-size: 1rem;
+  color: #d04040;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.global-error-text {
+  font-size: 0.8125rem;
+  color: #4a3e2c;
+  margin-bottom: 1.5rem;
+}
+
+.global-error-digest {
+  font-size: 0.625rem;
+  color: #8a8070;
+  margin-bottom: 1rem;
+}
+
+.global-error-button {
+  background-color: #9a7040;
+  color: #ffffff;
+  border: none;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+/* ---- Landing/login: 3-element radial backdrop ---- */
+.landing-backdrop {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(46, 139, 78, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 30%, rgba(48, 112, 192, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 80%, rgba(208, 64, 64, 0.06) 0%, transparent 55%);
+}
+
+.login-backdrop {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(46, 139, 78, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(48, 112, 192, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(208, 64, 64, 0.05) 0%, transparent 50%);
+}
+
+/* ---- 모바일 max-width 480px 컨테이너 ---- */
+.app-mobile-container {
+  max-width: 480px;
+}
+
+/* ---- Character detail hero section (element-bg-* 위에 덧입혀짐) ---- */
+.character-hero-frame {
+  margin-bottom: 16px;
+  border: 2px solid;
+}
+
+/* ---- FortuneTipCard 카드 박스 ---- */
+.fortune-tip-card {
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.08);
+}
+
+/* ---- GachaHero StickerBadge 박스 (정적 그림자) ---- */
+.gacha-sticker-badge {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* ---- PixelStarfield 별 픽셀화 ---- */
+.starfield-dot {
+  image-rendering: pixelated;
+}
+
+/* ---- Compatibility selector slot (정적 박스) ---- */
+.compat-vs-slot {
+  background-color: #faf7f2;
+}
+
+.compat-vs-slot-active {
+  border-color: #b8944c;
+}
+
+.compat-vs-slot-empty {
+  border-color: #d4cfc8;
+}
+
+.compat-card-btn {
+  min-width: 72px;
+  background-color: #ffffff;
+  border: 2px solid #e8e0d0;
+}
+
+.compat-card-btn[data-selected="true"] {
+  background-color: rgba(200, 160, 32, 0.12);
+  border-color: #9a7040;
+}
+
+/* ---- 픽셀 이미지 렌더링 utility (compat 카드 등에서 다용) ---- */
+.pixelated {
+  image-rendering: pixelated;
+}
+
+.crisp-edges {
+  shape-rendering: crispEdges;
+}
+
 /* ============================================================
    PRINT STYLES
    ============================================================ */

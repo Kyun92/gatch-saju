@@ -74,29 +74,14 @@ export default function PixelSelect({
         type="button"
         disabled={disabled}
         onClick={() => !disabled && setOpen((prev) => !prev)}
-        className="w-full px-4 py-3 text-sm text-left flex items-center justify-between"
-        style={{
-          fontFamily: "var(--font-pixel)",
-          backgroundColor: disabled ? "#eee8dc" : "#faf7f2",
-          color: disabled ? "#a09888" : "#2c2418",
-          border: "2px solid #b8944c",
-          borderRadius: 0,
-          outline: "none",
-          cursor: disabled ? "not-allowed" : "pointer",
-          opacity: disabled ? 0.6 : 1,
-        }}
+        className="w-full px-4 py-3 text-sm text-left flex items-center justify-between px-select-trigger"
       >
         <span className="truncate">{selectedLabel}</span>
         <span
+          className="px-select-caret"
+          data-open={open}
           style={{
-            fontFamily: "var(--font-pixel)",
-            fontSize: "0.625rem",
-            color: "#9a7040",
-            marginLeft: 8,
-            flexShrink: 0,
             transform: open ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.15s ease",
-            display: "inline-block",
           }}
         >
           ▼
@@ -107,19 +92,7 @@ export default function PixelSelect({
       {open && (
         <ul
           ref={listRef}
-          className="absolute left-0 right-0 overflow-y-auto"
-          style={{
-            zIndex: 50,
-            maxHeight: 200,
-            backgroundColor: "#faf7f2",
-            border: "2px solid #b8944c",
-            borderTop: "none",
-            borderRadius: 0,
-            margin: 0,
-            padding: 0,
-            listStyle: "none",
-            boxShadow: "0 4px 0 rgba(0,0,0,0.08)",
-          }}
+          className="absolute left-0 right-0 overflow-y-auto px-select-list"
         >
           {options.map((opt) => {
             const isSelected = opt.value === value;
@@ -131,24 +104,7 @@ export default function PixelSelect({
                   onChange(opt.value);
                   close();
                 }}
-                className="px-4 py-2.5 text-sm cursor-pointer"
-                style={{
-                  fontFamily: "var(--font-pixel)",
-                  backgroundColor: isSelected ? "#c8a020" : "transparent",
-                  color: isSelected ? "#ffffff" : "#2c2418",
-                }}
-                onMouseEnter={(e) => {
-                  if (!isSelected) {
-                    (e.currentTarget as HTMLElement).style.backgroundColor =
-                      "#f0ebe0";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isSelected) {
-                    (e.currentTarget as HTMLElement).style.backgroundColor =
-                      "transparent";
-                  }
-                }}
+                className="px-4 py-2.5 text-sm cursor-pointer px-select-option"
               >
                 {opt.label}
               </li>

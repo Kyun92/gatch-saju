@@ -9,15 +9,7 @@ import { motion } from "framer-motion";
 
 export default function LandingPage() {
   return (
-    <div
-      className="relative flex-1 min-h-[100svh] overflow-hidden flex flex-col items-center justify-between px-4 py-6 bg-[#f5f0e8]"
-      style={{
-        backgroundImage:
-          "radial-gradient(ellipse at 20% 50%, rgba(46,139,78,0.08) 0%, transparent 55%), " +
-          "radial-gradient(ellipse at 80% 30%, rgba(48,112,192,0.08) 0%, transparent 55%), " +
-          "radial-gradient(ellipse at 50% 80%, rgba(208,64,64,0.06) 0%, transparent 55%)",
-      }}
-    >
+    <div className="relative flex-1 min-h-[100svh] overflow-hidden flex flex-col items-center justify-between px-4 py-6 bg-[#f5f0e8] landing-backdrop">
       <PixelStarfield />
 
       {/* 상단: 네온 간판 */}

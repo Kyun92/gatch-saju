@@ -89,7 +89,7 @@ export default function DevReadingPage() {
       <ReadingAccordion htmlContent={READING_HTML_KIMHS} />
 
       {/* 하단 CTA */}
-      <ReadingCTA />
+      <ReadingCTA readingId="dev-preview" characterName="임승균" />
 
       <div className="h-16" />
     </div>

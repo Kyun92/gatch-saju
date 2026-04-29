@@ -27,6 +27,53 @@ interface ReadingDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: ReadingDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = createServerSupabaseClient();
+  const { data: reading } = await supabase
+    .from("readings")
+    .select("character_id, character_title, status")
+    .eq("id", id)
+    .eq("status", "complete")
+    .single();
+
+  if (!reading) {
+    return { title: "운명 캡슐 — 갓챠사주" };
+  }
+
+  const { data: character } = await supabase
+    .from("characters")
+    .select("name")
+    .eq("id", reading.character_id)
+    .single();
+
+  const name = character?.name ?? "운명 캡슐";
+  const title = `${name}님의 운명 풀이 — 갓챠사주`;
+  const description = reading.character_title
+    ? `「${reading.character_title}」 — 990원으로 운명 캡슐 뽑기`
+    : "사주 + 자미두수 + 점성 + MBTI 4축 종합 운세";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [`/api/og/reading/${id}`],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`/api/og/reading/${id}`],
+    },
+  };
+}
+
 /** Extract keywords from intro section highlight-box */
 function extractKeywords(htmlContent: string): string | undefined {
   const introRegex =
@@ -242,7 +289,7 @@ export default async function ReadingDetailPage({
         <CompatibilityAccordion htmlContent={htmlContent} />
 
         {/* CTA */}
-        <ReadingCTA />
+        <ReadingCTA readingId={id} characterName={character?.name ?? "운명 캡슐"} />
 
         <div className="h-16" />
       </div>
@@ -296,7 +343,7 @@ export default async function ReadingDetailPage({
         />
 
         {/* 하단 CTA */}
-        <ReadingCTA />
+        <ReadingCTA readingId={id} characterName={character?.name ?? "운명 캡슐"} />
 
         {/* 하단 네비 공간 확보 */}
         <div className="h-16" />
@@ -360,7 +407,7 @@ export default async function ReadingDetailPage({
         />
 
         {/* 하단 CTA */}
-        <ReadingCTA />
+        <ReadingCTA readingId={id} characterName={character?.name ?? "운명 캡슐"} />
 
         {/* 하단 네비 공간 확보 */}
         <div className="h-16" />
@@ -413,7 +460,7 @@ export default async function ReadingDetailPage({
       <ReadingAccordion htmlContent={htmlContent} />
 
       {/* 하단 CTA */}
-      <ReadingCTA />
+      <ReadingCTA readingId={id} characterName={character?.name ?? "운명 캡슐"} />
 
       {/* 하단 네비 공간 확보 */}
       <div className="h-16" />

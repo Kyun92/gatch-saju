@@ -4,6 +4,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 const STATIC_PATHS = [
   "/api/auth",
+  "/api/og", // OG 이미지 (SNS 공유용 무인증 공개 — 화이트리스트 필드만 노출)
   "/_next",
   "/fonts",
   "/favicon.ico",
