@@ -57,20 +57,10 @@ export function LoginModal({
                 >
                   카카오로 시작하기
                 </button>
-                <button
-                  onClick={() => signIn("naver", { callbackUrl: "/daily" })}
-                  aria-label="네이버로 시작하기"
-                  className="pixel-btn w-full px-5 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#03C75A] text-white border-2 border-[#02A84C] border-b-4 shadow-[0_2px_0_#018A3E]"
-                >
-                  네이버로 시작하기
-                </button>
-                <button
-                  onClick={() => signIn("google", { callbackUrl: "/daily" })}
-                  aria-label="구글로 시작하기"
-                  className="pixel-btn w-full px-5 py-3 text-sm font-[family-name:var(--font-pixel)] bg-white text-[#333333] border-2 border-[#DDDDDD] border-b-4 shadow-[0_2px_0_#BBBBBB]"
-                >
-                  Google로 시작하기
-                </button>
+                {/*
+                  네이버/구글 버튼은 출시 1차에서 비활성화.
+                  활성화 시 login/page.tsx와 동시에 복원.
+                */}
                 <button
                   onClick={onClose}
                   className="pixel-btn w-full px-5 py-2 mt-2 text-xs font-[family-name:var(--font-pixel)] bg-[#e2d8c3] text-[#8a8070] border-2 border-[#d0c6b3] border-b-4 shadow-[0_2px_0_#c0b6a3]"

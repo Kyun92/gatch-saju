@@ -46,23 +46,12 @@ export default function LoginPage() {
               카카오로 시작하기
             </button>
 
-            {/* Naver */}
-            <button
-              onClick={() => signIn("naver", { callbackUrl: "/daily" })}
-              aria-label="네이버로 시작하기"
-              className="pixel-btn w-full px-5 py-3 text-sm font-[family-name:var(--font-pixel)] bg-[#03C75A] text-white border-2 border-[#02A84C] border-b-4 shadow-[0_2px_0_#018A3E]"
-            >
-              네이버로 시작하기
-            </button>
-
-            {/* Google */}
-            <button
-              onClick={() => signIn("google", { callbackUrl: "/daily" })}
-              aria-label="구글로 시작하기"
-              className="pixel-btn w-full px-5 py-3 text-sm font-[family-name:var(--font-pixel)] bg-white text-[#333333] border-2 border-[#DDDDDD] border-b-4 shadow-[0_2px_0_#BBBBBB]"
-            >
-              Google로 시작하기
-            </button>
+            {/*
+              네이버/구글 버튼은 출시 1차에서 비활성화.
+              네이버 검수 일정 + 구글 OAuth 검토로 출시 지연 회피 목적.
+              auth.ts의 buildProviders()는 env 누락 시 Provider 미등록(런타임 안전).
+              활성화 절차: docs/vercel-env-setup.md §4 + Obsidian "OAuth 키 발급 가이드".
+            */}
           </div>
         </PixelFrame>
 

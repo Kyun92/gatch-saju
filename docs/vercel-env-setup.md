@@ -99,9 +99,13 @@ vercel env add NEXTAUTH_SECRET production
 - 코드상 `NODE_ENV === "production"`일 때 강제 false safeguard가 있지만 **이중 방어**.
 - 실수로 등록될 경우 결제는 정상이나 감정 생성이 mock 데이터로 돌아가 참사.
 
-### ✅ `NAVER_*`, `GOOGLE_*` (활성화됨 — 2026-04-29)
-- UI 활성화 완료. env 누락 시 코드 측에서 Provider 미등록 (런타임 에러 X).
-- env 주입 + 외부 콘솔 Redirect URI 등록 후 정상 동작.
+### 🚧 `NAVER_*`, `GOOGLE_*` (출시 1차에선 UI 비활성 — 2026-04-29 결정)
+- 네이버 검수 일정 + 구글 OAuth 검토 시간으로 출시 지연 회피 목적
+- 코드(`lib/auth.ts buildProviders()`) 조건부 Provider 등록 로직은 그대로 보존
+- 출시 1차에서는 env 4종(`NAVER_*`, `GOOGLE_*`) 등록 **불필요** — 카카오 단일 진입
+- 활성화 절차 (출시 후): UI 버튼 복원(`login/page.tsx`/`LoginModal.tsx`)
+  + Vercel env 4종 추가 + 외부 콘솔 Redirect URI 등록 + Redeploy
+- 발급 가이드: Obsidian `0_Project/사주_프로젝트/OAuth 키 발급 가이드 (네이버·구글).md`
 
 ---
 
@@ -136,10 +140,10 @@ vercel env add NEXTAUTH_SECRET production
 | `NEXTAUTH_URL` | **서버 전용** | ✅ | NextAuth 자동 |
 | `KAKAO_CLIENT_ID` | **서버 전용** | ✅ | `lib/auth.ts` |
 | `KAKAO_CLIENT_SECRET` | **서버 전용** | ✅ | `lib/auth.ts` |
-| `NAVER_CLIENT_ID` | **서버 전용** | ✅ | `lib/auth.ts` (조건부 Provider 등록 — env 누락 시 미등록) |
-| `NAVER_CLIENT_SECRET` | **서버 전용** | ✅ | 동일 |
-| `GOOGLE_CLIENT_ID` | **서버 전용** | ✅ | `lib/auth.ts` (조건부 Provider 등록 — env 누락 시 미등록) |
-| `GOOGLE_CLIENT_SECRET` | **서버 전용** | ✅ | 동일 |
+| `NAVER_CLIENT_ID` | **서버 전용** | 🚧 | 출시 1차 UI 비활성 — env 미등록 OK. 활성화 시 `lib/auth.ts` 조건부 Provider 자동 인식 |
+| `NAVER_CLIENT_SECRET` | **서버 전용** | 🚧 | 동일 |
+| `GOOGLE_CLIENT_ID` | **서버 전용** | 🚧 | 출시 1차 UI 비활성 — env 미등록 OK. 활성화 시 `lib/auth.ts` 조건부 Provider 자동 인식 |
+| `GOOGLE_CLIENT_SECRET` | **서버 전용** | 🚧 | 동일 |
 | `GEMINI_API_KEY` | **서버 전용** | ✅ | `lib/ai/gemini.ts`, `stat-scorer.ts`, `free-stat-scorer.ts` |
 | `TOSS_SECRET_KEY` | **서버 전용** | ✅ | `lib/payments/toss.ts` |
 | `USE_MOCK_READINGS` | **dev only** | ❌ | `lib/reading/generate-reading.ts` (production 강제 false 가드) |
