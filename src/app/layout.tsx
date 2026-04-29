@@ -53,17 +53,9 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${notoSansKR.variable} h-full`}
-      style={{ colorScheme: "light" }}
+      className={`${notoSansKR.variable} h-full color-scheme-light`}
     >
-      <body
-        className="min-h-screen flex flex-col antialiased"
-        style={{
-          backgroundColor: "#f5f0e8",
-          color: "#2c2418",
-          fontFamily: "var(--font-body)",
-        }}
-      >
+      <body className="min-h-screen flex flex-col antialiased app-body">
         <SessionProvider>
           {/* flex-1로 짧은 페이지에서도 Footer가 viewport 바닥에 붙도록.
               스크롤은 window가 받는다 (SubPageHeader sticky top-0 → window 기준). */}

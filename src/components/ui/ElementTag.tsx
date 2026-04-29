@@ -17,9 +17,9 @@ const ELEMENT_BADGE_CHAR: Record<ElementType, string> = {
   water: "물",
 };
 
-const sizeStyle: Record<TagSize, { padding: string; fontSize: string }> = {
-  sm: { padding: "2px 6px",  fontSize: "0.6875rem" },
-  md: { padding: "4px 10px", fontSize: "0.8125rem" },
+const sizeClass: Record<TagSize, string> = {
+  sm: "px-1.5 py-[2px] text-[0.6875rem]",
+  md: "px-2.5 py-1 text-[0.8125rem]",
 };
 
 export default function ElementTag({
@@ -27,17 +27,11 @@ export default function ElementTag({
   size = "md",
   className = "",
 }: ElementTagProps) {
-  const { padding, fontSize } = sizeStyle[size];
   const label = ELEMENT_LABEL[element];
 
   return (
     <span
-      className={`tag-base tag-${element} ${className}`}
-      style={{
-        padding,
-        fontSize,
-        fontFamily: "var(--font-pixel)",
-      }}
+      className={`tag-base tag-${element} font-pixel ${sizeClass[size]} ${className}`}
       title={label}
       aria-label={`오행 - ${label}`}
     >

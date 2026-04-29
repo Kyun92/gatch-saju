@@ -20,11 +20,6 @@ export default function PixelFrame({
   children,
 }: PixelFrameProps) {
   return (
-    <div
-      className={`${variantClass[variant]} ${className}`}
-      style={{ borderRadius: 0, boxShadow: undefined }}
-    >
-      {children}
-    </div>
+    <div className={`${variantClass[variant]} ${className}`}>{children}</div>
   );
 }

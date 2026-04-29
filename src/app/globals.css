@@ -1716,6 +1716,13 @@ a:hover .skill-node-coin {
   animation: skill-node-pulse 2.4s ease-in-out infinite;
 }
 
+/* ---- FourElementFusion 픽셀 SVG (랜딩) ---- */
+.four-element-svg {
+  shape-rendering: crispEdges;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* ---- ShareButtons (SNS 공유 — 결과 페이지 보조 CTA) ---- */
 .share-button {
   display: inline-flex;
@@ -1755,6 +1762,10 @@ a:hover .skill-node-coin {
    ============================================================ */
 
 /* ---- App body / html ---- */
+.color-scheme-light {
+  color-scheme: light;
+}
+
 .app-body {
   background-color: #f5f0e8;
   color: #2c2418;

@@ -21,16 +21,13 @@ export default function StatBar({
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
       <div className="flex items-center justify-between">
-        <span
-          className="flex items-center gap-1 text-xs"
-          style={{ fontFamily: "var(--font-pixel)", color: "#2c2418" }}
-        >
+        <span className="flex items-center gap-1 text-xs font-pixel text-[#2c2418]">
           {icon && <span>{icon}</span>}
           <span>{label}</span>
         </span>
         <span
-          className="text-xs tabular-nums"
-          style={{ fontFamily: "var(--font-pixel)", color }}
+          className="text-xs tabular-nums font-pixel"
+          style={{ color }}
         >
           {clamped}/{max}
         </span>

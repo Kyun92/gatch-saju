@@ -62,14 +62,13 @@ export default function PixelButton({
         type={type}
         disabled={disabled}
         onClick={onClick}
-        className={`pixel-btn ${sizeClass[size]} ${className}`}
+        className={`pixel-btn font-pixel ${sizeClass[size]} ${className}`}
         style={{
           backgroundColor: el.bg,
           color: el.color,
           border: `2px solid ${el.border}`,
           borderBottomWidth: "4px",
           boxShadow: `0 2px 0 ${el.shadow}`,
-          fontFamily: "var(--font-pixel)",
         }}
       >
         {children}
@@ -82,8 +81,7 @@ export default function PixelButton({
       type={type}
       disabled={disabled}
       onClick={onClick}
-      className={`${variantClass[variant] ?? variantClass.primary} ${sizeClass[size]} ${className}`}
-      style={{ fontFamily: "var(--font-pixel)" }}
+      className={`${variantClass[variant] ?? variantClass.primary} ${sizeClass[size]} font-pixel ${className}`}
     >
       {children}
     </button>

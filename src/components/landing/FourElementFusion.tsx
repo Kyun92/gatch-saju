@@ -23,7 +23,7 @@ const ELEMENTS: ElementProps[] = [
     xOffset: 65,
     yOffset: 65,
     svg: (
-      <svg width="16" height="16" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style={{ shapeRendering: "crispEdges", display: "inline-block", verticalAlign: "middle" }}>
+      <svg width="16" height="16" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" className="four-element-svg">
         <rect x="2" y="0" width="4" height="8" fill="#333"/>
         <rect x="0" y="2" width="8" height="4" fill="#333"/>
         <rect x="1" y="1" width="6" height="6" fill="#333"/>
@@ -43,7 +43,7 @@ const ELEMENTS: ElementProps[] = [
     xOffset: -65,
     yOffset: 65,
     svg: (
-      <svg width="16" height="16" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style={{ shapeRendering: "crispEdges", display: "inline-block", verticalAlign: "middle" }}>
+      <svg width="16" height="16" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" className="four-element-svg">
         <rect x="3" y="0" width="2" height="8" fill="#FBBF24"/>
         <rect x="0" y="3" width="8" height="2" fill="#FBBF24"/>
         <rect x="2" y="2" width="4" height="4" fill="#FBBF24"/>
@@ -59,7 +59,7 @@ const ELEMENTS: ElementProps[] = [
     xOffset: -65,
     yOffset: -65,
     svg: (
-      <svg width="16" height="16" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style={{ shapeRendering: "crispEdges", display: "inline-block", verticalAlign: "middle" }}>
+      <svg width="16" height="16" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" className="four-element-svg">
         <rect x="2" y="1" width="2" height="1" fill="#FBBF24"/>
         <rect x="1" y="2" width="2" height="4" fill="#FBBF24"/>
         <rect x="2" y="6" width="2" height="1" fill="#FBBF24"/>
@@ -75,7 +75,7 @@ const ELEMENTS: ElementProps[] = [
     xOffset: 65,
     yOffset: -65,
     svg: (
-      <svg width="16" height="16" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style={{ shapeRendering: "crispEdges", display: "inline-block", verticalAlign: "middle" }}>
+      <svg width="16" height="16" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" className="four-element-svg">
         <rect x="1" y="0" width="2" height="2" fill="#34D399"/>
         <rect x="5" y="0" width="2" height="2" fill="#A78BFA"/>
         <rect x="3" y="3" width="2" height="2" fill="#34D399"/>
@@ -127,8 +127,7 @@ function DestinyCapsule() {
 export default function FourElementFusion() {
   return (
     <div
-      className="relative mx-auto my-6 flex items-center justify-center filter drop-shadow-md"
-      style={{ width: 220, height: 220 }}
+      className="relative mx-auto my-6 flex items-center justify-center filter drop-shadow-md w-[220px] h-[220px]"
       aria-label="명리, 자미, 점성, MBTI 4요소 교차분석"
     >
       <div className="absolute inset-x-0 -top-8 text-center font-[family-name:var(--font-pixel)] text-[0.625rem] text-[#6a5e4c]">
