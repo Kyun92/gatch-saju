@@ -1,4 +1,4 @@
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 
 const ALLOWED_TAGS = [
   "section",
@@ -24,9 +24,10 @@ const ALLOWED_TAGS = [
 ];
 
 export function sanitizeReadingHtml(dirty: string): string {
-  return DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS,
-    ALLOWED_ATTR: ["class", "id"],
-    ALLOW_ARIA_ATTR: true,
+  return sanitizeHtml(dirty, {
+    allowedTags: ALLOWED_TAGS,
+    allowedAttributes: {
+      "*": ["class", "id", "aria-*"],
+    },
   });
 }
