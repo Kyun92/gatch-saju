@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+
+// Vercel Hobby 함수 한도. fire-and-forget 백그라운드가 잘리지 않도록 명시.
+export const maxDuration = 60;
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { generateComprehensiveReading, generateCompatibilityReading, generateCategoryReading } from "@/lib/ai/gemini";
 import { generateYearlyReading } from "@/lib/ai/gemini";
@@ -146,7 +149,48 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create reading row with pending status
+    // 차트 미리 계산 (Edge Function 워커가 readings.charts_data로 받아 사용).
+    // compatibility는 두 번째 캐릭터 차트도 함께, yearly는 간지를 합쳐 저장한다.
+    const primaryBirthInfo: BirthInfo = {
+      name: character.name ?? "",
+      birthDate: character.birth_date,
+      birthTime: character.birth_time,
+      birthCity: character.birth_city,
+      birthLat: character.birth_lat,
+      birthLng: character.birth_lng,
+      gender: character.gender as "male" | "female",
+      timezone: character.timezone ?? "Asia/Seoul",
+    };
+    const primaryCharts = generateAllCharts(primaryBirthInfo);
+    const chartsForStorage: AllCharts & {
+      _secondary?: AllCharts;
+      _yearlyGanZhi?: ReturnType<typeof getYearlyGanZhi>;
+    } = { ...primaryCharts };
+
+    if (type === "compatibility" && character2) {
+      const secondaryBirthInfo: BirthInfo = {
+        name: character2.name ?? "",
+        birthDate: character2.birth_date,
+        birthTime: character2.birth_time,
+        birthCity: character2.birth_city,
+        birthLat: character2.birth_lat,
+        birthLng: character2.birth_lng,
+        gender: character2.gender as "male" | "female",
+        timezone: character2.timezone ?? "Asia/Seoul",
+      };
+      chartsForStorage._secondary = generateAllCharts(secondaryBirthInfo);
+    }
+
+    if (type === "yearly" && targetYear) {
+      chartsForStorage._yearlyGanZhi = getYearlyGanZhi(
+        primaryBirthInfo.birthDate,
+        primaryBirthInfo.birthTime,
+        primaryBirthInfo.gender,
+        targetYear,
+      );
+    }
+
+    // Create reading row with pending status (charts_data 포함)
     const readingId = uuidv4();
     const { error: insertError } = await supabase.from("readings").insert({
       id: readingId,
@@ -156,6 +200,7 @@ export async function POST(request: NextRequest) {
       status: "pending",
       coin_transaction_id: coinTx.id,
       ...(type === "yearly" && targetYear ? { year: targetYear } : {}),
+      charts_data: chartsForStorage,
     });
 
     if (insertError) {
@@ -178,98 +223,169 @@ export async function POST(request: NextRequest) {
       .update({ reading_id: readingId })
       .eq("id", coinTx.id);
 
-    // Build generator function based on type
-    const characterData: CharacterData = {
-      name: character.name,
-      birth_date: character.birth_date,
-      birth_time: character.birth_time,
-      birth_city: character.birth_city,
-      birth_lat: character.birth_lat,
-      birth_lng: character.birth_lng,
-      gender: character.gender,
-      timezone: character.timezone,
-      mbti: character.mbti,
-    };
+    // 흐름 분기:
+    //  - USE_MOCK_READINGS=true (로컬 dev): 기존 fire-and-forget 경로로 mock data 사용.
+    //  - 그 외(라이브): Supabase Edge Function 워커에 위임 (60s 한도 우회).
+    const useMock =
+      process.env.NODE_ENV !== "production" &&
+      process.env.USE_MOCK_READINGS === "true";
 
-    let generatorFn: (
-      birthInfo: BirthInfo,
-      charts: AllCharts,
-    ) => Promise<{ content: string; tokensUsed: number }>;
+    if (useMock) {
+      // Build generator function based on type (mock 경로 전용)
+      const characterData: CharacterData = {
+        name: character.name,
+        birth_date: character.birth_date,
+        birth_time: character.birth_time,
+        birth_city: character.birth_city,
+        birth_lat: character.birth_lat,
+        birth_lng: character.birth_lng,
+        gender: character.gender,
+        timezone: character.timezone,
+        mbti: character.mbti,
+      };
 
-    if (type === "compatibility" && character2) {
-      generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
-        // Build second character's charts
-        const birthInfo2: BirthInfo = {
-          name: character2!.name ?? "",
-          birthDate: character2!.birth_date,
-          birthTime: character2!.birth_time,
-          birthCity: character2!.birth_city,
-          birthLat: character2!.birth_lat,
-          birthLng: character2!.birth_lng,
-          gender: character2!.gender as "male" | "female",
-          timezone: character2!.timezone ?? "Asia/Seoul",
+      let generatorFn: (
+        birthInfo: BirthInfo,
+        charts: AllCharts,
+      ) => Promise<{ content: string; tokensUsed: number }>;
+
+      if (type === "compatibility" && character2) {
+        generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
+          const birthInfo2: BirthInfo = {
+            name: character2!.name ?? "",
+            birthDate: character2!.birth_date,
+            birthTime: character2!.birth_time,
+            birthCity: character2!.birth_city,
+            birthLat: character2!.birth_lat,
+            birthLng: character2!.birth_lng,
+            gender: character2!.gender as "male" | "female",
+            timezone: character2!.timezone ?? "Asia/Seoul",
+          };
+          const charts2 = generateAllCharts(birthInfo2);
+
+          const { html, tokensUsed } = await generateCompatibilityReading(
+            birthInfo.name,
+            charts,
+            birthInfo2.name,
+            charts2,
+            character.mbti,
+            character2!.mbti,
+          );
+          return { content: html, tokensUsed };
         };
-        const charts2 = generateAllCharts(birthInfo2);
+      } else if (type === "yearly") {
+        generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
+          const yearlyGanZhi = getYearlyGanZhi(
+            birthInfo.birthDate,
+            birthInfo.birthTime,
+            birthInfo.gender,
+            targetYear!,
+          );
+          const { html, tokensUsed } = await generateYearlyReading(
+            birthInfo.name,
+            charts,
+            targetYear!,
+            yearlyGanZhi,
+            character.mbti,
+          );
+          return { content: html, tokensUsed };
+        };
+      } else if (["love", "career", "wealth", "health", "study"].includes(type)) {
+        const categoryType = type as CategoryType;
+        generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
+          const { html, tokensUsed } = await generateCategoryReading(
+            categoryType,
+            birthInfo.name,
+            charts,
+            character.mbti,
+          );
+          return { content: html, tokensUsed };
+        };
+      } else {
+        generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
+          const { html, tokensUsed } = await generateComprehensiveReading(
+            birthInfo.name,
+            charts,
+            character.mbti,
+          );
+          return { content: html, tokensUsed };
+        };
+      }
 
-        const { html, tokensUsed } = await generateCompatibilityReading(
-          birthInfo.name,
-          charts,
-          birthInfo2.name,
-          charts2,
-          character.mbti,
-          character2!.mbti,
-        );
-        return { content: html, tokensUsed };
-      };
-    } else if (type === "yearly") {
-      generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
-        const yearlyGanZhi = getYearlyGanZhi(
-          birthInfo.birthDate,
-          birthInfo.birthTime,
-          birthInfo.gender,
-          targetYear!,
-        );
-        const { html, tokensUsed } = await generateYearlyReading(
-          birthInfo.name,
-          charts,
-          targetYear!,
-          yearlyGanZhi,
-          character.mbti,
-        );
-        return { content: html, tokensUsed };
-      };
-    } else if (["love", "career", "wealth", "health", "study"].includes(type)) {
-      const categoryType = type as CategoryType;
-      generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
-        const { html, tokensUsed } = await generateCategoryReading(
-          categoryType,
-          birthInfo.name,
-          charts,
-          character.mbti,
-        );
-        return { content: html, tokensUsed };
-      };
+      executeReadingGeneration(
+        readingId,
+        characterId,
+        type,
+        generatorFn,
+        characterData,
+      ).catch((e) => {
+        console.error("Background reading generation failed:", e);
+      });
     } else {
-      generatorFn = async (birthInfo: BirthInfo, charts: AllCharts) => {
-        const { html, tokensUsed } = await generateComprehensiveReading(
-          birthInfo.name,
-          charts,
-          character.mbti,
-        );
-        return { content: html, tokensUsed };
-      };
-    }
+      // 라이브: Supabase Edge Function 위임
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const workerSecret = process.env.READING_WORKER_SECRET;
 
-    // Run generation in background
-    executeReadingGeneration(
-      readingId,
-      characterId,
-      type,
-      generatorFn,
-      characterData,
-    ).catch((e) => {
-      console.error("Background reading generation failed:", e);
-    });
+      if (!supabaseUrl || !workerSecret) {
+        console.error(
+          "Reading worker config missing: NEXT_PUBLIC_SUPABASE_URL or READING_WORKER_SECRET",
+        );
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            error_message: "감정 생성 워커가 설정되지 않았습니다",
+          })
+          .eq("id", readingId);
+        await supabase.rpc("adjust_user_coins", { p_user_id: userId, p_delta: 1 });
+        return NextResponse.json(
+          { error: "감정 생성 시작에 실패했습니다" },
+          { status: 500 },
+        );
+      }
+
+      const workerUrl = `${supabaseUrl.replace(/\/$/, "")}/functions/v1/reading-worker`;
+      try {
+        const res = await fetch(workerUrl, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: `Bearer ${workerSecret}`,
+          },
+          body: JSON.stringify({ readingId }),
+        });
+        if (!res.ok) {
+          const errBody = await res.text().catch(() => "");
+          console.error("Edge function rejected:", res.status, errBody);
+          await supabase
+            .from("readings")
+            .update({
+              status: "error",
+              error_message: "감정 생성 워커 호출에 실패했습니다",
+            })
+            .eq("id", readingId);
+          await supabase.rpc("adjust_user_coins", { p_user_id: userId, p_delta: 1 });
+          return NextResponse.json(
+            { error: "감정 생성 시작에 실패했습니다" },
+            { status: 500 },
+          );
+        }
+      } catch (e) {
+        console.error("Edge function call failed:", e);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            error_message: "감정 생성 워커 연결에 실패했습니다",
+          })
+          .eq("id", readingId);
+        await supabase.rpc("adjust_user_coins", { p_user_id: userId, p_delta: 1 });
+        return NextResponse.json(
+          { error: "감정 생성 시작에 실패했습니다" },
+          { status: 500 },
+        );
+      }
+    }
 
     return NextResponse.json({ readingId });
   } catch (e) {

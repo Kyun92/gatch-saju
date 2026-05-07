@@ -46,6 +46,7 @@ vercel env add NEXTAUTH_SECRET production
 | `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/app/apikey) → Create API Key | |
 | `TOSS_SECRET_KEY` | [토스페이먼츠 개발자센터](https://developers.tosspayments.com) → 내 개발 → **시크릿 키** | 라이브 키 발급까지 심사 통과 후 가능, 초기는 테스트 키로 |
 | `NEXT_PUBLIC_TOSS_CLIENT_KEY` | 동일 콘솔 → **클라이언트 키** | |
+| `READING_WORKER_SECRET` | 터미널 `openssl rand -base64 32` | Vercel + Supabase Edge Function 양쪽에 **동일 값** 등록. §10 참고 |
 
 ---
 
@@ -224,3 +225,53 @@ vercel env add NEXTAUTH_SECRET production
 | 카카오 로그인 후 콜백 실패 | Redirect URI 미등록 | 카카오 콘솔에서 프로덕션 URL 추가 |
 | Toss 결제창 미열림 | `NEXT_PUBLIC_TOSS_CLIENT_KEY` 누락/오타 | env 재확인 + Redeploy |
 | 결제 후 mock 데이터 노출 | `USE_MOCK_READINGS=true` 잘못 등록 | env 삭제 + Redeploy (있으면 절대 금물) |
+| 종합감정 "감정 실패" | Edge Function 미배포 / `READING_WORKER_SECRET` 미등록·불일치 | §10 가이드대로 Edge Function 배포 + 양쪽 SECRET 동일 값 확인 |
+| 운명뽑기 호출 즉시 500 | `READING_WORKER_SECRET` 401 (Edge Function이 인증 거부) | Vercel과 Supabase 양쪽에 동일 값 재등록 |
+
+---
+
+## 10. Supabase Edge Function "reading-worker" 배포
+
+Vercel Hobby 플랜의 함수 한도 60s 안에서 Gemini 3.1 Pro 종합감정(평균 30~60s+)을 돌리면 잘리는 사고가 발생한다. 이를 우회하기 위해 AI 호출은 **Supabase Edge Function** (Deno, timeout ~150s)에 위임한다.
+
+### 10-1. 사전 준비
+- Supabase CLI 설치: `brew install supabase/tap/supabase` (또는 [공식 가이드](https://supabase.com/docs/guides/cli))
+- 로그인: `supabase login`
+- 프로젝트 연결: `supabase link --project-ref <YOUR_PROJECT_REF>`
+  - `YOUR_PROJECT_REF`는 Supabase Dashboard URL `https://supabase.com/dashboard/project/<ref>` 중 `<ref>`
+
+### 10-2. Edge Function 시크릿 등록
+Edge Function 런타임은 Vercel과 별도이므로 **Supabase 측 시크릿**도 따로 등록해야 한다.
+
+```bash
+# Edge Function 전용 시크릿 (반드시 등록)
+supabase secrets set GEMINI_API_KEY=<Gemini 키>
+supabase secrets set READING_WORKER_SECRET=<Vercel과 동일한 값>
+```
+
+`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`는 Supabase가 함수 실행 시 자동 주입하므로 별도 등록 불필요.
+
+### 10-3. 배포
+
+```bash
+# verify_jwt=false: Vercel API가 자체 SECRET으로 인증하므로 Supabase JWT 검증은 끔
+supabase functions deploy reading-worker --no-verify-jwt
+```
+
+성공 시 함수 URL: `https://<project-ref>.supabase.co/functions/v1/reading-worker`
+
+### 10-4. 동작 검증
+
+1. Vercel 환경변수에 `READING_WORKER_SECRET` 등록 + Redeploy
+2. 운명뽑기(종합감정) 1회 → 결제 → generating → 결과 페이지 정상 도달 확인
+3. 실패 시 점검 순서:
+   - Supabase Dashboard → **Edge Functions** → `reading-worker` → **Logs** 에서 에러 확인
+   - Vercel **Logs** → `/api/reading/generate` 에러 메시지 확인 (401이면 SECRET 불일치)
+   - readings 테이블의 `error_message` 컬럼 확인
+
+### 10-5. 프롬프트 수정 시
+프롬프트는 두 위치에 동일 사본이 존재한다. **반드시 함께 수정**:
+- `src/lib/ai/prompts.ts` (Vercel 빌드 + USE_MOCK_READINGS 모드용)
+- `supabase/functions/reading-worker/prompts.ts` (Edge Function 런타임용)
+
+수정 후 Edge Function 재배포: `supabase functions deploy reading-worker --no-verify-jwt`
