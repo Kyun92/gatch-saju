@@ -197,3 +197,28 @@ BEGIN
   RETURN v_new_balance;
 END;
 $$;
+
+-- ============================================================
+-- Row Level Security (defense-in-depth) — 2026-05 추가
+-- 정책: 모든 정상 트래픽은 service_role 키로 서버에서만 호출.
+-- service_role은 RLS 우회 → 애플리케이션 동작 변화 없음.
+-- 향후 anon key 노출 / service_role 누출 시 1차 방어선 역할.
+-- ============================================================
+
+-- 모든 사용자 데이터 테이블에 RLS ENABLE
+ALTER TABLE users               ENABLE ROW LEVEL SECURITY;
+ALTER TABLE accounts            ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sessions            ENABLE ROW LEVEL SECURITY;
+ALTER TABLE verification_tokens ENABLE ROW LEVEL SECURITY;
+ALTER TABLE characters          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE charts              ENABLE ROW LEVEL SECURITY;
+ALTER TABLE readings            ENABLE ROW LEVEL SECURITY;
+ALTER TABLE payment_log         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE coin_transactions   ENABLE ROW LEVEL SECURITY;
+
+-- anon / authenticated 역할에는 사용자 데이터 접근 전면 차단
+-- (현재 코드는 service_role 단독 사용. 미래에 클라이언트 직접 호출 도입되면
+--  명시적으로 SELECT 정책 추가 필요)
+REVOKE ALL ON users, accounts, sessions, verification_tokens,
+              characters, charts, readings, payment_log, coin_transactions
+  FROM anon, authenticated;
