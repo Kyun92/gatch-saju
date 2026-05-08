@@ -4,6 +4,27 @@
 
 ---
 
+## 0. 함수 Region 설정 (성능에 결정적)
+
+> ⚠ **누락 시 한국 사용자 체감이 4~5배 느려진다.**
+> Vercel 함수 region을 명시하지 않으면 기본값(미국 동부)이 적용된다.
+> Supabase는 한국 region(ap-northeast-2)에 있으므로 함수↔DB 왕복 RTT가 매 호출마다 ~150~250ms씩 누적된다.
+> middleware DB call 2회 + RSC SSR fetch + API route DB call까지 직렬로 쌓이면 페이지당 1~2초가 통째로 RTT로 사라진다.
+
+### 설정 (필수)
+프로젝트 루트의 `vercel.json`에 다음과 같이 명시 (이 저장소에는 이미 포함):
+```json
+{ "regions": ["icn1"] }
+```
+- `icn1` = AWS Seoul (ap-northeast-2)
+- Hobby 플랜은 region 1개만 허용 (Pro 이상은 다중 region)
+- Supabase project region이 다른 곳에 있다면 그쪽에 맞춤
+
+### 검증
+배포 후 Vercel Dashboard → Deployments → 해당 배포 → **Functions** 탭에서 region이 `icn1`로 표시되는지 확인.
+
+---
+
 ## 1. 등록 경로
 
 ### A. 프로젝트 Import 중 (권장 — 첫 배포 전 한 번에)
