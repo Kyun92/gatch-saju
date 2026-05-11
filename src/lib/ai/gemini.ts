@@ -39,7 +39,8 @@ ${mbti ? `\n[MBTI] ${name}님의 MBTI는 ${mbti}입니다. 각 섹션에서 자�
     model.generateContent({
       contents: [{ role: "user", parts: [{ text: userMessage }] }],
       systemInstruction: COMPREHENSIVE_SYSTEM,
-      generationConfig: { maxOutputTokens: 8192, temperature: 0.8 },
+      // 12섹션·6000~8000자 한국어 HTML. 한국어 토큰 효율을 고려해 16384로 상향 (이전 8192는 5섹션쯤에서 잘렸음).
+      generationConfig: { maxOutputTokens: 16384, temperature: 0.8 },
     }),
     "종합감정",
   );
@@ -133,7 +134,8 @@ ${mbti ? `\n[MBTI] ${name}님의 MBTI는 ${mbti}입니다. 각 영역에서 자�
     model.generateContent({
       contents: [{ role: "user", parts: [{ text: userMessage }] }],
       systemInstruction: YEARLY_SYSTEM,
-      generationConfig: { maxOutputTokens: 8192, temperature: 0.8 },
+      // 7섹션 한국어. 종합감정 잘림 사고와 동일 원인 방어로 16384.
+      generationConfig: { maxOutputTokens: 16384, temperature: 0.8 },
     }),
     "년운",
   );
@@ -170,7 +172,8 @@ ${mbti2 ? `MBTI: ${mbti2}` : ""}`;
     model.generateContent({
       contents: [{ role: "user", parts: [{ text: userMessage }] }],
       systemInstruction: COMPATIBILITY_SYSTEM,
-      generationConfig: { maxOutputTokens: 6144, temperature: 0.8 },
+      // 7섹션 한국어 + 두 사람 차트 분석. 12288로 상향.
+      generationConfig: { maxOutputTokens: 12288, temperature: 0.8 },
     }),
     "궁합",
   );
@@ -227,7 +230,8 @@ ${mbti ? `\n[MBTI] ${name}님의 MBTI는 ${mbti}입니다. 각 섹션에서 자�
     model.generateContent({
       contents: [{ role: "user", parts: [{ text: userMessage }] }],
       systemInstruction: systemPrompt,
-      generationConfig: { maxOutputTokens: 6144, temperature: 0.8 },
+      // 카테고리 특화 4섹션 한국어. 8192로 여유 확보.
+      generationConfig: { maxOutputTokens: 8192, temperature: 0.8 },
     }),
     label,
   );

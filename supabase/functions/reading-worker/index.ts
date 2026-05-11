@@ -120,6 +120,16 @@ async function callGemini(
     }),
     label,
   );
+  // finish_reason=MAX_TOKENS 가드: 출력 한도에 걸려 잘린 응답은 그대로 저장하지 않고
+  // throw로 retry 경로(processWithRetry)에 맡긴다. 두 번째도 잘리면 status='error' + 환불.
+  const finishReason =
+    (result.response.candidates?.[0] as { finishReason?: string } | undefined)
+      ?.finishReason;
+  if (finishReason === "MAX_TOKENS") {
+    throw new Error(
+      `Gemini 응답이 출력 토큰 한도(${maxOutputTokens})에 도달해 잘렸습니다 (${label}, finishReason=MAX_TOKENS).`,
+    );
+  }
   return {
     html: result.response.text(),
     tokensUsed: result.response.usageMetadata?.totalTokenCount ?? 0,
@@ -309,7 +319,7 @@ async function processReading(readingId: string): Promise<void> {
       COMPREHENSIVE_SYSTEM,
       buildComprehensiveMessage(name1, charts, mbti1),
       "종합감정",
-      8192,
+      16384,
     );
     html = r.html;
     tokensUsed = r.tokensUsed;
@@ -320,7 +330,7 @@ async function processReading(readingId: string): Promise<void> {
       YEARLY_SYSTEM,
       buildYearlyMessage(name1, charts, reading.year as number, charts._yearlyGanZhi, mbti1),
       "년운",
-      8192,
+      16384,
     );
     html = r.html;
     tokensUsed = r.tokensUsed;
@@ -344,7 +354,7 @@ async function processReading(readingId: string): Promise<void> {
         (char2.mbti as string | null) ?? null,
       ),
       "궁합",
-      6144,
+      12288,
     );
     html = r.html;
     tokensUsed = r.tokensUsed;
@@ -353,7 +363,7 @@ async function processReading(readingId: string): Promise<void> {
       CATEGORY_PROMPTS[type],
       buildCategoryMessage(type, name1, charts, mbti1),
       CATEGORY_LABELS[type] ?? "운세",
-      6144,
+      8192,
     );
     html = r.html;
     tokensUsed = r.tokensUsed;
