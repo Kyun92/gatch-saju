@@ -18,4 +18,7 @@ export const BUSINESS_INFO = {
   representative: "임승균",
   businessRegistrationNumber: "607-29-96690",
   address: "경기도 용인시 기흥구 신정로 25, 108동 2205호",
+  // 직전년도 거래 50회 미만 + 거래액 4,800만원 미만 간이과세자 → 통신판매업 면제.
+  // 매출 증가 시 정부24에서 신고하고 이 필드를 신고번호로 교체.
+  mailOrderBusinessStatus: "통신판매업 면제대상 (소규모 간이과세자)",
 } as const;

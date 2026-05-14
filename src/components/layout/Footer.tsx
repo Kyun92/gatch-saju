@@ -33,6 +33,9 @@ export default function Footer() {
         <p className="text-[0.6875rem] text-[#6a5e4c] leading-relaxed">
           {BUSINESS_INFO.address}
         </p>
+        <p className="text-[0.6875rem] text-[#6a5e4c] leading-relaxed">
+          {BUSINESS_INFO.mailOrderBusinessStatus}
+        </p>
         <p className="text-[0.6875rem] text-[#6a5e4c] leading-relaxed pt-1">
           고객센터{" "}
           <a
